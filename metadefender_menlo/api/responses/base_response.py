@@ -2,7 +2,7 @@
 
 class BaseResponse(object):
 
-    _allowedResponses: []
+    _allowedResponses = []
     _http_responses = {}
 
     
