@@ -1,5 +1,41 @@
 # MetaDefender - Menlo Security Middleware
 
+## Development
+
+### Repositories
+
+Please use the `origin` repository for internal development, syncronize only the main and develop branches between `origin` and `github` repos.
+
+- origin: Internal remote repository  
+`origin git@bitbucket.org:metascan/mdcl-menlo-middleware.git`
+
+- github: Public remote repository  
+`github git@github.com:OPSWAT/metadefender-menlo-integration.git`
+
+### Repo setup
+
+```bash
+git clone git@bitbucket.org:metascan/mdcl-menlo-middleware.git
+
+cd mdcl-menlo-middleware
+
+git remote add github git@github.com:OPSWAT/metadefender-menlo-integration.git
+
+git flow init
+# [gitflow "branch"]
+# 	master = main
+# 	develop = develop
+# [gitflow "prefix"]
+# 	feature = feature/
+# 	bugfix = bugfix/
+# 	release = release/
+# 	hotfix = hotfix/
+# 	support = support/
+# 	versiontag =
+```
+
+Use [git-flow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) for development
+
 ## Documentation
 
 * [Integration Guide](docs/Menlo%20-%20MetaDefender%20Integration%20Guide.pdf)
