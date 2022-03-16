@@ -31,8 +31,8 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             print("Unexpected response from MetaDefender: {0}".format(json_response))
             return False
     
-    async def retrieve_sanitized_file(self, data_id):        
+    async def retrieve_sanitized_file(self, data_id,apikey):        
         logging.info("MetaDefender > Retrieve Sanitized file for {0}".format(data_id))
-        response, http_status = await self._request_status("sanitized_file", fields={"data_id": data_id})
+        response, http_status = await self._request_status("sanitized_file", fields={"data_id": data_id,'apikey':apikey})
         
         return (response, http_status)

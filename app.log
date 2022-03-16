@@ -1,0 +1,1189 @@
+03/15/2022 11:58:49 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 11:58:49 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 11:58:49 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 11:58:49 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 12:22:02 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 12:22:02 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 12:22:02 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 12:22:02 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 12:58:58 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 12:58:58 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 12:58:58 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 12:58:58 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:08:55 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/health (127.0.0.1) 0.59ms
+03/15/2022 02:11:11 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/health (127.0.0.1) 0.34ms
+03/15/2022 02:26:27 PM - WARNING - web.py > log_request:2239 - 404 POST /inbound (127.0.0.1) 0.55ms
+03/15/2022 02:29:27 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:29:27 PM - ERROR - file_submit.py > post:15 - No file uploaded > is call originating from Menlo?
+03/15/2022 02:29:27 PM - WARNING - web.py > log_exception:1787 - 400 POST /api/v1/submit (127.0.0.1): No file uploaded
+03/15/2022 02:29:27 PM - WARNING - web.py > log_request:2239 - 400 POST /api/v1/submit (127.0.0.1) 0.75ms
+03/15/2022 02:30:00 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:30:00 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:30:00 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:30:00 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:30:00 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:30:00 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:30:00.450752 submit_file >> time: 0:00:00.167875, http status: 401
+03/15/2022 02:30:00 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:30:00 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 242.48ms
+03/15/2022 02:30:43 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:30:43 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:30:43 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:30:43 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:30:52 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:30:52 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:30:52 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:30:52 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:30:52 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:30:52 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:30:52.187512 submit_file >> time: 0:00:00.439936, http status: 401
+03/15/2022 02:30:52 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:30:52 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 477.82ms
+03/15/2022 02:32:30 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:32:30 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:32:30 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:32:30 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:32:35 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:32:35 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:32:35 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:32:35 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:32:35 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:32:35 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:32:35.360041 submit_file >> time: 0:00:00.452318, http status: 401
+03/15/2022 02:32:35 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:32:35 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 489.88ms
+03/15/2022 02:32:57 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:32:57 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:32:57 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:32:57 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:34:13 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:34:13 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:34:13 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:34:13 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:34:13 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:34:13 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:34:13.264671 submit_file >> time: 0:00:00.471659, http status: 401
+03/15/2022 02:34:13 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:34:13 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 506.18ms
+03/15/2022 02:40:00 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:40:00 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:40:00 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:40:00 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:40:03 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:40:03 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:40:03 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:40:03 PM - ERROR - web.py > log_exception:1789 - Uncaught exception POST /api/v1/submit (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='POST', uri='/api/v1/submit', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/file_submit.py", line 35, in post
+    json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 60, in submit_file
+    print(fp,headers)
+UnboundLocalError: local variable 'headers' referenced before assignment
+03/15/2022 02:40:03 PM - ERROR - web.py > log_request:2239 - 500 POST /api/v1/submit (127.0.0.1) 31.26ms
+03/15/2022 02:40:11 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:40:11 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:40:11 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:40:11 PM - ERROR - web.py > log_exception:1789 - Uncaught exception POST /api/v1/submit (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='POST', uri='/api/v1/submit', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/file_submit.py", line 35, in post
+    json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 60, in submit_file
+    print(fp,headers)
+UnboundLocalError: local variable 'headers' referenced before assignment
+03/15/2022 02:40:11 PM - ERROR - web.py > log_request:2239 - 500 POST /api/v1/submit (127.0.0.1) 25.40ms
+03/15/2022 02:40:45 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:40:45 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:40:45 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:40:45 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:40:47 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:40:47 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:40:47 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:40:51 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:40:51 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:40:51 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:40:51.499639 submit_file >> time: 0:00:00.476270, http status: 401
+03/15/2022 02:40:51 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:40:51 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 4384.04ms
+03/15/2022 02:41:12 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:41:12 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:41:12 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:41:12 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:41:15 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:41:15 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:41:15 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:41:15 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:41:15 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:41:15 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:41:15.398806 submit_file >> time: 0:00:00.431921, http status: 401
+03/15/2022 02:41:15 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:41:15 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 461.08ms
+03/15/2022 02:44:35 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:44:35 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:44:35 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:44:35 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:44:38 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:44:38 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:44:38 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:44:38 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:44:38 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:44:38 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:44:38.041484 submit_file >> time: 0:00:00.472813, http status: 401
+03/15/2022 02:44:38 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:44:38 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 506.17ms
+03/15/2022 02:46:38 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:46:38 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:46:38 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:46:38 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:46:40 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:46:40 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:46:40 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:46:40 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:46:40 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:46:41 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 14:46:40.766735 submit_file >> time: 0:00:00.583640, http status: 401
+03/15/2022 02:46:41 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:46:41 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 615.91ms
+03/15/2022 02:47:24 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:47:24 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:47:24 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:47:24 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:47:28 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:47:28 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:47:28 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:47:28 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:47:28 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:47:28 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 14:47:28.305033 submit_file >> time: 0:00:00.481847, http status: 401
+03/15/2022 02:47:28 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:47:28 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 526.08ms
+03/15/2022 02:49:30 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:49:30 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:49:30 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:49:30 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:49:37 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:49:37 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:49:37 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:49:37 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:49:37 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:49:38 PM - INFO - metadefender_api.py > _request_status:136 - 2022-03-15 14:49:37.679243 submit_file >> time: 0:00:00.542454, http status: 401
+03/15/2022 02:49:38 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/15/2022 02:49:38 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 589.81ms
+03/15/2022 02:50:26 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:50:26 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:50:26 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:50:26 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:50:42 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:50:42 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:50:42 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:50:42 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:50:42 PM - INFO - metadefender_api.py > _request_status:116 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:50:43 PM - INFO - metadefender_api.py > _request_status:137 - 2022-03-15 14:50:42.666818 submit_file >> time: 0:00:01.211058, http status: 200
+03/15/2022 02:50:43 PM - INFO - base_handler.py > json_response:18 - 200 response: {'uuid': 'bzIyMDMxNURXR1Bzdzdic2puVmhpTk9iWFM', 'result': 'accepted'}
+03/15/2022 02:50:43 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 1257.31ms
+03/15/2022 02:52:07 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 02:52:07 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 02:52:07 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 02:52:07 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 02:52:10 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:52:10 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/15/2022 02:52:10 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/15/2022 02:52:10 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:52:10 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:52:11 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:52:10.673454 submit_file >> time: 0:00:01.170250, http status: 200
+03/15/2022 02:52:11 PM - INFO - base_handler.py > json_response:18 - 200 response: {'uuid': 'bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U', 'result': 'accepted'}
+03/15/2022 02:52:11 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 1209.84ms
+03/15/2022 02:52:45 PM - WARNING - web.py > log_request:2239 - 404 GET /check?sha256=4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31 (127.0.0.1) 0.37ms
+03/15/2022 02:53:25 PM - INFO - analysis_result.py > get:9 - GET /api/v1/result/bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U
+03/15/2022 02:53:25 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U
+03/15/2022 02:53:25 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U'}
+03/15/2022 02:53:25 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U
+03/15/2022 02:53:26 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:53:25.893307 retrieve_result >> time: 0:00:00.771749, http status: 200
+03/15/2022 02:53:26 PM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'infected', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U/regular/overview', 'filename': 'app-debug.apk', 'modifications': None}
+03/15/2022 02:53:26 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U (127.0.0.1) 774.31ms
+03/15/2022 02:54:26 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U (127.0.0.1) 0.34ms
+03/15/2022 02:54:33 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U (127.0.0.1) 0.36ms
+03/15/2022 02:56:10 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNWFFOFBmbnpfeHF6elZOa1Y4Q2U (127.0.0.1) 0.34ms
+03/15/2022 02:57:54 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 02:57:54 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/15/2022 02:57:54 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/15/2022 02:57:54 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 02:57:54 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 02:57:54 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 14:57:54.153313 submit_file >> time: 0:00:00.740285, http status: 200
+03/15/2022 02:57:54 PM - INFO - base_handler.py > json_response:18 - 200 response: {'uuid': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'result': 'accepted'}
+03/15/2022 02:57:54 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 782.47ms
+03/15/2022 02:58:02 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.35ms
+03/15/2022 03:10:26 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:10:26 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:10:26 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:10:26 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:10:39 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.51ms
+03/15/2022 03:10:57 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:10:57 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:10:57 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:10:57 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:10:59 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.51ms
+03/15/2022 03:11:38 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k (127.0.0.1) 0.32ms
+03/15/2022 03:12:08 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:12:08 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:12:08 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:12:08 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:12:11 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k (127.0.0.1) 0.46ms
+03/15/2022 03:23:30 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:23:30 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:23:30 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:23:30 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:23:38 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:23:38 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:23:38 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:23:38 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:23:48 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:23:48 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:23:48 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:23:48 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:24:39 PM - WARNING - web.py > log_request:2239 - 404 GET /check?sha256=4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31 (127.0.0.1) 0.49ms
+03/15/2022 03:25:14 PM - WARNING - web.py > log_request:2239 - 404 GET /check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.36ms
+03/15/2022 03:32:22 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:32:22 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:32:22 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:32:22 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:32:34 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k (127.0.0.1) 0.52ms
+03/15/2022 03:32:40 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:32:40 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:32:40 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:32:40 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:32:43 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k (127.0.0.1) 0.48ms
+03/15/2022 03:33:52 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:33:52 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:33:52 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:33:52 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:33:54 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k (127.0.0.1) 0.65ms
+03/15/2022 03:34:38 PM - WARNING - web.py > log_request:2239 - 404 GET /file (127.0.0.1) 0.31ms
+03/15/2022 03:34:49 PM - WARNING - web.py > log_request:2239 - 404 GET /check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.32ms
+03/15/2022 03:35:39 PM - INFO - analysis_result.py > get:9 - GET /api/v1/result/b160e42680994907ba19bf6af5145d6a
+03/15/2022 03:35:39 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for b160e42680994907ba19bf6af5145d6a
+03/15/2022 03:35:39 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'b160e42680994907ba19bf6af5145d6a'}
+03/15/2022 03:35:39 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/b160e42680994907ba19bf6af5145d6a
+03/15/2022 03:35:39 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 15:35:39.275605 retrieve_result >> time: 0:00:00.552817, http status: 404
+03/15/2022 03:35:39 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 03:35:39 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a (127.0.0.1) 556.86ms
+03/15/2022 03:37:05 PM - INFO - analysis_result.py > get:9 - GET /api/v1/result/b160e42680994907ba19bf6af5145d6a
+03/15/2022 03:37:05 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for b160e42680994907ba19bf6af5145d6a
+03/15/2022 03:37:05 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'b160e42680994907ba19bf6af5145d6a'}
+03/15/2022 03:37:05 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/b160e42680994907ba19bf6af5145d6a
+03/15/2022 03:37:05 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 15:37:05.443391 retrieve_result >> time: 0:00:00.316755, http status: 404
+03/15/2022 03:37:05 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 03:37:05 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a (127.0.0.1) 317.95ms
+03/15/2022 03:37:37 PM - INFO - analysis_result.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 03:37:37 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 03:37:37 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 03:37:37 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 03:37:38 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 15:37:37.753766 retrieve_result >> time: 0:00:00.628076, http status: 200
+03/15/2022 03:37:38 PM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/15/2022 03:37:38 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 629.11ms
+03/15/2022 03:37:47 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.33ms
+03/15/2022 03:37:48 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.31ms
+03/15/2022 03:38:07 PM - WARNING - web.py > log_request:2239 - 404 GET /check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.33ms
+03/15/2022 03:40:21 PM - WARNING - web.py > log_request:2239 - 404 POST /inbound (127.0.0.1) 122.07ms
+03/15/2022 03:40:42 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:40:42 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:40:42 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:40:42 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:40:45 PM - WARNING - web.py > log_request:2239 - 404 POST /inbound (127.0.0.1) 67.06ms
+03/15/2022 03:54:37 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:54:37 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:54:37 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:54:37 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 03:56:47 PM - INFO - analysis_result.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 03:56:47 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 03:56:47 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 03:56:47 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 03:56:47 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 15:56:47.000231 retrieve_result >> time: 0:00:00.743154, http status: 200
+03/15/2022 03:56:47 PM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/15/2022 03:56:47 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 744.31ms
+03/15/2022 03:56:57 PM - WARNING - web.py > log_request:2239 - 404 GET /file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.34ms
+03/15/2022 03:57:10 PM - WARNING - web.py > log_request:2239 - 404 GET /check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.50ms
+03/15/2022 03:57:54 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 03:57:54 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 03:57:54 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 03:57:54 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:07:05 PM - WARNING - file_metadata.py > post:6 - POST /api/v1/submit > Not implemented
+03/15/2022 04:07:05 PM - INFO - base_handler.py > json_response:18 - 400 response: {'error': 'Not implemented'}
+03/15/2022 04:07:05 PM - WARNING - web.py > log_request:2239 - 400 POST /api/v1/inbound (127.0.0.1) 66.66ms
+03/15/2022 04:07:31 PM - INFO - check_existing.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:07:31 PM - INFO - metadefender_api.py > hash_lookup:83 - MetaDefender > Hash Lookup for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:07:31 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (hash_lookup) for {'hash': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:07:31 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/hash/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:07:31 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:07:31.526831 hash_lookup >> time: 0:00:00.308703, http status: 400
+03/15/2022 04:07:31 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/check_existing.py", line 12, in get
+    json_response, http_status = CheckExisting().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 04:07:31 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 310.49ms
+03/15/2022 04:08:30 PM - INFO - retrieve_sanitized.py > get:8 - GET /api/v1/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:08:30 PM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:36 - MetaDefender > Retrieve Sanitized file for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:08:30 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (sanitized_file) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:08:30 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/converted/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:08:30 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:08:30.517177 sanitized_file >> time: 0:00:00.201646, http status: 200
+03/15/2022 04:08:30 PM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:41 - Download Sanitized file from https://s3.eu-central-1.amazonaws.com/sanitized.files.metadefender.com-eucentral1/dt%3D220315/vvENmvrAM.sanitized.encrypted?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIQ4OFCFFFT4QMUYA%2F20220315%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20220315T140830Z&X-Amz-Expires=604800&X-Amz-Signature=3ed3e73c1c71a367ad115fcd73d3ddc16c6cb3d9531dd27854a9fdd65ff2a1f1&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dtest.odt
+03/15/2022 04:08:30 PM - INFO - base_handler.py > stream_response:24 - 200 response: sanitized file (binary data)
+03/15/2022 04:08:30 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 393.81ms
+03/15/2022 04:08:54 PM - INFO - check_existing.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:08:54 PM - INFO - metadefender_api.py > hash_lookup:83 - MetaDefender > Hash Lookup for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:08:54 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (hash_lookup) for {'hash': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:08:54 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/hash/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:08:54 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:08:54.329823 hash_lookup >> time: 0:00:00.168321, http status: 400
+03/15/2022 04:08:54 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/check_existing.py", line 12, in get
+    json_response, http_status = CheckExisting().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 04:08:54 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 170.11ms
+03/15/2022 04:09:04 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/15/2022 04:09:04 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/15/2022 04:09:04 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/15/2022 04:09:04 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for None
+03/15/2022 04:09:04 PM - INFO - metadefender_api.py > _request_status:115 - Request [POST]: https://api.metadefender.com/v4/file
+03/15/2022 04:09:04 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:09:04.093967 submit_file >> time: 0:00:00.734214, http status: 200
+03/15/2022 04:09:04 PM - INFO - base_handler.py > json_response:18 - 200 response: {'uuid': 'bzIyMDMxNTVFVjNzN3ZNQmdtbFZjejcxcy0', 'result': 'accepted'}
+03/15/2022 04:09:04 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 735.86ms
+03/15/2022 04:11:19 PM - INFO - analysis_result.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:11:19 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:11:19 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:11:19 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:11:20 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:11:19.858106 retrieve_result >> time: 0:00:00.936555, http status: 200
+03/15/2022 04:11:20 PM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/15/2022 04:11:20 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 937.53ms
+03/15/2022 04:12:45 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:12:45 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:12:45 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:12:45 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:12:48 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:12:48 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:12:48 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:12:48 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:12:49 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:12:48.743122 retrieve_result >> time: 0:00:00.677049, http status: 200
+03/15/2022 04:12:49 PM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/15/2022 04:12:49 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 678.59ms
+03/15/2022 04:31:09 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:31:09 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:31:09 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:31:09 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:31:15 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:31:15 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:31:15 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:31:15 PM - INFO - metadefender_api.py > _request_status:116 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/3d774dcf261286a3d7386ccddd83b2c8/
+03/15/2022 04:31:16 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 16:31:15.871308 retrieve_result >> time: 0:00:00.163379, http status: 404
+03/15/2022 04:31:16 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 04:31:16 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 165.09ms
+03/15/2022 04:31:32 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:31:32 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:31:32 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:31:32 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:31:37 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:31:37 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:31:37 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:31:37 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 11, in get
+    json_response, http_status = await self.metaDefenderAPI.check_result(uuid,apikey)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 80, in check_result
+    return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id})
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 91, in _request_as_json_status
+    response, http_status = await self._request_status(endpoint_id, fields, headers, body)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 105, in _request_status
+    endpoint_path = endpoint_details["endpoint"].format(**fields)
+KeyError: 'apikey'
+03/15/2022 04:31:37 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 1.45ms
+03/15/2022 04:32:04 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:32:04 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:32:04 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:32:04 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:32:07 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:32:07 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:32:07 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:32:07 PM - INFO - metadefender_api.py > _request_status:116 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:32:08 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 16:32:07.829534 retrieve_result >> time: 0:00:00.172670, http status: 500
+03/15/2022 04:32:08 PM - INFO - base_handler.py > json_response:18 - 500 response: {'error': 'Internal Server Error'}
+03/15/2022 04:32:08 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 173.68ms
+03/15/2022 04:33:56 PM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/15/2022 04:33:56 PM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.51ms
+03/15/2022 04:34:09 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:34:09 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:34:09 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:34:09 PM - INFO - metadefender_api.py > _request_status:116 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:34:09 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 16:34:09.329870 retrieve_result >> time: 0:00:00.175178, http status: 500
+03/15/2022 04:34:09 PM - INFO - base_handler.py > json_response:18 - 500 response: {'error': 'Internal Server Error'}
+03/15/2022 04:34:09 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 175.97ms
+03/15/2022 04:35:23 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:35:23 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:35:23 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:35:23 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:35:26 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:35:26 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:35:26 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:35:26 PM - INFO - metadefender_api.py > _request_status:116 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/3d774dcf261286a3d7386ccddd83b2c8/
+03/15/2022 04:35:26 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 16:35:26.544921 retrieve_result >> time: 0:00:00.165730, http status: 404
+03/15/2022 04:35:26 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 04:35:26 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 167.36ms
+03/15/2022 04:38:12 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:38:12 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:38:12 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:38:12 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:38:16 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:38:16 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:38:16 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:38:16 PM - INFO - metadefender_api.py > _request_status:116 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:38:17 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 16:38:16.275871 retrieve_result >> time: 0:00:01.165581, http status: 500
+03/15/2022 04:38:17 PM - INFO - base_handler.py > json_response:18 - 500 response: {'error': 'Internal Server Error'}
+03/15/2022 04:38:17 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 1166.53ms
+03/15/2022 04:39:45 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:39:45 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:39:45 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:39:45 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:39:50 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:39:50 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:39:50 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:39:50 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:39:51 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:39:50.748168 retrieve_result >> time: 0:00:01.084364, http status: 500
+03/15/2022 04:39:51 PM - INFO - base_handler.py > json_response:18 - 500 response: {'error': 'Internal Server Error'}
+03/15/2022 04:39:51 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 1085.30ms
+03/15/2022 04:44:54 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:44:54 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:44:54 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:44:54 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:44:57 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:44:57 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:44:57 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:44:57 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:44:59 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:44:57.871115 retrieve_result >> time: 0:00:01.162873, http status: 500
+03/15/2022 04:44:59 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 1164.42ms
+03/15/2022 04:45:45 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:45:45 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:45:45 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:45:45 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:45:49 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:45:49 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:45:49 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:45:49 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:45:50 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:45:49.275601 retrieve_result >> time: 0:00:01.074843, http status: 500
+03/15/2022 04:45:50 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 1075.75ms
+03/15/2022 04:49:59 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:49:59 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:49:59 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:49:59 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:50:08 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:50:08 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:50:08 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:50:08 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:50:09 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:50:08.578933 retrieve_result >> time: 0:00:00.980839, http status: 500
+03/15/2022 04:50:09 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 981.71ms
+03/15/2022 04:51:48 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:51:48 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:51:48 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:51:48 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:51:51 PM - INFO - analysis_result.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:51:51 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:51:51 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 04:51:51 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:51:53 PM - INFO - metadefender_api.py > _request_status:134 - 2022-03-15 16:51:51.280938 retrieve_result >> time: 0:00:01.932138, http status: 200
+03/15/2022 04:51:53 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 1933.38ms
+03/15/2022 04:52:19 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:52:19 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:52:19 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:52:19 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:52:21 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:52:21 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:52:21 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:52:21 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/
+03/15/2022 04:52:22 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:52:21.925725 retrieve_result >> time: 0:00:00.981928, http status: 500
+03/15/2022 04:52:22 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 982.84ms
+03/15/2022 04:52:37 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:52:37 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:52:37 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:52:37 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:52:40 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:52:40 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:52:40 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 04:52:40 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:52:42 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:52:40.188451 retrieve_result >> time: 0:00:02.123582, http status: 200
+03/15/2022 04:52:42 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 2124.86ms
+03/15/2022 04:53:06 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:53:06 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:53:06 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '89ba545bb5aa8dbac06dce3a3c005c99'}
+03/15/2022 04:53:06 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:53:07 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:53:06.566143 retrieve_result >> time: 0:00:01.373294, http status: 401
+03/15/2022 04:53:07 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 13, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 04:53:07 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99 (127.0.0.1) 1374.99ms
+03/15/2022 04:59:02 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 04:59:02 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 04:59:02 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 04:59:02 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 04:59:04 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:59:04 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:59:04 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '89ba545bb5aa8dbac06dce3a3c005c99'}
+03/15/2022 04:59:04 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 04:59:06 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 16:59:04.959937 retrieve_result >> time: 0:00:01.573703, http status: 401
+03/15/2022 04:59:06 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 13, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 21, in handle_response
+    response, new_code = self._http_responses[str(status_code)](raw_response, status_code)
+KeyError: '401'
+03/15/2022 04:59:06 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99 (127.0.0.1) 1575.22ms
+03/15/2022 05:02:16 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:02:16 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:02:16 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '89ba545bb5aa8dbac06dce3a3c005c99'}
+03/15/2022 05:02:16 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:02:18 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 17:02:16.830394 retrieve_result >> time: 0:00:01.278580, http status: 401
+03/15/2022 05:02:18 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 13, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 21, in handle_response
+    response, new_code = self._http_responses[str(status_code)](raw_response, status_code)
+KeyError: '401'
+03/15/2022 05:02:18 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=89ba545bb5aa8dbac06dce3a3c005c99 (127.0.0.1) 1279.63ms
+03/15/2022 05:02:45 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:02:45 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:02:45 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 05:02:45 PM - INFO - metadefender_api.py > _request_status:115 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:02:47 PM - INFO - metadefender_api.py > _request_status:133 - 2022-03-15 17:02:45.172115 retrieve_result >> time: 0:00:02.019013, http status: 200
+03/15/2022 05:02:47 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 2020.29ms
+03/15/2022 05:04:24 PM - INFO - retrieve_sanitized.py > get:8 - GET /api/v1/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:04:24 PM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:36 - MetaDefender > Retrieve Sanitized file for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:04:24 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (sanitized_file) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 05:04:24 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/retrieve_sanitized.py", line 10, in get
+    file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_cloud_api.py", line 37, in retrieve_sanitized_file
+    response, http_status = await self._request_as_json_status("sanitized_file", fields={"data_id": data_id})
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 91, in _request_as_json_status
+    response, http_status = await self._request_status(endpoint_id, fields, headers, body)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 108, in _request_status
+    if fields["apikey"] is not None:
+KeyError: 'apikey'
+03/15/2022 05:04:24 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 1.27ms
+03/15/2022 05:07:14 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 05:07:14 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 05:07:14 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 05:07:14 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 05:07:19 PM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/15/2022 05:07:19 PM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.80ms
+03/15/2022 05:07:50 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 05:07:50 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 05:07:50 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 05:07:50 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 05:07:52 PM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/15/2022 05:07:52 PM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.63ms
+03/15/2022 05:09:54 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 05:09:54 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 05:09:54 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 05:09:54 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 05:10:26 PM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/15/2022 05:10:26 PM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.64ms
+03/15/2022 05:16:46 PM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/15/2022 05:16:46 PM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.47ms
+03/15/2022 05:17:08 PM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/15/2022 05:17:08 PM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.48ms
+03/15/2022 05:17:23 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 05:17:23 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 05:17:23 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 05:17:23 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 05:17:27 PM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/15/2022 05:17:27 PM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.65ms
+03/15/2022 05:18:10 PM - INFO - retrieve_sanitized.py > get:10 - GET /api/v1/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:18:10 PM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:36 - MetaDefender > Retrieve Sanitized file for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:18:10 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (sanitized_file) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 05:18:10 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/converted/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:18:10 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-15 17:18:10.070896 sanitized_file >> time: 0:00:00.248792, http status: 200
+03/15/2022 05:18:10 PM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:41 - Download Sanitized file from https://s3.eu-central-1.amazonaws.com/sanitized.files.metadefender.com-eucentral1/dt%3D220315/vvENmvrAM.sanitized.encrypted?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIQ4OFCFFFT4QMUYA%2F20220315%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20220315T151810Z&X-Amz-Expires=604800&X-Amz-Signature=4dc6a62b7a88cd55aeb4175206e017e0cd445756e6fda9afb0a1023f16b39916&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dtest.odt
+03/15/2022 05:18:10 PM - INFO - base_handler.py > stream_response:24 - 200 response: sanitized file (binary data)
+03/15/2022 05:18:10 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 445.26ms
+03/15/2022 05:22:41 PM - INFO - check_existing.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:22:41 PM - INFO - metadefender_api.py > hash_lookup:83 - MetaDefender > Hash Lookup for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:22:41 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (hash_lookup) for {'hash': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 05:22:41 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/check_existing.py", line 11, in get
+    json_response, http_status = await self.metaDefenderAPI.hash_lookup(sha256)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 84, in hash_lookup
+    return await self._request_as_json_status("hash_lookup", fields={"hash": sha256})
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 91, in _request_as_json_status
+    response, http_status = await self._request_status(endpoint_id, fields, headers, body)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 108, in _request_status
+    if fields["apikey"] is not None:
+KeyError: 'apikey'
+03/15/2022 05:22:41 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 1.25ms
+03/15/2022 05:22:56 PM - INFO - check_existing.py > get:9 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:22:56 PM - INFO - metadefender_api.py > hash_lookup:83 - MetaDefender > Hash Lookup for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:22:56 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (hash_lookup) for {'hash': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/15/2022 05:22:56 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/check_existing.py", line 11, in get
+    json_response, http_status = await self.metaDefenderAPI.hash_lookup(sha256)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 84, in hash_lookup
+    return await self._request_as_json_status("hash_lookup", fields={"hash": sha256})
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 91, in _request_as_json_status
+    response, http_status = await self._request_status(endpoint_id, fields, headers, body)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/metadefender/metadefender_api.py", line 108, in _request_status
+    if fields["apikey"] is not None:
+KeyError: 'apikey'
+03/15/2022 05:22:56 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 0.74ms
+03/15/2022 05:24:18 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/15/2022 05:24:18 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/15/2022 05:24:18 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/15/2022 05:24:18 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/15/2022 05:24:22 PM - INFO - check_existing.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:24:22 PM - INFO - metadefender_api.py > hash_lookup:83 - MetaDefender > Hash Lookup for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:24:22 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (hash_lookup) for {'hash': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/15/2022 05:24:22 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/hash/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/15/2022 05:24:23 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-15 17:24:22.903127 hash_lookup >> time: 0:00:00.315485, http status: 400
+03/15/2022 05:24:23 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/check_existing.py", line 13, in get
+    json_response, http_status = CheckExisting().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/15/2022 05:24:23 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/check?sha256=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 317.12ms
+03/16/2022 10:31:39 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:31:39 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:31:39 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:31:39 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:31:56 AM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:31:56 AM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:31:56 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': ''}
+03/16/2022 10:31:56 AM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:31:56 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 10:31:56.651042 retrieve_result >> time: 0:00:00.317803, http status: 401
+03/16/2022 10:31:56 AM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 10:31:56 AM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey (127.0.0.1) 320.65ms
+03/16/2022 10:32:40 AM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:32:40 AM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:32:40 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': ''}
+03/16/2022 10:32:40 AM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:32:40 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 10:32:40.044761 retrieve_result >> time: 0:00:00.266035, http status: 401
+03/16/2022 10:32:40 AM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 10:32:40 AM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey (127.0.0.1) 267.23ms
+03/16/2022 10:32:54 AM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:32:54 AM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:32:54 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc'}
+03/16/2022 10:32:54 AM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:32:54 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 10:32:54.300677 retrieve_result >> time: 0:00:00.264606, http status: 401
+03/16/2022 10:32:54 AM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 10:32:54 AM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 265.61ms
+03/16/2022 10:33:26 AM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:33:26 AM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:33:26 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 10:33:26 AM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:33:27 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 10:33:26.795306 retrieve_result >> time: 0:00:00.860967, http status: 200
+03/16/2022 10:33:27 AM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/16/2022 10:33:27 AM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 862.08ms
+03/16/2022 10:37:20 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:37:20 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.47ms
+03/16/2022 10:37:53 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:37:53 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.62ms
+03/16/2022 10:38:06 AM - INFO - retrieve_sanitized.py > get:10 - GET /api/v1/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:38:06 AM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:36 - MetaDefender > Retrieve Sanitized file for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:38:06 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (sanitized_file) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 10:38:06 AM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/converted/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:38:06 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 10:38:06.364677 sanitized_file >> time: 0:00:00.439312, http status: 200
+03/16/2022 10:38:06 AM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:41 - Download Sanitized file from https://s3.eu-central-1.amazonaws.com/sanitized.files.metadefender.com-eucentral1/dt%3D220315/vvENmvrAM.sanitized.encrypted?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIQ4OFCFFFT4QMUYA%2F20220316%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20220316T083806Z&X-Amz-Expires=604800&X-Amz-Signature=69e988cf1c23a0cb87ce2a48738dce9eeaeea0d219261ba8d885becbe41476de&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dtest.odt
+03/16/2022 10:38:07 AM - INFO - base_handler.py > stream_response:24 - 200 response: sanitized file (binary data)
+03/16/2022 10:38:07 AM - INFO - web.py > log_request:2239 - 200 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc&apikey=3d774dcf261286a3d7386ccddd83b2c8 (127.0.0.1) 652.24ms
+03/16/2022 10:38:10 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:38:10 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.61ms
+03/16/2022 10:38:36 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:38:36 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.50ms
+03/16/2022 10:39:01 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:39:01 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:39:01 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:39:01 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:39:04 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:39:04 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.68ms
+03/16/2022 10:39:18 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:39:18 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:39:18 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:39:18 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:39:21 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:39:21 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.65ms
+03/16/2022 10:42:49 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:42:49 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:42:49 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:42:49 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:42:53 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:42:53 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.65ms
+03/16/2022 10:43:02 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:43:02 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:43:02 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:43:02 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:43:04 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:43:04 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.78ms
+03/16/2022 10:44:50 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:44:50 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:44:50 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:44:50 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:44:54 AM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/retrieve_sanitized.py", line 8, in get
+    print(inspect.self,'uuid')
+AttributeError: module 'inspect' has no attribute 'self'
+03/16/2022 10:44:54 AM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 1.29ms
+03/16/2022 10:45:57 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:45:57 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:45:57 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:45:57 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:45:59 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:45:59 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.88ms
+03/16/2022 10:46:09 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:46:09 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:46:09 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:46:09 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:46:12 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:46:12 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.71ms
+03/16/2022 10:48:38 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:48:38 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:48:38 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:48:38 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:48:44 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:48:44 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.72ms
+03/16/2022 10:49:52 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:49:52 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:49:52 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:49:52 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:50:01 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:50:01 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 1.03ms
+03/16/2022 10:51:54 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:51:54 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:51:54 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:51:54 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:51:58 AM - INFO - retrieve_sanitized.py > get:11 - GET /api/v1/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:51:58 AM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:36 - MetaDefender > Retrieve Sanitized file for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:51:58 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (sanitized_file) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 10:51:58 AM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/converted/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:51:59 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 10:51:58.628444 sanitized_file >> time: 0:00:00.518551, http status: 200
+03/16/2022 10:51:59 AM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:41 - Download Sanitized file from https://s3.eu-central-1.amazonaws.com/sanitized.files.metadefender.com-eucentral1/dt%3D220315/vvENmvrAM.sanitized.encrypted?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIQ4OFCFFFT4QMUYA%2F20220316%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20220316T085159Z&X-Amz-Expires=604800&X-Amz-Signature=56050dbb59505dc70c21a4d733a87107fb792a784d8ab230723ab9704bf2cc3e&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dtest.odt
+03/16/2022 10:51:59 AM - INFO - base_handler.py > stream_response:24 - 200 response: sanitized file (binary data)
+03/16/2022 10:51:59 AM - INFO - web.py > log_request:2239 - 200 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 716.01ms
+03/16/2022 10:58:19 AM - WARNING - web.py > log_exception:1787 - 400 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1): Missing argument apikey
+03/16/2022 10:58:19 AM - WARNING - web.py > log_request:2239 - 400 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 0.68ms
+03/16/2022 10:59:52 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 10:59:52 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 10:59:52 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 10:59:52 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 10:59:55 AM - INFO - analysis_result.py > get:11 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:59:55 AM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:59:55 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 10:59:55 AM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 10:59:56 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 10:59:55.312162 retrieve_result >> time: 0:00:00.933883, http status: 200
+03/16/2022 10:59:56 AM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/16/2022 10:59:56 AM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 936.45ms
+03/16/2022 11:11:29 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 11:11:29 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 11:11:29 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 11:11:29 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 11:11:50 AM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 11:11:50 AM - ERROR - file_submit.py > post:15 - No file uploaded > is call originating from Menlo?
+03/16/2022 11:11:50 AM - WARNING - web.py > log_exception:1787 - 400 POST /api/v1/submit (127.0.0.1): No file uploaded
+03/16/2022 11:11:50 AM - WARNING - web.py > log_request:2239 - 400 POST /api/v1/submit (127.0.0.1) 1.25ms
+03/16/2022 11:22:53 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 11:22:53 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 11:22:53 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 11:22:53 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 11:22:58 AM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 11:22:58 AM - ERROR - file_submit.py > post:15 - No file uploaded > is call originating from Menlo?
+03/16/2022 11:22:58 AM - WARNING - web.py > log_exception:1787 - 400 POST /api/v1/submit (127.0.0.1): No file uploaded
+03/16/2022 11:22:58 AM - WARNING - web.py > log_request:2239 - 400 POST /api/v1/submit (127.0.0.1) 0.86ms
+03/16/2022 11:23:21 AM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 11:23:21 AM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 11:23:21 AM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 11:23:21 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 11:23:21 AM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 11:23:21 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 11:23:21.271838 submit_file >> time: 0:00:00.171719, http status: 401
+03/16/2022 11:23:21 AM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 11:23:21 AM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 173.16ms
+03/16/2022 11:23:37 AM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 11:23:37 AM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 11:23:37 AM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 11:23:37 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 11:23:37 AM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 11:23:38 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 11:23:37.940381 submit_file >> time: 0:00:00.123306, http status: 401
+03/16/2022 11:23:38 AM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 11:23:38 AM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 124.80ms
+03/16/2022 11:34:48 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 11:34:48 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 11:34:48 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 11:34:48 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 11:34:53 AM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 11:34:53 AM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 11:34:53 AM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 11:34:53 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 11:34:53 AM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 11:34:53 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 11:34:53.079814 submit_file >> time: 0:00:00.163656, http status: 401
+03/16/2022 11:34:53 AM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 11:34:53 AM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 166.03ms
+03/16/2022 11:35:58 AM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 11:35:58 AM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 11:35:58 AM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 11:35:58 AM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 11:36:00 AM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 11:36:00 AM - INFO - file_submit.py > post:26 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 11:36:00 AM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 11:36:00 AM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 11:36:00 AM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 11:36:01 AM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 11:36:00.877990 submit_file >> time: 0:00:00.169080, http status: 401
+03/16/2022 11:36:01 AM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 11:36:01 AM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 170.72ms
+03/16/2022 12:03:50 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:03:50 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:03:50 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '89ba545bb5aa8dbac06dce3a3c005c99'}
+03/16/2022 12:03:50 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:03:50 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:03:50.195373 retrieve_result >> time: 0:00:00.503534, http status: 401
+03/16/2022 12:03:50 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 12:03:50 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 507.52ms
+03/16/2022 12:03:54 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:03:54 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:03:54 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:03:54 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:03:55 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:03:54.254548 retrieve_result >> time: 0:00:01.156414, http status: 200
+03/16/2022 12:03:55 PM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/16/2022 12:03:55 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 1157.69ms
+03/16/2022 12:07:23 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:07:23 PM - INFO - file_submit.py > post:26 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:07:23 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:07:23 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 12:07:23 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:07:23 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:07:23.565469 submit_file >> time: 0:00:00.167275, http status: 401
+03/16/2022 12:07:23 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 12:07:23 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 168.62ms
+03/16/2022 12:14:14 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 12:14:14 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 12:14:14 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 12:14:14 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 12:14:16 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:14:16 PM - INFO - file_submit.py > post:26 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:14:16 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:14:16 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 12:14:16 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:14:16 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:14:16.401158 submit_file >> time: 0:00:00.130400, http status: 401
+03/16/2022 12:14:16 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 12:14:16 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 131.68ms
+03/16/2022 12:18:23 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:18:23 PM - INFO - file_submit.py > post:26 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:18:23 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:18:23 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 12:18:23 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:18:23 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:18:23.250478 submit_file >> time: 0:00:00.165279, http status: 401
+03/16/2022 12:18:23 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 12:18:23 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 166.41ms
+03/16/2022 12:18:26 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:18:26 PM - INFO - file_submit.py > post:26 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:18:26 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:18:26 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 12:18:26 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:18:26 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:18:26.660992 submit_file >> time: 0:00:00.147090, http status: 401
+03/16/2022 12:18:26 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 12:18:26 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 148.41ms
+03/16/2022 12:20:25 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:25 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:25 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': None}
+03/16/2022 12:20:25 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:25 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:20:25.354688 retrieve_result >> time: 0:00:00.176625, http status: 401
+03/16/2022 12:20:25 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 12:20:25 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 180.63ms
+03/16/2022 12:20:28 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:28 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:28 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:20:28 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:29 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:20:28.895329 retrieve_result >> time: 0:00:00.953701, http status: 200
+03/16/2022 12:20:29 PM - INFO - base_handler.py > json_response:18 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/16/2022 12:20:29 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 956.34ms
+03/16/2022 12:20:41 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:41 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:41 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '89ba545bb5aa8dbac06dce3a3c005c99'}
+03/16/2022 12:20:41 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:42 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:20:41.631264 retrieve_result >> time: 0:00:00.705164, http status: 401
+03/16/2022 12:20:42 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 12:20:42 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 706.24ms
+03/16/2022 12:20:45 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:45 PM - INFO - metadefender_api.py > check_result:79 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:45 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': None}
+03/16/2022 12:20:45 PM - INFO - metadefender_api.py > _request_status:114 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:20:45 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:20:45.131760 retrieve_result >> time: 0:00:00.114716, http status: 401
+03/16/2022 12:20:45 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 12:20:45 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 115.82ms
+03/16/2022 12:22:35 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 12:22:35 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 12:22:35 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 12:22:35 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 12:22:39 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:22:39 PM - INFO - file_submit.py > post:26 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:22:39 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:22:39 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': None}
+03/16/2022 12:22:39 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:22:39 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:22:39.350960 submit_file >> time: 0:00:00.169986, http status: 401
+03/16/2022 12:22:39 PM - INFO - base_handler.py > json_response:18 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 12:22:39 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 171.39ms
+03/16/2022 12:23:33 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:23:33 PM - INFO - file_submit.py > post:26 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:23:33 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:23:33 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:23:33 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:23:34 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:23:33.798874 submit_file >> time: 0:00:00.966751, http status: 200
+03/16/2022 12:23:34 PM - INFO - base_handler.py > json_response:18 - 200 response: {'uuid': 'bzIyMDMxNm9UTWQ0Ni1XOE9ETDNSWl8xZHU', 'result': 'accepted'}
+03/16/2022 12:23:34 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 968.13ms
+03/16/2022 12:23:45 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 12:23:45 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 12:23:45 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 12:23:45 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 12:24:21 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 12:24:21 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 12:24:21 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 12:24:21 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 12:24:23 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:24:23 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:24:23 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:24:23 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:24:23 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:24:24 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:24:23.863182 submit_file >> time: 0:00:00.693651, http status: 200
+03/16/2022 12:24:24 PM - INFO - base_handler.py > json_response:17 - 200 response: {'uuid': 'bzIyMDMxNk1KbHJGNGItSjU2ekpUaHExa2w', 'result': 'accepted'}
+03/16/2022 12:24:24 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 694.85ms
+03/16/2022 12:24:40 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 12:24:40 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 12:24:40 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 12:24:40 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 12:24:43 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:24:43 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:24:43 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:24:43 PM - INFO - metadefender_api.py > _request_status:99 - MetaDefender Request > (submit_file) for {'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:24:43 PM - INFO - metadefender_api.py > _request_status:114 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:24:43 PM - INFO - metadefender_api.py > _request_status:132 - 2022-03-16 12:24:43.078354 submit_file >> time: 0:00:00.583506, http status: 200
+03/16/2022 12:24:43 PM - INFO - base_handler.py > json_response:17 - 200 response: {'uuid': 'bzIyMDMxNnFrS2pvcmlyWDZLSXVFTGFDYUU', 'result': 'accepted'}
+03/16/2022 12:24:43 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 585.85ms
+03/16/2022 12:25:25 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 12:25:25 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 12:25:25 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 12:25:25 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 12:25:28 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:25:28 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:25:28 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:25:28 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (submit_file) for {'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:25:28 PM - INFO - metadefender_api.py > _request_status:113 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:25:29 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:25:28.325351 submit_file >> time: 0:00:00.742763, http status: 200
+03/16/2022 12:25:29 PM - INFO - base_handler.py > json_response:17 - 200 response: {'uuid': 'bzIyMDMxNmlHSlhKQkY5elB1YXN0WGVCVHg', 'result': 'accepted'}
+03/16/2022 12:25:29 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 744.97ms
+03/16/2022 12:25:34 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:25:34 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:25:34 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:25:34 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (submit_file) for {'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:25:34 PM - INFO - metadefender_api.py > _request_status:113 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:25:34 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:25:34.202598 submit_file >> time: 0:00:00.703330, http status: 200
+03/16/2022 12:25:34 PM - INFO - base_handler.py > json_response:17 - 200 response: {'uuid': 'bzIyMDMxNkpJLWE5TFlSZUlOSDVNR0pzRV8', 'result': 'accepted'}
+03/16/2022 12:25:34 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 705.32ms
+03/16/2022 12:25:46 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:25:46 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:25:46 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:25:46 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (submit_file) for {'apikey': '89ba545bb5aa8dbac06dce3a3c005c99'}
+03/16/2022 12:25:46 PM - INFO - metadefender_api.py > _request_status:113 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:25:46 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:25:46.454354 submit_file >> time: 0:00:00.531626, http status: 401
+03/16/2022 12:25:46 PM - INFO - base_handler.py > json_response:17 - 401 response: {'error': 'Unauthorized'}
+03/16/2022 12:25:46 PM - WARNING - web.py > log_request:2239 - 401 POST /api/v1/submit (127.0.0.1) 532.74ms
+03/16/2022 12:25:50 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:25:50 PM - INFO - file_submit.py > post:25 - Submit "test.odt" "application/vnd.oasis.opendocument.text" 8374 bytes
+03/16/2022 12:25:50 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: test.odt 
+03/16/2022 12:25:50 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (submit_file) for {'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:25:50 PM - INFO - metadefender_api.py > _request_status:113 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:25:50 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:25:50.122720 submit_file >> time: 0:00:00.653045, http status: 200
+03/16/2022 12:25:50 PM - INFO - base_handler.py > json_response:17 - 200 response: {'uuid': 'bzIyMDMxNlVwbGl6dEFGS3dMcHpUY0RQTGU', 'result': 'accepted'}
+03/16/2022 12:25:50 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 654.97ms
+03/16/2022 12:30:06 PM - WARNING - file_metadata.py > post:6 - POST /api/v1/submit > Not implemented
+03/16/2022 12:30:06 PM - INFO - base_handler.py > json_response:17 - 400 response: {'error': 'Not implemented'}
+03/16/2022 12:30:06 PM - WARNING - web.py > log_request:2239 - 400 POST /api/v1/inbound (127.0.0.1) 67.64ms
+03/16/2022 12:39:07 PM - INFO - __main__.py > initial_config:54 - Set API configuration
+03/16/2022 12:39:07 PM - INFO - __main__.py > initial_config:78 - Set Server configuration
+03/16/2022 12:39:07 PM - INFO - __main__.py > make_app:89 - Define endpoints handlers
+03/16/2022 12:39:07 PM - INFO - __main__.py > main:112 - Start the app: 0.0.0.0:3000
+03/16/2022 12:39:12 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:12 PM - INFO - metadefender_api.py > check_result:78 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:12 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '89ba545bb5aa8dbac06dce3a3c005c99'}
+03/16/2022 12:39:12 PM - INFO - metadefender_api.py > _request_status:113 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:12 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:39:12.278316 retrieve_result >> time: 0:00:00.556653, http status: 401
+03/16/2022 12:39:12 PM - ERROR - web.py > log_exception:1789 - Uncaught exception GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1)
+HTTPServerRequest(protocol='http', host='localhost:3000', method='GET', uri='/api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', version='HTTP/1.1', remote_ip='127.0.0.1')
+Traceback (most recent call last):
+  File "/home/danciobanu/.local/lib/python3.8/site-packages/tornado/web.py", line 1704, in _execute
+    result = await result
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/handlers/analysis_result.py", line 12, in get
+    json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+  File "/home/danciobanu/repos/mdcl-menlo-middleware/metadefender_menlo/api/responses/base_response.py", line 19, in handle_response
+    raise Exception('Not Allowed', 'No such response code allowed')
+Exception: ('Not Allowed', 'No such response code allowed')
+03/16/2022 12:39:12 PM - ERROR - web.py > log_request:2239 - 500 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 558.25ms
+03/16/2022 12:39:19 PM - INFO - analysis_result.py > get:10 - GET /api/v1/result/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:19 PM - INFO - metadefender_api.py > check_result:78 - MetaDefender > Check result for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:19 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (retrieve_result) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:39:19 PM - INFO - metadefender_api.py > _request_status:113 - Request [GET]: https://api.metadefender.com/v4/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:20 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:39:19.425929 retrieve_result >> time: 0:00:00.952755, http status: 200
+03/16/2022 12:39:20 PM - INFO - base_handler.py > json_response:17 - 200 response: {'result': 'completed', 'outcome': 'clean', 'report_url': 'https://metadefender.opswat.com/results/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc/regular/overview', 'filename': 'test.odt', 'modifications': ['Action: sanitized - Count: 1 - Object type: image']}
+03/16/2022 12:39:20 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/result?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 954.58ms
+03/16/2022 12:39:26 PM - INFO - retrieve_sanitized.py > get:9 - GET /api/v1/file/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:26 PM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:36 - MetaDefender > Retrieve Sanitized file for bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:26 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (sanitized_file) for {'data_id': 'bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc', 'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:39:26 PM - INFO - metadefender_api.py > _request_status:113 - Request [GET]: https://api.metadefender.com/v4/file/converted/bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc
+03/16/2022 12:39:27 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:39:26.831563 sanitized_file >> time: 0:00:00.356188, http status: 200
+03/16/2022 12:39:27 PM - INFO - metadefender_cloud_api.py > retrieve_sanitized_file:41 - Download Sanitized file from https://s3.eu-central-1.amazonaws.com/sanitized.files.metadefender.com-eucentral1/dt%3D220315/vvENmvrAM.sanitized.encrypted?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIQ4OFCFFFT4QMUYA%2F20220316%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20220316T103927Z&X-Amz-Expires=604800&X-Amz-Signature=7e1d38707245cd69a39fabae5635bec27011411eef730a1eb189adeca41fdaa4&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Dtest.odt
+03/16/2022 12:39:27 PM - INFO - base_handler.py > stream_response:23 - 200 response: sanitized file (binary data)
+03/16/2022 12:39:27 PM - INFO - web.py > log_request:2239 - 200 GET /api/v1/file?uuid=bzIyMDMxNXZ2RU5tdnJBTWdWWXZNcEtLSHc (127.0.0.1) 559.43ms
+03/16/2022 12:47:19 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:47:19 PM - ERROR - file_submit.py > post:15 - No file uploaded > is call originating from Menlo?
+03/16/2022 12:47:19 PM - WARNING - web.py > log_exception:1787 - 400 POST /api/v1/submit (127.0.0.1): No file uploaded
+03/16/2022 12:47:19 PM - WARNING - web.py > log_request:2239 - 400 POST /api/v1/submit (127.0.0.1) 0.77ms
+03/16/2022 12:47:28 PM - INFO - file_submit.py > post:11 - POST /api/v1/file > Parse multipart
+03/16/2022 12:47:28 PM - INFO - file_submit.py > post:25 - Submit "app-debug.apk" "application/vnd.android.package-archive" 7574497 bytes
+03/16/2022 12:47:28 PM - INFO - metadefender_api.py > submit_file:59 - Submit file > filename: app-debug.apk 
+03/16/2022 12:47:28 PM - INFO - metadefender_api.py > _request_status:98 - MetaDefender Request > (submit_file) for {'apikey': '3d774dcf261286a3d7386ccddd83b2c8'}
+03/16/2022 12:47:28 PM - INFO - metadefender_api.py > _request_status:113 - Request [POST]: https://api.metadefender.com/v4/file
+03/16/2022 12:47:30 PM - INFO - metadefender_api.py > _request_status:130 - 2022-03-16 12:47:28.737716 submit_file >> time: 0:00:01.634307, http status: 200
+03/16/2022 12:47:30 PM - INFO - base_handler.py > json_response:17 - 200 response: {'uuid': 'bzIyMDMxNkNnNjhfdGRDZjRTTGgycXYyazlx', 'result': 'accepted'}
+03/16/2022 12:47:30 PM - INFO - web.py > log_request:2239 - 200 POST /api/v1/submit (127.0.0.1) 1671.14ms
