@@ -30,8 +30,7 @@ class MetaDefenderAPI(ABC):
         "hash_lookup": {
             "type": "GET", 
             "endpoint": "/hash/{hash}"
-        },
-        
+        }
     }
     @staticmethod
     def config(url, apikey, metadefender_cls):

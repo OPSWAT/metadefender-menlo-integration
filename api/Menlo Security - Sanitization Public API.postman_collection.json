@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b2b9665d-d6f5-4607-9c0f-051a8d1304f2",
+		"_postman_id": "631f3f2a-1b9d-46f4-9777-17ed912f648e",
 		"name": "Menlo Security - Sanitization Public API",
 		"description": "This document outlines the required processing flow and API for a service implementing the Menlo REST API. This configurable interface will allow the MSIP to provide a file to an externally controlled API implementing the following defined interface. The primary purpose of this integration is to submit a file to the external API for additional file processing. The external API can then process the file and make the outcome available to the MSIP. Along with sending the file, MSIP will also be able to send specific metadata that can be used for auditing or as part of the analysis process",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -13,13 +13,21 @@
 					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "{{baseUrl}}/check?sha256=4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31",
+					"raw": "{{host}}/api/v1/check?sha256=4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31",
 					"host": [
-						"{{baseUrl}}"
+						"{{host}}"
 					],
 					"path": [
+						"api",
+						"v1",
 						"check"
 					],
 					"query": [
@@ -27,6 +35,11 @@
 							"key": "sha256",
 							"value": "4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31",
 							"description": "(Required) The SHA256 for the file"
+						},
+						{
+							"key": "apikey",
+							"value": "",
+							"disabled": true
 						}
 					]
 				},
@@ -244,6 +257,11 @@
 					{
 						"key": "Content-Type",
 						"value": "multipart/form-data"
+					},
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -287,11 +305,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{baseUrl}}/inbound",
+					"raw": "{{host}}/api/v1/inbound",
 					"host": [
-						"{{baseUrl}}"
+						"{{host}}"
 					],
 					"path": [
+						"api",
+						"v1",
 						"inbound"
 					]
 				},
@@ -309,58 +329,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
+									"description": "The user ID of the user requesting the file"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
+									"description": "The URI of the original request for the file"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
+									"description": "The detected IP of the client requesting the file."
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The sha256 of the requested file"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The filename of the requested file"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
+									"description": "The file type as determined by MSIP"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
+									"description": "The file size"
 								}
 							]
 						},
@@ -397,58 +396,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
+									"description": "The user ID of the user requesting the file"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
+									"description": "The URI of the original request for the file"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
+									"description": "The detected IP of the client requesting the file."
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The sha256 of the requested file"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The filename of the requested file"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
+									"description": "The file type as determined by MSIP"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
+									"description": "The file size"
 								}
 							]
 						},
@@ -485,58 +463,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
+									"description": "The user ID of the user requesting the file"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
+									"description": "The URI of the original request for the file"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
+									"description": "The detected IP of the client requesting the file."
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The sha256 of the requested file"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The filename of the requested file"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
+									"description": "The file type as determined by MSIP"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
+									"description": "The file size"
 								}
 							]
 						},
@@ -573,58 +530,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
+									"description": "The user ID of the user requesting the file"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
+									"description": "The URI of the original request for the file"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
+									"description": "The detected IP of the client requesting the file."
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The sha256 of the requested file"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The filename of the requested file"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
+									"description": "The file type as determined by MSIP"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
+									"description": "The file size"
 								}
 							]
 						},
@@ -661,58 +597,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
+									"description": "The user ID of the user requesting the file"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
+									"description": "The URI of the original request for the file"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
+									"description": "The detected IP of the client requesting the file."
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The sha256 of the requested file"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
+									"description": "The filename of the requested file"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
+									"description": "The file type as determined by MSIP"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
+									"description": "The file size"
 								}
 							]
 						},
@@ -746,7 +661,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "bd60d206-df10-405f-a87e-259dd1de63dc",
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"pm.environment.set(\"uuid\", jsonData[\"uuid\"]);",
@@ -766,6 +680,11 @@
 					{
 						"key": "Content-Type",
 						"value": "multipart/form-data"
+					},
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -809,14 +728,14 @@
 						{
 							"key": "report",
 							"type": "file",
-							"src": "/Users/george-work/Downloads/demo.pdf"
+							"src": "/home/danciobanu/Documents/test.odt"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/submit",
+					"raw": "{{host}}/api/v1/submit",
 					"host": [
-						"{{baseUrl}}"
+						"{{host}}"
 					],
 					"path": [
 						"api",
@@ -838,58 +757,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								}
 							]
 						},
@@ -926,58 +824,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								}
 							]
 						},
@@ -1014,58 +891,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								}
 							]
 						},
@@ -1102,58 +958,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								}
 							]
 						},
@@ -1190,58 +1025,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								}
 							]
 						},
@@ -1278,58 +1092,37 @@
 								{
 									"key": "userid",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "srcuri",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "clientip",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "sha256",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filename",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "file_type",
 									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								},
 								{
 									"key": "filesize",
 									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
+									"description": "undefined"
 								}
 							]
 						},
@@ -1363,7 +1156,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "878e6021-4720-439a-96c5-e5ed51b82902",
 						"exec": [
 							"var jsonData = pm.response.json();",
 							"var status = jsonData[\"result\"]",
@@ -1385,11 +1177,17 @@
 					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a",
+					"raw": "{{host}}/api/v1/result?uuid=bzIyMDMxN1lfb29xX3Z1ZUtWTnl4RXg0UjJV",
 					"host": [
-						"{{baseUrl}}"
+						"{{host}}"
 					],
 					"path": [
 						"api",
@@ -1399,7 +1197,7 @@
 					"query": [
 						{
 							"key": "uuid",
-							"value": "b160e42680994907ba19bf6af5145d6a",
+							"value": "bzIyMDMxN1lfb29xX3Z1ZUtWTnl4RXg0UjJV",
 							"description": "(Required) unique identifier (operation id)"
 						}
 					]
@@ -1614,19 +1412,27 @@
 					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "{{baseUrl}}/file?uuid=bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k",
+					"raw": "{{host}}/api/v1/file?uuid=bzIyMDMxN1lfb29xX3Z1ZUtWTnl4RXg0UjJV",
 					"host": [
-						"{{baseUrl}}"
+						"{{host}}"
 					],
 					"path": [
+						"api",
+						"v1",
 						"file"
 					],
 					"query": [
 						{
 							"key": "uuid",
-							"value": "bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k",
+							"value": "bzIyMDMxN1lfb29xX3Z1ZUtWTnl4RXg0UjJV",
 							"description": "(Required) unique identifier (operation id)"
 						}
 					]
@@ -1806,7 +1612,6 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "463f7efb-c6a8-4412-a51a-965f922138f0",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1816,7 +1621,6 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "81ab6c03-af3b-4ee5-bc05-dcc67e26922e",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1826,11 +1630,9 @@
 	],
 	"variable": [
 		{
-			"id": "ed801e21-05d2-4b09-9d01-84d733b8fe4a",
 			"key": "baseUrl",
 			"value": "http://localhost/api/v1",
 			"type": "string"
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
