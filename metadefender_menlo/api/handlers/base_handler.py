@@ -8,12 +8,6 @@ class BaseHandler(RequestHandler):
     def initialize(self):
         self.metaDefenderAPI = MetaDefenderAPI.get_instance()
 
-    # def prepare(self):
-    #     authorization_token = self.request.headers.get('Authorization')
-        
-    #     if authorization_token:
-    #         self.metaDefenderAPI.apikey = authorization_token
-
     def json_response(self, data, status_code=200):
         logging.info("{0} response: {1}".format(status_code, data))
         self.set_status(status_code)
