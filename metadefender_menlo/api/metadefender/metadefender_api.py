@@ -1,9 +1,7 @@
-# import requests
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPClientError
 from abc import ABC, abstractmethod
 import datetime
-import os
 import json
 import logging
 
@@ -32,6 +30,7 @@ class MetaDefenderAPI(ABC):
             "endpoint": "/hash/{hash}"
         }
     }
+
     @staticmethod
     def config(url, apikey, metadefender_cls):
         MetaDefenderAPI.server_url = url
@@ -55,36 +54,36 @@ class MetaDefenderAPI(ABC):
     def check_analysis_complete(self, json_response):
         pass
     
-    async def submit_file(self, filename, fp, analysis_callback_url=None, metadata=None):  
+    async def submit_file(self, filename, fp, metadata=None, apikey=""):  
         logging.info("Submit file > filename: {0} ".format(filename))   
     
         headers = self._get_submit_file_headers(filename, metadata)
-        
+        headers = {**headers, **{'apikey': apikey}}
         json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
 
         return (json_response, http_status)
 
-    async def retrieve_result(self, data_id):
+    async def retrieve_result(self, data_id, apikey):
         logging.info("MetaDefender > Retrieve result for {0}".format(data_id))
         
         analysis_completed = False
         
         while (not analysis_completed):            
-            json_response, http_status = await self.check_result(data_id)
+            json_response, http_status = await self.check_result(data_id, apikey)
             analysis_completed = self._check_analysis_complete(json_response)            
         
         return (json_response, http_status)
 
-    async def check_result(self, data_id):
+    async def check_result(self, data_id, apikey):
         logging.info("MetaDefender > Check result for {0}".format(data_id))        
-        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id})
+        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey})
     
-    async def hash_lookup(self, sha256):
+    async def hash_lookup(self, sha256, apikey):
         logging.info("MetaDefender > Hash Lookup for {0}".format(sha256))    
-        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256})
+        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey})
     
     @abstractmethod
-    async def retrieve_sanitized_file(self, data_id):        
+    async def retrieve_sanitized_file(self, data_id,apikey):        
         pass
 
     async def _request_as_json_status(self, endpoint_id, fields=None, headers=None, body=None):
@@ -103,14 +102,12 @@ class MetaDefenderAPI(ABC):
         if fields is not None:
             endpoint_path = endpoint_details["endpoint"].format(**fields)
         metadefender_url = self.server_url + endpoint_path
-        request_method = endpoint_details["type"]
-        
-        if self.apikey is not None: 
-            if not headers:
-                headers = {}
-            logging.debug("Add apikey: {0}".format(self.apikey))
-            headers["apikey"] = self.apikey
 
+        request_method = endpoint_details["type"]
+
+        if headers and self.apikey and headers["apikey"] is None: 
+            headers["apikey"] = self.apikey
+        
         before_submission = datetime.datetime.now()        
         logging.info("Request [{0}]: {1}".format(request_method, metadefender_url))
 
