@@ -4,6 +4,8 @@ import asyncio
 import sys
 import logging
 from logging.handlers import TimedRotatingFileHandler
+from metadefender_menlo.api.models.kafka_log import KafkaLogHandler
+from dotenv import load_dotenv
 
 import tornado.ioloop
 import tornado.web
@@ -29,17 +31,23 @@ settings = {}
 def init_logging(config):    
     if "enabled" not in config or not config["enabled"]:
         return
+
+    load_dotenv()
     
     logger = logging.getLogger()
     logger.setLevel(config["level"])
     logfile = config["logfile"]
 
     log_handler = TimedRotatingFileHandler(filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
+    log_handlerKafka = KafkaLogHandler()
     
     log_format = '%(asctime)s - %(levelname)s - %(filename)s > %(funcName)s:%(lineno)d - %(message)s'
+
     formatter = logging.Formatter(fmt=log_format, datefmt='%m/%d/%Y %I:%M:%S %p')
+
     log_handler.setFormatter(formatter)
 
+    logger.addHandler(log_handlerKafka)
     logger.addHandler(log_handler)
 
 def initial_config():

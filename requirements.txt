@@ -3,3 +3,5 @@ urllib3
 pyyaml
 six
 typing
+kafka-python
+python-dotenv
