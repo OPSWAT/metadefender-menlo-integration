@@ -2,11 +2,12 @@
 
 git clone https://github.com/wurstmeister/kafka-docker.git 
 
+cp docker-compose.yml  ./kafka-docker/docker-compose.yml 
+
 cd kafka-docker
 
-echo "run containers container"
 docker-compose up -d
 
-echo 'acces docker_kafka container'
-docker exec -i -t -u root $(docker ps | grep docker_kafka | cut -d' ' -f1) /bin/bash $KAFKA_HOME/bin/kafka-console-consumer.sh --from-beginning --bootstrap-server kafka:9092 --topic=test 
+docker exec -i -t -u root $(docker ps | grep docker_kafka | cut -d' ' -f1) /bin/bash $KAFKA_HOME/bin/kafka-console-consumer.sh --from-beginning --bootstrap-server kafka:9092 --topic=test
 
+# echo "$KAFKA_HOME/bin/kafka-console-consumer.sh --from-beginning --bootstrap-server kafka:9092 --topic=test "

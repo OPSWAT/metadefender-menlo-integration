@@ -13,7 +13,7 @@ class MetaDefenderAPI(ABC):
     server_url = 'http://localhost:8008'
     md_cls = lambda url, key: None
     report_url = ""
-    
+    id=""
     api_endpoints = {
         "submit_file": {
             "type": "POST",
@@ -55,9 +55,10 @@ class MetaDefenderAPI(ABC):
     def check_analysis_complete(self, json_response):
         pass
     
-    async def submit_file(self, filename, fp, analysis_callback_url=None, metadata=None):  
-        logging.info("Submit file > filename: {0} ".format(filename))   
-    
+    async def submit_file(self, filename,id, fp, analysis_callback_url=None, metadata=None):  
+        self.id=id
+        logging.info(json.dumps({'msg':"Submit file > filename: {0} ".format(filename),"id":self.id}))   
+        
         headers = self._get_submit_file_headers(filename, metadata)
         
         json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
@@ -75,8 +76,9 @@ class MetaDefenderAPI(ABC):
         
         return (json_response, http_status)
 
-    async def check_result(self, data_id):
-        logging.info("MetaDefender > Check result for {0}".format(data_id))        
+    async def check_result(self, data_id,id=""):
+        self.id=id
+        logging.info(json.dumps({'msg':"MetaDefender > Check result for {0}".format(data_id),"id":self.id}))        
         return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id})
     
     async def hash_lookup(self, sha256):
@@ -96,7 +98,7 @@ class MetaDefenderAPI(ABC):
 
     async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
 
-        logging.info("MetaDefender Request > ({0}) for {1}".format(endpoint_id, fields))   
+        logging.info(json.dumps({'msg':"MetaDefender Request > ({0}) for {1}".format(endpoint_id, fields),"id":self.id}))   
 
         endpoint_details = self.api_endpoints[endpoint_id]
         endpoint_path = endpoint_details["endpoint"]
@@ -108,11 +110,11 @@ class MetaDefenderAPI(ABC):
         if self.apikey is not None: 
             if not headers:
                 headers = {}
-            logging.debug("Add apikey: {0}".format(self.apikey))
+            logging.debug(json.dumps({'msg':"Add apikey: {0}".format(self.apikey),"id":self.id}))
             headers["apikey"] = self.apikey
 
         before_submission = datetime.datetime.now()        
-        logging.info("Request [{0}]: {1}".format(request_method, metadefender_url))
+        logging.info(json.dumps({'msg':"Request [{0}]: {1}".format(request_method, metadefender_url),"id":self.id}))
 
         http_status = None
         response_body = None
@@ -130,6 +132,6 @@ class MetaDefenderAPI(ABC):
                             
         total_submission_time = datetime.datetime.now() - before_submission
 
-        logging.info("{timestamp} {name} >> time: {total_time}, http status: {status}".format(timestamp=before_submission, name=endpoint_id, total_time=total_submission_time, status=http_status))                
+        logging.info(json.dumps({'msg':"{timestamp} {name} >> time: {total_time}, http status: {status}".format(timestamp=before_submission, name=endpoint_id, total_time=total_submission_time, status=http_status),"id":self.id}))                
 
         return (response_body, http_status)

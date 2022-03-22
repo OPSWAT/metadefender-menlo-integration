@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 import tornado.ioloop
 import tornado.web
-
 from metadefender_menlo.api.handlers.analysis_result import AnalysisResultHandler
 from metadefender_menlo.api.handlers.file_metadata import InboundMetadataHandler
 from metadefender_menlo.api.handlers.file_submit import FileSubmitHandler
@@ -33,11 +32,10 @@ def init_logging(config):
         return
 
     load_dotenv()
-    
+
     logger = logging.getLogger()
     logger.setLevel(config["level"])
     logfile = config["logfile"]
-
     log_handler = TimedRotatingFileHandler(filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
     log_handlerKafka = KafkaLogHandler()
     

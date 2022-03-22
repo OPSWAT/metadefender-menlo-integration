@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 import time
 from os import environ
-
+import json
 class KafkaLogHandler(Handler):
     """
     A handler class which writes logging records, appropriately formatted,
@@ -54,19 +54,25 @@ class KafkaLogHandler(Handler):
         """
         try:
             now = datetime.now()
+            info={
+                "msg":record.getMessage(),
+                "id":""
+                }
             try:
-                msg = {
+                info_=record.getMessage()
+                info=json.loads(info_)
+            except Exception as e:
+                e="id not found"
+            msg = {
                     "esIndexName":environ.get("ENV"),
                     "timestamp":now.strftime("%H:%M:%S"),
                     "type":record.levelname,
-                    "id":"",
+                    "id":info["id"],
                     "region":environ.get("AWS_REGION"),
-                    "message":record.getMessage()
+                    "message":info["msg"]
                 }
-                self.sender.send("test", info=msg)
-                print(msg)
-            except Exception as e:
-                print(e,'err')
+            self.sender.send("test", msg=json.dumps(msg))
+            print(msg)
         except RecursionError:  # See issue 36272
             raise
         except Exception:
