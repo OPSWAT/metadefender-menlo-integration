@@ -21,7 +21,7 @@ class FileSubmitHandler(BaseHandler):
         info = self.request.files[field_name][0]
         filename, content_type = info["filename"], info["content_type"]
         fp = info["body"]
-        logging.info('Submit {0} {1} {2} bytes'.format(filename,content_type,len(fp)))
+        logging.info('Submit "%s" "%s" %d bytes', filename, content_type, len(fp))
 
         metadata = {}
         logging.debug("List of headers:")
