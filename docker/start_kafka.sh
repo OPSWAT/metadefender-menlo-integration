@@ -8,6 +8,8 @@ cd kafka-docker
 
 docker-compose up -d
 
-docker exec -i -t -u root $(docker ps | grep docker_kafka | cut -d' ' -f1) /bin/bash 
+cd ..
 
-"$KAFKA_HOME/bin/kafka-console-consumer.sh --from-beginning --bootstrap-server kafka:9092 --topic=test 
+sleep 2
+
+python kafka_consumer.py
