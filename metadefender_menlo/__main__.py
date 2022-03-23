@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 import tornado.ioloop
 import tornado.web
+from metadefender_menlo.api.handlers.base_handler import MyFilter
+
 from metadefender_menlo.api.handlers.analysis_result import AnalysisResultHandler
 from metadefender_menlo.api.handlers.file_metadata import InboundMetadataHandler
 from metadefender_menlo.api.handlers.file_submit import FileSubmitHandler
@@ -38,16 +40,19 @@ def init_logging(config):
     logfile = config["logfile"]
     log_handler = TimedRotatingFileHandler(filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
     log_handlerKafka = KafkaLogHandler()
-    
+    my_filter = MyFilter()
     log_format = '%(asctime)s - %(levelname)s - %(filename)s > %(funcName)s:%(lineno)d - %(message)s'
 
     formatter = logging.Formatter(fmt=log_format, datefmt='%m/%d/%Y %I:%M:%S %p')
 
     log_handler.setFormatter(formatter)
+    
 
     logger.addHandler(log_handlerKafka)
     logger.addHandler(log_handler)
-
+    for handler in logging.getLogger().handlers:
+        handler.addFilter(my_filter)
+        
 def initial_config():
     
     with open("config.yml", 'r') as stream:

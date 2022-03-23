@@ -9,7 +9,7 @@ class FileSubmitHandler(BaseHandler):
 
     async def post(self):
         logging.info(json.dumps({'msg':"POST /api/v1/file > Parse multipart","id":self.id}))   
-
+        apikey = self.request.headers.get('Authorization')
         #TODO: log errors     
         if len(self.request.files) < 1:
             logging.error(json.dumps({'msg':"No file uploaded > is call originating from Menlo?","id":self.id}))
@@ -31,6 +31,6 @@ class FileSubmitHandler(BaseHandler):
             metadata[arg] = str(self.request.arguments[arg])
 
         # make request to MetaDefender         
-        json_response, http_status = await self.metaDefenderAPI.submit_file(filename,self.id, fp, metadata=metadata)    
+        json_response, http_status = await self.metaDefenderAPI.submit_file(filename,self.id, fp, metadata=metadata, apikey=apikey)    
         json_response, http_status = FileSubmit().handle_response(http_status, json_response)
         self.json_response(json_response, http_status)

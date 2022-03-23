@@ -87,6 +87,8 @@ First, you’re required to build a container. There’s a `Dockerfile` in the r
 
 Also, check the `deploy.sh` script. It was built specifically for Google Cloud to leverage GKE (Google Kubernetes Engine). But it can be easily adapted to run in any Kubernetes supported environment. 
 
+For AWS deployment please check `deploy.aws.sh`.
+
 The GCP specific part is building the cluster and (if needed) the static IP. 
 
 Modify the deploy script to use your own cluster and certificates as needed. If you don’t require self-signed certs, you can remove the entire portion with openssl and jump directly to adding your certificates as Kubernetes secrets. 
