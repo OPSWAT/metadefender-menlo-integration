@@ -1,13 +1,12 @@
 
 
-from  logging import Handler
 import sys 
-from kafka_messaging import Sender
-import json
-from datetime import datetime
-import time
 from os import environ
 import json
+from  logging import Handler
+from kafka_messaging import Sender
+
+
 class KafkaLogHandler(Handler):
     """
     A handler class which writes logging records, appropriately formatted,
@@ -52,10 +51,8 @@ class KafkaLogHandler(Handler):
         output to the stream.
         """
         try:
-            now = datetime.now()
             msg = {
                     "esIndexName":environ.get("MENLO_ENV"),
-                    "timestamp":now.strftime("%H:%M:%S"),
                     "type":record.levelname,
                     "id":record.request_id,
                     "region":environ.get("AWS_REGION"),
