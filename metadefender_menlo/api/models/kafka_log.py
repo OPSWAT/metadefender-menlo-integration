@@ -4,8 +4,7 @@ import sys
 from os import environ
 import json
 from  logging import Handler
-from kafka_messaging import Sender
-
+from kafka import KafkaProducer
 
 class KafkaLogHandler(Handler):
     """
@@ -17,7 +16,9 @@ class KafkaLogHandler(Handler):
     terminator = '\n'
 
     def __init__(self, stream=None):
-        self.sender = Sender(ip="0.0.0.0", port=9092, acks=0)
+        self.bootstrap_servers='0.0.0.0:9092'
+        self.topic='test'
+        self.sender =KafkaProducer(bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
         """
         Initialize the handler.
 
@@ -58,7 +59,7 @@ class KafkaLogHandler(Handler):
                     "region":environ.get("AWS_REGION"),
                     "message":record.getMessage()
                 }
-            self.sender.send("test", msg=json.dumps(msg))
+            self.sender.send(self.topic, msg)
         except RecursionError:  # See issue 36272
             raise
         except Exception:
