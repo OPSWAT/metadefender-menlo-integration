@@ -25,16 +25,6 @@ if [[ "$CMD" = '' ]]; then
   echo "apply_ingress"
 fi
 
-# Create your Amazon EKS cluster and nodes
-function create_cluster() {
-  eksctl create cluster --name $EKS_CLUSTER --region ${AWS_REGION}
-}
-
-# Delete your cluster and nodes
-function delete_cluster() {
-  eksctl delete cluster --name $EKS_CLUSTER --region ${AWS_REGION}
-}
-
 function configure_cluster() {
   eksctl utils write-kubeconfig --cluster=$EKS_CLUSTER --region ${AWS_REGION}
 }
@@ -60,11 +50,7 @@ function create_namespace() {
 
 function build_image() {
   cd $CWD/../
-  docker build -t 108895011981.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION .
-}
-
-function create_ecr_repo() {
-  aws ecr create-repository --repository-name metadefender-menlo --region ${AWS_REGION}
+  docker build -t ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION .
 }
 
 function ecr_login() {
@@ -72,7 +58,7 @@ function ecr_login() {
 }
 
 function push_image() {
-  docker push 108895011981.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION
+  docker push ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION
 }
 
 function apply_deployment() {
