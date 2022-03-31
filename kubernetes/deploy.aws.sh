@@ -60,7 +60,7 @@ function create_namespace() {
 
 function build_image() {
   cd $CWD/../
-  docker build -t 108895011981.dkr.ecr.${AWS_REGION}.amazonaws.com/metadefender-menlo:$VERSION .
+  docker build -t 108895011981.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION .
 }
 
 function create_ecr_repo() {
@@ -72,7 +72,7 @@ function ecr_login() {
 }
 
 function push_image() {
-  docker push 108895011981.dkr.ecr.${AWS_REGION}.amazonaws.com/metadefender-menlo:$VERSION
+  docker push 108895011981.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION
 }
 
 function apply_deployment() {
