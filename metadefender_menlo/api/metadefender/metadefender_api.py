@@ -58,7 +58,7 @@ class MetaDefenderAPI(ABC):
         logging.info("Submit file > filename: {0} ".format(filename))
 
         headers = self._get_submit_file_headers(filename, metadata)
-        headers = {**headers, **{'apikey': apikey}, 'X-Forwarded-For': ip}
+        headers = {**headers, **{'apikey': apikey}, 'x-forwarded-for': ip, 'x-real-ip': ip}
         json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
 
         return (json_response, http_status)
@@ -76,14 +76,14 @@ class MetaDefenderAPI(ABC):
 
     async def check_result(self, data_id, apikey, ip):
         logging.info("MetaDefender > Check result for {0}".format(data_id))
-        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'X-Forwarded-For': ip})
+        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     async def hash_lookup(self, sha256, apikey, ip):
         logging.info("MetaDefender > Hash Lookup for {0}".format(sha256))
-        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'X-Forwarded-For': ip})
+        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     @abstractmethod
-    async def retrieve_sanitized_file(self, data_id,apikey):
+    async def retrieve_sanitized_file(self, data_id,apikey, ip):
         pass
 
     async def _request_as_json_status(self, endpoint_id, fields=None, headers=None, body=None):
