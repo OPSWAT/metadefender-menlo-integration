@@ -54,6 +54,8 @@ openssl req -new -sha256 -nodes -key tls.key -out server.csr -config <( cat csr_
 
 #echo "Signing request content:" 
 #echo $(openssl req -in server.csr -noout -text)
+echo "Set MENLO_ENV"
+export MENLO_ENV="$1"
 
 echo "[STEP 3e]: Create signed cert"
 openssl x509 -req -in server.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out tls.crt -days 365 -sha256

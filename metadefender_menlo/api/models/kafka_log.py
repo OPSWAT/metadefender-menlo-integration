@@ -16,9 +16,16 @@ class KafkaLogHandler(Handler):
     terminator = '\n'
 
     def __init__(self, stream=None):
-        self.bootstrap_servers='0.0.0.0:9092'
-        self.topic='test'
-        self.sender =KafkaProducer(bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+        f = open('kafka-config.json')
+        data = json.load(f)
+        environment_name="menlo_middleware_"+environ.get("MENLO_ENV")
+        connection=data[environment_name]
+        self.bootstrap_servers=connection["SERVER"]
+        self.topic=connection["TOPIC"]
+        try:
+            self.sender =KafkaProducer(bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+        except Exception as e:
+            print(e)
         """
         Initialize the handler.
 
@@ -59,7 +66,10 @@ class KafkaLogHandler(Handler):
                     "region":environ.get("AWS_REGION"),
                     "message":record.getMessage()
                 }
-            self.sender.send(self.topic, msg)
+            try:
+                self.sender.send(self.topic, msg)
+            except Exception as e:
+                print(e)
         except RecursionError:  # See issue 36272
             raise
         except Exception:
