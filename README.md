@@ -82,6 +82,39 @@ You can add self-signed X509 certs, but have to be signed by a (custom) Certific
 
 The location can be altered also by modifiying `metadefender_menlo/__main__.py` at lines 22-23. 
 
+## AWS Cloud deployment
+
+To change the environemnt, update `.env` file.
+```bash
+# Use `local` for local development.
+# Use `dev` for testing the deployment on https://menlo-dev.metadefender.com
+# Use `prod` for deploying a new version to prod env: https://menlo.metadefender.com
+MENLO_ENV=<env>
+```
+
+Follow the next steps after the env is set.
+```bash
+# 1. Go to the kubernetes folder
+cd kubernetes
+
+# 2. Build a new image version. 
+# set different <version> for each deployment, 
+# you can append a letter to the current version number while testing. e.g. 1.1.0-c
+./deploy.aws.sh build_image 1.1.0-c
+
+# 3.a Login to AWS ECR. Once in a while if your session expires
+./deploy.aws.sh ecr_login
+
+# 3. Push image to remote
+./deploy.aws.sh push_image 1.1.0-c
+
+# 4. Deploy the new image to the dev cluster
+./deploy.aws.sh apply_deployment
+
+# Check the new deployment on 
+https://menlo-dev.metadefender.com
+```
+
 ## Kubernetes deployment
 First, you’re required to build a container. There’s a `Dockerfile` in the repo, that you can use to build the container and push it to your registry. Once you have it, you will have to modify deployment.yaml and specify your own container image. 
 
