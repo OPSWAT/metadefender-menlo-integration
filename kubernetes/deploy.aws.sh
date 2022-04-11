@@ -7,7 +7,7 @@ CWD=$(cd "$(dirname "${BASH_SOURCE[0]}")/" && pwd)
 # aws cli
 
 ## Env variables:
-# VERSION, AWS_ACCOUNT, AWS_REGION, AWS_DEFAULT_PROFILE, EKS_CLUSTER, EKS_NAMESPACE, EKS_SERVICE, DOMAIN
+# VERSION,MENLO_ENV, AWS_ACCOUNT, AWS_REGION, AWS_DEFAULT_PROFILE, EKS_CLUSTER, EKS_NAMESPACE, EKS_SERVICE, DOMAIN
 ## Env variables
 
 CMD=$1
@@ -46,7 +46,6 @@ function view_resources() {
 function create_namespace() {
   kubectl create namespace $EKS_NAMESPACE
 }
-
 function build_image() {
   cd $CWD/../
   docker build -t ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION .
@@ -61,6 +60,7 @@ function push_image() {
 }
 
 function apply_deployment() {
+  sed "s|{{MENLO_ENV}}|${MENLO_ENV}|g" deployment.template > deployment.yaml
   kubectl -n $EKS_NAMESPACE apply -f deployment.yaml
 }
 

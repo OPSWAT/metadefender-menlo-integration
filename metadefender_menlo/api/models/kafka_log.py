@@ -17,12 +17,13 @@ class KafkaLogHandler(Handler):
 
     def __init__(self, stream=None):
         f = open('kafka-config.json')
-        data = json.load(f)
-        environment_name="menlo_middleware_"+environ.get("MENLO_ENV")
-        connection=data[environment_name]
-        self.bootstrap_servers=connection["SERVER"]
-        self.topic=connection["TOPIC"]
         try:
+            data = json.load(f)
+            environment_name="menlo_middleware_"+environ.get("MENLO_ENV",'dev')
+            connection=data[environment_name]
+            self.bootstrap_servers=connection["SERVER"]
+            self.topic=connection["TOPIC"]
+        
             self.sender =KafkaProducer(bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
         except Exception as e:
             print(e)
