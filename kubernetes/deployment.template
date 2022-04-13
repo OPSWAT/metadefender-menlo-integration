@@ -21,14 +21,8 @@ spec:
           requests:
             cpu: 125m
             memory: 128Mi
-        image: 108895011981.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:1.1.0
+        image: 108895011981.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:{{VERSION}}
         env:
           - name: MENLO_ENV
             value: {{MENLO_ENV}}
         imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /api/v1/health
-            port: 3000
-          initialDelaySeconds: 3
-          periodSeconds: 10

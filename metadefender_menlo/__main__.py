@@ -47,11 +47,18 @@ def init_logging(config):
 
     log_handler.setFormatter(formatter)
     
+    if not(hasattr(log_handlerKafka,"sender")):
+        logger.addHandler(log_handler)
 
-    logger.addHandler(log_handlerKafka)
-    logger.addHandler(log_handler)
-    for handler in logging.getLogger().handlers:
-        handler.addFilter(my_filter)
+        for handler in logging.getLogger().handlers:
+            handler.addFilter(my_filter)
+
+        logging.error("Kafka error")
+    else:
+        logger.addHandler(log_handlerKafka)
+
+        for handler in logging.getLogger().handlers:
+            handler.addFilter(my_filter)
         
 def initial_config():
     

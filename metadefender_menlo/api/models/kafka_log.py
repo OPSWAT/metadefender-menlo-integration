@@ -16,17 +16,13 @@ class KafkaLogHandler(Handler):
     terminator = '\n'
 
     def __init__(self, stream=None):
-        f = open('kafka-config.json')
-        try:
-            data = json.load(f)
-            environment_name="menlo_middleware_"+environ.get("MENLO_ENV",'dev')
-            connection=data[environment_name]
-            self.bootstrap_servers=connection["SERVER"]
-            self.topic=connection["TOPIC"]
-        
-            self.sender =KafkaProducer(bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-        except Exception as e:
-            print(e)
+        kafka_config_file = open('kafka-config.json')
+        kafka_config = json.load(kafka_config_file)
+        environment_name="menlo_middleware_"+environ.get("MENLO_ENV",'dev')
+        connection=kafka_config[environment_name]
+        self.bootstrap_servers=connection["SERVER"]
+        self.topic=connection["TOPIC"]
+        self.security_protocol=connection["SSL"]
         """
         Initialize the handler.
 
@@ -36,7 +32,17 @@ class KafkaLogHandler(Handler):
         if stream is None:
             stream = sys.stderr
         self.stream = stream
+        
+        self.init_kafka_conn()
 
+    def init_kafka_conn(self):
+        try:
+            if self.security_protocol:
+                self.sender = KafkaProducer(security_protocol="SSL",bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+            else:
+                self.sender = KafkaProducer(bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+        except :
+            pass
     def flush(self):
         """
         Flushes the stream.
@@ -69,8 +75,8 @@ class KafkaLogHandler(Handler):
                 }
             try:
                 self.sender.send(self.topic, msg)
-            except Exception as e:
-                print(e)
+            except:
+                pass
         except RecursionError:  # See issue 36272
             raise
         except Exception:
