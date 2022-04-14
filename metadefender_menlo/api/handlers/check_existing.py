@@ -1,7 +1,6 @@
 from metadefender_menlo.api.responses.check_existing import CheckExisting
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 import logging
-import json
 class CheckExistingHandler(BaseHandler):    
 
     async def get(self):        

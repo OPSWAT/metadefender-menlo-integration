@@ -33,15 +33,12 @@ class KafkaLogHandler(Handler):
             stream = sys.stderr
         self.stream = stream
         
-        self.init_kafka_conn()
-
-    def init_kafka_conn(self):
         try:
             if self.security_protocol:
-                self.sender = KafkaProducer(security_protocol="SSL",bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+                self.sender = KafkaProducer(security_protocol="SSL",retries=1,max_in_flight_requests_per_connection=5,reconnect_backoff_ms=50,bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
             else:
-                self.sender = KafkaProducer(bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-        except :
+                self.sender = KafkaProducer(bootstrap_servers=self.bootstrap_servers,retries=5,max_in_flight_requests_per_connection=5,reconnect_backoff_ms=50,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+        except:
             pass
     def flush(self):
         """
