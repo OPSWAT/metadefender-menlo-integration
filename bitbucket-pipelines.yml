@@ -1,0 +1,37 @@
+image:
+  name: 108895011981.dkr.ecr.us-west-2.amazonaws.com/aws-terragrunt:1.0.1-eks
+  aws: 
+    access-key: $AWS_ACCESS_KEY_ID_dev
+    secret-key: $AWS_SECRET_ACCESS_KEY_dev
+
+definitions:
+  steps:
+    - step: &build
+        name: Build images
+        deployment: test
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - cd kubernetes
+          - ./deploy.aws.sh build_image
+          - ./deploy.aws.sh ecr_login
+          - ./deploy.aws.sh push_image
+    - step: &deploy
+        name: Deploy to EKS
+        deployment: test
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - cd kubernetes
+          - ./deploy.aws.sh configure_cluster
+          - ./deploy.aws.sh view_resources
+
+pipelines:
+  custom:
+    test:
+      - step: *build
+      - step: *deploy
