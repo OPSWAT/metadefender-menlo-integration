@@ -8,12 +8,13 @@ definitions:
   steps:
     - step: &build
         name: Build images
-        deployment: test
         services:
           - docker
         caches:
           - docker
         script:
+          - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_dev
+          - export AWS_SECRET_ACCESS_KEY_ID=$AWS_SECRET_ACCESS_KEY_dev
           - cd kubernetes
           - ./deploy.aws.sh build_image
           - ./deploy.aws.sh ecr_login
