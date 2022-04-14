@@ -32,5 +32,6 @@ definitions:
 
 pipelines:
   custom:
-    - step: *build
-    - step: *deploy
+    test:
+      - step: *build
+      - step: *deploy
