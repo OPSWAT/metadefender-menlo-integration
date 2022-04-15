@@ -13,12 +13,19 @@ definitions:
         caches:
           - docker
         script:
-          - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_dev
-          - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_dev
-          - cd kubernetes
-          - ./deploy.aws.sh build_image
-          - ./deploy.aws.sh ecr_login
-          - ./deploy.aws.sh push_image
+          - |
+            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_dev
+            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_dev
+            if [[ $BITBUCKET_BRANCH == "develop" ]]; then
+              MENLO_ENV="dev"
+            elif [[ $BITBUCKET_BRANCH == "main" ]]; then
+              MENLO_ENV="prod"
+            else MENLO_ENV="test"
+            fi
+            cd kubernetes
+            ./deploy.aws.sh build_image
+            ./deploy.aws.sh ecr_login
+            ./deploy.aws.sh push_image
     - step: &deploy
         name: Deploy to EKS
         deployment: test
