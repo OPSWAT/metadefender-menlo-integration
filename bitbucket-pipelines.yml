@@ -38,8 +38,8 @@ definitions:
           - cd kubernetes
           - ./deploy.aws.sh configure_cluster
           - kubectl get namespace $EKS_NAMESPACE || kubectl create namespace $EKS_NAMESPACE
-          - envsubst < deployment.yaml
-          - envsubst < ingress.yaml
+          - envsubst < deployment.yaml > deployment.yaml.tmp && mv deployment.yaml.tmp deployment.yaml
+          - envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
           - ./deploy.aws.sh apply_deployment
           - ./deploy.aws.sh apply_service
           - ./deploy.aws.sh apply_ingress
