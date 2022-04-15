@@ -1,5 +1,5 @@
 image:
-  name: 108895011981.dkr.ecr.us-west-2.amazonaws.com/aws-terragrunt:1.0.1-eks
+  name: 108895011981.dkr.ecr.us-west-2.amazonaws.com/aws-terragrunt:1.0.2-eks
   aws: 
     access-key: $AWS_ACCESS_KEY_ID_dev
     secret-key: $AWS_SECRET_ACCESS_KEY_dev
