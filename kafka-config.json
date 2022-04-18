@@ -1,9 +1,9 @@
 {
     "menlo_middleware_dev":{
-        "TOPIC":"test",
+        "TOPIC":"dev_menlo_middleware",
         "CLIENT_ID": "kafkaLabs",
-        "SERVER": "0.0.0.0:9092",
-        "SSL": false,
+        "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
+        "SSL": true,
         "MAXIMUM_MESSAGE_SIZE": 900000
     },
     "menlo_middleware_stagging":{
