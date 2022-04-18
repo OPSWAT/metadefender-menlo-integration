@@ -47,19 +47,19 @@ definitions:
           - ./deploy.aws.sh apply_ingress
 
 pipelines:
-  #branches:
-    #develop:
-    #  - step: *build
-    #  - step:
-    #      <<: *deploy
-    #      name: Deploy to dev
-    #      deployment: dev
-    #main:
-    #  - step: *build
-    #  - step:
-    #      <<: *deploy
-    #      name: Deploy to prod
-    #      deployment: prod
+  branches:
+    develop:
+      - step: *build
+      - step:
+          <<: *deploy
+          name: Deploy to dev
+          deployment: dev
+    main:
+      - step: *build
+      - step:
+          <<: *deploy
+          name: Deploy to prod
+          deployment: prod
   custom:
     manual:
       - step: *build
