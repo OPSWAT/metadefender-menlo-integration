@@ -35,9 +35,9 @@ class KafkaLogHandler(Handler):
         
         try:
             if self.security_protocol:
-                self.sender = KafkaProducer(security_protocol="SSL",retries=1,max_in_flight_requests_per_connection=5,reconnect_backoff_ms=50,bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+                self.sender = KafkaProducer(security_protocol="SSL",retries=0,bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
             else:
-                self.sender = KafkaProducer(bootstrap_servers=self.bootstrap_servers,retries=5,max_in_flight_requests_per_connection=5,reconnect_backoff_ms=50,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+                self.sender = KafkaProducer(bootstrap_servers=self.bootstrap_servers,retries=0,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
         except:
             pass
     def flush(self):
@@ -62,7 +62,7 @@ class KafkaLogHandler(Handler):
         has an 'encoding' attribute, it is used to determine how to do the
         output to the stream.
         """
-        healthEndpoint="/api/v1/health"
+        health_endpoint="/api/v1/health"
         try:
             msg = {
                     "esIndexName":environ.get("MENLO_ENV"),
@@ -72,7 +72,7 @@ class KafkaLogHandler(Handler):
                     "message":record.getMessage()
                 }
             try:
-                if not(healthEndpoint in msg["message"]):
+                if not(health_endpoint in msg["message"]):
                     self.sender.send(self.topic, msg)
             except:
                 pass
