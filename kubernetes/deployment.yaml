@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: metadefender-menlo
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:
@@ -17,10 +17,10 @@ spec:
         resources:
           limits:
             cpu: 250m
-            memory: 256Mi
+            memory: 512Mi
           requests:
-            cpu: 125m
-            memory: 128Mi
+            cpu: 500m
+            memory: 1024Mi
         image: ${AWS_ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:${MENLO_ENV}-${VERSION}
         imagePullPolicy: Always
         livenessProbe:
