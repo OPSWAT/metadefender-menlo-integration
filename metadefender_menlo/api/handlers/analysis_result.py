@@ -8,7 +8,8 @@ class AnalysisResultHandler(BaseHandler):
         uuid = self.get_argument('uuid')
         apikey = self.request.headers.get('Authorization')
         logging.info("GET /api/v1/result/{0}".format(uuid))
-        json_response, http_status = await self.metaDefenderAPI.check_result(uuid, apikey)
+
+        json_response, http_status = await self.metaDefenderAPI.check_result(uuid, apikey, self.client_ip)
         json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
         self.json_response(json_response, http_status)
        
