@@ -23,9 +23,9 @@ class MetaDefenderAPI(ABC):
         "sanitized_file": {
             "type": "GET",
             "endpoint": "/file/converted/{data_id}"
-        }, 
+        },
         "hash_lookup": {
-            "type": "GET", 
+            "type": "GET",
             "endpoint": "/hash/{hash}"
         }
     }
@@ -48,41 +48,41 @@ class MetaDefenderAPI(ABC):
     @abstractmethod
     def _get_submit_file_headers(self, filename, metadata):
         pass
-    
+
     @abstractmethod
     def check_analysis_complete(self, json_response):
         pass
-    
-    async def submit_file(self, filename, fp, metadata=None, apikey=""):  
-        logging.info("Submit file > filename: {0} ".format(filename))   
-    
+
+    async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
+        logging.info("Submit file > filename: {0} ".format(filename))
+
         headers = self._get_submit_file_headers(filename, metadata)
-        headers = {**headers, **{'apikey': apikey}}
+        headers = {**headers, **{'apikey': apikey}, 'x-forwarded-for': ip, 'x-real-ip': ip}
         json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
 
         return (json_response, http_status)
 
     async def retrieve_result(self, data_id, apikey):
         logging.info("MetaDefender > Retrieve result for {0}".format(data_id))
-        
+
         analysis_completed = False
-        
-        while (not analysis_completed):            
+
+        while (not analysis_completed):
             json_response, http_status = await self.check_result(data_id, apikey)
-            analysis_completed = self._check_analysis_complete(json_response)            
-        
+            analysis_completed = self._check_analysis_complete(json_response)
+
         return (json_response, http_status)
 
-    async def check_result(self, data_id, apikey):
-        logging.info("MetaDefender > Check result for {0}".format(data_id))        
-        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey})
-    
-    async def hash_lookup(self, sha256, apikey):
-        logging.info("MetaDefender > Hash Lookup for {0}".format(sha256))    
-        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey})
-    
+    async def check_result(self, data_id, apikey, ip):
+        logging.info("MetaDefender > Check result for {0}".format(data_id))
+        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
+
+    async def hash_lookup(self, sha256, apikey, ip):
+        logging.info("MetaDefender > Hash Lookup for {0}".format(sha256))
+        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
+
     @abstractmethod
-    async def retrieve_sanitized_file(self, data_id,apikey):        
+    async def retrieve_sanitized_file(self, data_id,apikey, ip):
         pass
 
     async def _request_as_json_status(self, endpoint_id, fields=None, headers=None, body=None):
@@ -94,7 +94,7 @@ class MetaDefenderAPI(ABC):
 
     async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
 
-        logging.info("MetaDefender Request > ({0}) for {1}".format(endpoint_id, fields))   
+        logging.info("MetaDefender Request > ({0}) for {1}".format(endpoint_id, fields))
 
         endpoint_details = self.api_endpoints[endpoint_id]
         endpoint_path = endpoint_details["endpoint"]
@@ -104,11 +104,11 @@ class MetaDefenderAPI(ABC):
 
         request_method = endpoint_details["type"]
 
-        if headers and self.apikey and headers["apikey"] is None: 
+        if headers and self.apikey and headers["apikey"] is None:
             headers["apikey"] = self.apikey
-        
-        before_submission = datetime.datetime.now()        
-        logging.info("Request [{0}]: {1}".format(request_method, metadefender_url))
+
+        before_submission = datetime.datetime.now()
+        logging.info("Request [{0}]: {1} | {2}".format(request_method, metadefender_url, headers))
 
         http_status = None
         response_body = None
@@ -123,9 +123,9 @@ class MetaDefenderAPI(ABC):
         except Exception as e:
             http_status = 500
             response_body = '{"error": "' + e.strerror + '"}'
-                            
+
         total_submission_time = datetime.datetime.now() - before_submission
 
-        logging.info("{timestamp} {name} >> time: {total_time}, http status: {status}".format(timestamp=before_submission, name=endpoint_id, total_time=total_submission_time, status=http_status))                
+        logging.info("{timestamp} {name} >> time: {total_time}, http status: {status}".format(timestamp=before_submission, name=endpoint_id, total_time=total_submission_time, status=http_status))
 
         return (response_body, http_status)

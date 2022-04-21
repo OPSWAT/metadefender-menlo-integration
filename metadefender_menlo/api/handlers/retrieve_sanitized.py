@@ -8,7 +8,7 @@ class RetrieveSanitizedHandler(BaseHandler):
         apikey = self.request.headers.get('Authorization')
         logging.info("GET /api/v1/file/{0}".format(uuid))   
         
-        file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid, apikey)
+        file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid, apikey, self.client_ip)
         
         sanitized_file, status = RetrieveSanitized().handle_response(status_code, file)
         self.stream_response(sanitized_file, status)

@@ -15,6 +15,11 @@ class BaseHandler(RequestHandler):
         request_id_var.set(request_id)
     def initialize(self):
         self.metaDefenderAPI = MetaDefenderAPI.get_instance()
+        logging.info('Request IP\'s: {0} | {1} | {2}'.format(self.request.headers.get("X-Real-IP"), self.request.headers.get("X-Forwarded-For"), self.request.remote_ip))
+
+        client_ip = self.request.headers.get("X-Real-IP") or self.request.headers.get("X-Forwarded-For") or self.request.remote_ip
+        self.client_ip = client_ip
+
     def json_response(self, data, status_code=200):
         logging.info("{0} response: {1}".format(status_code, data))
         self.set_status(status_code)
