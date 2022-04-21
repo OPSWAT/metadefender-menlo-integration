@@ -62,7 +62,6 @@ class KafkaLogHandler(Handler):
         has an 'encoding' attribute, it is used to determine how to do the
         output to the stream.
         """
-        health_endpoint="/api/v1/health"
         try:
             msg = {
                     "esIndexName":environ.get("MENLO_ENV"),
@@ -72,8 +71,7 @@ class KafkaLogHandler(Handler):
                     "message":record.getMessage()
                 }
             try:
-                if not(health_endpoint in msg["message"]):
-                    self.sender.send(self.topic, msg)
+                self.sender.send(self.topic, msg)
             except:
                 pass
         except RecursionError:  # See issue 36272
