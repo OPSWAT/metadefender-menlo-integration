@@ -82,17 +82,6 @@ You can add self-signed X509 certs, but have to be signed by a (custom) Certific
 
 The location can be altered also by modifiying `metadefender_menlo/__main__.py` at lines 22-23. 
 
-## Bitbucket automated deployment
-
-Some Bitbucket pipelines have been configured in order for everybody to easily build and deploy the Menlo middleware to any environment from the same place (Bitbucket pipelines that trigger cloud agents), thus eliminating potential deviations in the build/deploy script or others (OS, software etc.). Plus, this way all builds/deploys can be tracked.
-
-There are 3 pipelines:
-* **branches: develop** - automatically triggered to build/deploy to dev when there is a merge to develop
-* **branches: main** - automatically triggered to build/deploy to prod when there is a merge to main
-* **custom: manual** - manually triggered pipeline to deploy to dev from any branch other than develop/main
-
-For local deployments, use the gitignored `.env` file which will be sourced in the script.
-
 ## AWS Cloud deployment
 
 To change the environemnt, update `.env` file.
@@ -125,6 +114,19 @@ cd kubernetes
 # Check the new deployment on 
 https://menlo-dev.metadefender.com
 ```
+
+## Bitbucket automated deployment
+
+Some Bitbucket pipelines have been configured in order for everybody to easily build and deploy the Menlo middleware to any environment from the same place (Bitbucket pipelines that trigger cloud agents), thus eliminating potential deviations in the build/deploy script or others (OS, software etc.). Plus, this way all builds/deploys can be tracked.
+
+There are 3 pipelines:
+* **branches: develop** - automatically triggered to build/deploy to dev when there is a merge to develop
+* **branches: main** - automatically triggered to build/deploy to prod when there is a merge to main
+* **custom: manual** - manually triggered pipeline to deploy to dev from any branch other than develop/main
+
+All of the environment variables used in the scripts can be viewed and configured in Bitbucket->Repository Settings->Deployments OR Repository variables
+
+For local deployments, use the gitignored `.env` file which will be sourced in the script.
 
 ## Kubernetes deployment
 First, you’re required to build a container. There’s a `Dockerfile` in the repo, that you can use to build the container and push it to your registry. Once you have it, you will have to modify deployment.yaml and specify your own container image. 
