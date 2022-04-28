@@ -49,7 +49,7 @@ function create_namespace() {
 
 function build_image() {
   cd $CWD/../
-  docker build -t ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION .
+  docker build -t ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${MENLO_ENV}-$VERSION .
 }
 
 function ecr_login() {
@@ -57,7 +57,7 @@ function ecr_login() {
 }
 
 function push_image() {
-  docker push ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:$VERSION
+  docker push ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${MENLO_ENV}-$VERSION
 }
 
 function apply_deployment() {

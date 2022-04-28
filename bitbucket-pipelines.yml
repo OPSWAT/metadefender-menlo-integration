@@ -1,5 +1,5 @@
 image:
-  name: 108895011981.dkr.ecr.us-west-2.amazonaws.com/aws-terragrunt:1.0.1-eks
+  name: 108895011981.dkr.ecr.us-west-2.amazonaws.com/aws-terragrunt:1.0.3-eks
   aws: 
     access-key: $AWS_ACCESS_KEY_ID_dev
     secret-key: $AWS_SECRET_ACCESS_KEY_dev
@@ -8,16 +8,26 @@ definitions:
   steps:
     - step: &build
         name: Build images
-        deployment: test
         services:
           - docker
         caches:
           - docker
         script:
-          - cd kubernetes
-          - ./deploy.aws.sh build_image
-          - ./deploy.aws.sh ecr_login
-          - ./deploy.aws.sh push_image
+          - |
+            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_dev
+            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_dev
+            export VERSION=${BITBUCKET_COMMIT:0:7}
+            if [[ $BITBUCKET_BRANCH == "develop" ]]; then
+              ENV="dev"
+            elif [[ $BITBUCKET_BRANCH == "main" ]]; then
+              ENV="prod"
+            else ENV="test"
+            export MENLO_ENV=$ENV
+            fi
+            cd kubernetes
+            ./deploy.aws.sh build_image
+            ./deploy.aws.sh ecr_login
+            ./deploy.aws.sh push_image
     - step: &deploy
         name: Deploy to EKS
         deployment: test
@@ -26,12 +36,33 @@ definitions:
         caches:
           - docker
         script:
+          - export VERSION=${BITBUCKET_COMMIT:0:7}
           - cd kubernetes
           - ./deploy.aws.sh configure_cluster
-          - ./deploy.aws.sh view_resources
+          - kubectl get namespace $EKS_NAMESPACE || kubectl create namespace $EKS_NAMESPACE
+          - envsubst < deployment.yaml > deployment.yaml.tmp && mv deployment.yaml.tmp deployment.yaml
+          - envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
+          - ./deploy.aws.sh apply_deployment
+          - ./deploy.aws.sh apply_service
+          - ./deploy.aws.sh apply_ingress
 
 pipelines:
-  custom:
-    test:
+  branches:
+    develop:
       - step: *build
-      - step: *deploy
+      - step:
+          <<: *deploy
+          name: Deploy to dev
+          deployment: dev
+    main:
+      - step: *build
+      - step:
+          <<: *deploy
+          name: Deploy to prod
+          deployment: prod
+  custom:
+    manual:
+      - step: *build
+      - step: 
+          <<: *deploy
+          deployment: dev

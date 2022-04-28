@@ -1,3 +1,4 @@
 __pycache__
 kubernetes/ssl
 app.log
+.env
