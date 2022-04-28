@@ -22,8 +22,8 @@ definitions:
             elif [[ $BITBUCKET_BRANCH == "main" ]]; then
               ENV="prod"
             else ENV="test"
-            export MENLO_ENV=$ENV
             fi
+            export MENLO_ENV=$ENV
             cd kubernetes
             ./deploy.aws.sh build_image
             ./deploy.aws.sh ecr_login
