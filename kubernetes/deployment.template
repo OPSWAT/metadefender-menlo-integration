@@ -16,12 +16,12 @@ spec:
       - name: metadefender-menlo
         resources:
           limits:
-            cpu: 250m
-            memory: 256Mi
+            cpu: 500m
+            memory: 1024Mi
           requests:
-            cpu: 125m
-            memory: 128Mi
-        image: 108895011981.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:{{VERSION}}
+            cpu: 250m
+            memory: 512Mi
+        image: ${AWS_ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:${MENLO_ENV}-${VERSION}
         env:
           - name: MENLO_ENV
             value: {{MENLO_ENV}}
