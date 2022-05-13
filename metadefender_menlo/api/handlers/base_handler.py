@@ -2,12 +2,21 @@ from tornado.web import RequestHandler
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 import json
 import logging
+import uuid
+import json 
+import contextvars
+
+request_id_var = contextvars.ContextVar("request_id")
 
 class BaseHandler(RequestHandler):
-
+    def prepare(self):
+        # If the request headers do not include a request ID, let's generate one.
+        request_id = self.request.headers.get("request-id") or str(uuid.uuid4())
+        request_id_var.set(request_id)
     def initialize(self):
         self.metaDefenderAPI = MetaDefenderAPI.get_instance()
-        logging.info('Request IP\'s: {0} | {1} | {2}'.format(self.request.headers.get("X-Real-IP"), self.request.headers.get("X-Forwarded-For"), self.request.remote_ip))
+        if self.request.path!='/api/v1/health':
+            logging.info('Request IP\'s: {0} | {1} | {2}'.format(self.request.headers.get("X-Real-IP"), self.request.headers.get("X-Forwarded-For"), self.request.remote_ip))
 
         client_ip = self.request.headers.get("X-Real-IP") or self.request.headers.get("X-Forwarded-For") or self.request.remote_ip
         self.client_ip = client_ip
@@ -23,3 +32,8 @@ class BaseHandler(RequestHandler):
         self.set_status(status_code)
         self.set_header("Content-Type", 'application/octet-stream')
         self.write(data)
+
+class MyFilter(logging.Filter):
+    def filter(self, record):
+        record.request_id = request_id_var.get('-')
+        return True

@@ -4,9 +4,12 @@ import asyncio
 import sys
 import logging
 from logging.handlers import TimedRotatingFileHandler
+from metadefender_menlo.api.models.kafka_log import KafkaLogHandler
+from dotenv import load_dotenv
 
 import tornado.ioloop
 import tornado.web
+from metadefender_menlo.api.handlers.base_handler import MyFilter
 
 from metadefender_menlo.api.handlers.analysis_result import AnalysisResultHandler
 from metadefender_menlo.api.handlers.file_metadata import InboundMetadataHandler
@@ -29,19 +32,31 @@ settings = {}
 def init_logging(config):    
     if "enabled" not in config or not config["enabled"]:
         return
-    
+
+    load_dotenv()
+
     logger = logging.getLogger()
+    logging.getLogger('tornado.access').disabled = True
     logger.setLevel(config["level"])
     logfile = config["logfile"]
-
     log_handler = TimedRotatingFileHandler(filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
-    
+    log_handlerKafka = KafkaLogHandler()
+    my_filter = MyFilter()
     log_format = '%(asctime)s - %(levelname)s - %(filename)s > %(funcName)s:%(lineno)d - %(message)s'
+
     formatter = logging.Formatter(fmt=log_format, datefmt='%m/%d/%Y %I:%M:%S %p')
+
     log_handler.setFormatter(formatter)
+    
+    if not(hasattr(log_handlerKafka,"sender")):
+        logger.addHandler(log_handler)
+        logging.error("Kafka error")
+    else:
+        logger.addHandler(log_handlerKafka)
 
-    logger.addHandler(log_handler)
-
+    for handler in logging.getLogger().handlers:
+        handler.addFilter(my_filter)
+        
 def initial_config():
     
     with open("config.yml", 'r') as stream:

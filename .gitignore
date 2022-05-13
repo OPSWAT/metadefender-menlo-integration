@@ -1,4 +1,6 @@
 __pycache__
 kubernetes/ssl
+kubernetes/deployment.yaml
+docker/kafka-docker
 app.log
 .env

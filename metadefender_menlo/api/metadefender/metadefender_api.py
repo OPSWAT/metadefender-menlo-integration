@@ -11,7 +11,6 @@ class MetaDefenderAPI(ABC):
     server_url = 'http://localhost:8008'
     md_cls = lambda url, key: None
     report_url = ""
-
     api_endpoints = {
         "submit_file": {
             "type": "POST",

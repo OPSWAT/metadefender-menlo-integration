@@ -4,10 +4,9 @@ import logging
 
 from metadefender_menlo.api.responses.file_submit import FileSubmit
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
-
 class FileSubmitHandler(BaseHandler):
 
-    async def post(self):   
+    async def post(self):
         logging.info("POST /api/v1/file > Parse multipart")   
         apikey = self.request.headers.get('Authorization')
         #TODO: log errors     

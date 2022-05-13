@@ -22,6 +22,9 @@ spec:
             cpu: 250m
             memory: 512Mi
         image: ${AWS_ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:${MENLO_ENV}-${VERSION}
+        env:
+          - name: MENLO_ENV
+            value: {{MENLO_ENV}}
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

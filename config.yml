@@ -5,7 +5,7 @@ api:
     apikey: null
   url: 
     core: https://1.2.3.4:8008
-    cloud: https://api.metadefender.com/v4
+    cloud: https://api.metadefender.com/v4    
 server: 
   port: 3000
   host: "0.0.0.0"
@@ -17,6 +17,6 @@ https:
 logging:
   enabled: true
   level: INFO
-  logfile: ./app.log
+  logfile: /var/log/metadefender-menlo/app.log
   interval: 24
   backup_count: 30
