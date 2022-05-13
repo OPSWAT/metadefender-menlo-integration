@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metadefender-menlo
+spec:
+  selector:
+    matchLabels:
+      app: metadefender-menlo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: metadefender-menlo
+    spec:
+      containers:
+      - name: metadefender-menlo
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 512Mi
+        image: ${AWS_ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:${MENLO_ENV}-${VERSION}
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 3000
+          initialDelaySeconds: 3
+          periodSeconds: 10
