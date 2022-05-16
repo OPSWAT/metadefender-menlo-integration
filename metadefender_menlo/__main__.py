@@ -52,7 +52,6 @@ def init_logging(config):
         logger.addHandler(log_handler)
         logging.error("Kafka error")
     else:
-        logger.addHandler(log_handler)
         logger.addHandler(log_handlerKafka)
 
     for handler in logging.getLogger().handlers:
