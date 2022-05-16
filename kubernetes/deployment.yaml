@@ -24,7 +24,9 @@ spec:
         image: ${AWS_ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:${MENLO_ENV}-${VERSION}
         env:
           - name: MENLO_ENV
-            value: {{MENLO_ENV}}
+            value: ${MENLO_ENV}
+          - name: AWS_REGION
+            value: us-west-2
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

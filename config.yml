@@ -17,6 +17,6 @@ https:
 logging:
   enabled: true
   level: INFO
-  logfile: /var/log/metadefender-menlo/app.log
+  logfile: ./app.log
   interval: 24
   backup_count: 30

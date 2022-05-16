@@ -21,7 +21,7 @@ definitions:
               ENV="dev"
             elif [[ $BITBUCKET_BRANCH == "main" ]]; then
               ENV="prod"
-            else ENV="test"
+            else ENV="dev"
             fi
             export MENLO_ENV=$ENV
             cd kubernetes
@@ -30,7 +30,7 @@ definitions:
             ./deploy.aws.sh push_image
     - step: &deploy
         name: Deploy to EKS
-        deployment: test
+        deployment: dev
         services:
           - docker
         caches:

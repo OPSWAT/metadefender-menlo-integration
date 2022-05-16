@@ -60,8 +60,6 @@ function push_image() {
 }
 
 function apply_deployment() {
-  sed "s|{{MENLO_ENV}}|${MENLO_ENV}|g" deployment.template > deployment.yaml
-  sed -i "s|{{VERSION}}|${VERSION}|g" deployment.yaml
   kubectl -n $EKS_NAMESPACE apply -f deployment.yaml
 }
 
