@@ -1,5 +1,7 @@
 
 
+from ast import Not
+from queue import Empty
 import sys 
 from os import environ
 import json
@@ -62,7 +64,7 @@ class KafkaLogHandler(Handler):
         has an 'encoding' attribute, it is used to determine how to do the
         output to the stream.
         """
-        if record.request_id == "":
+        if not record.request_id:
             record.request_id = 'internal'
         
         try:
