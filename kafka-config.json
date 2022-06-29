@@ -1,37 +1,37 @@
 {
-    "menlo_middleware_dev":{
-        "TOPIC":"dev_menlo_middleware",
-        "CLIENT_ID": "kafkaLabs",
-        "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
-        "SSL": true,
-        "MAXIMUM_MESSAGE_SIZE": 900000
-    },
-    "menlo_middleware_staging":{
-        "TOPIC":"staging_menlo_middleware",
-        "CLIENT_ID": "kafkaLabs",
-        "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
-        "SSL": true,
-        "MAXIMUM_MESSAGE_SIZE": 900000
-    },
-    "menlo_middleware_prod":{
-        "TOPIC":"menlo_middleware",
-        "CLIENT_ID": "kafkaLabs",
-        "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
-        "SSL": true,
-        "MAXIMUM_MESSAGE_SIZE": 900000
-    },
-    "menlo_middleware_qa":{
-        "TOPIC":"qa_menlo_middleware",
-        "CLIENT_ID": "kafkaLabs",
-        "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
-        "SSL": true,
-        "MAXIMUM_MESSAGE_SIZE": 900000
-    },
-    "menlo_middleware_local":{
-        "TOPIC":"test",
-        "CLIENT_ID": "kafkaLabs",
-        "SERVER": "0.0.0.0:9092",
-        "SSL": false,
-        "MAXIMUM_MESSAGE_SIZE": 900000
-    }
+  "menlo_middleware_dev": {
+    "TOPIC": "menlo_middleware",
+    "CLIENT_ID": "kafkaLabs",
+    "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
+    "SSL": true,
+    "MAXIMUM_MESSAGE_SIZE": 900000
+  },
+  "menlo_middleware_staging": {
+    "TOPIC": "staging_menlo_middleware",
+    "CLIENT_ID": "kafkaLabs",
+    "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
+    "SSL": true,
+    "MAXIMUM_MESSAGE_SIZE": 900000
+  },
+  "menlo_middleware_prod": {
+    "TOPIC": "menlo_middleware",
+    "CLIENT_ID": "kafkaLabs",
+    "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
+    "SSL": true,
+    "MAXIMUM_MESSAGE_SIZE": 900000
+  },
+  "menlo_middleware_qa": {
+    "TOPIC": "qa_menlo_middleware",
+    "CLIENT_ID": "kafkaLabs",
+    "SERVER": "b-1.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-2.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094,b-3.msklabs.70juoc.c4.kafka.us-west-2.amazonaws.com:9094",
+    "SSL": true,
+    "MAXIMUM_MESSAGE_SIZE": 900000
+  },
+  "menlo_middleware_local": {
+    "TOPIC": "test",
+    "CLIENT_ID": "kafkaLabs",
+    "SERVER": "0.0.0.0:9092",
+    "SSL": false,
+    "MAXIMUM_MESSAGE_SIZE": 900000
+  }
 }
