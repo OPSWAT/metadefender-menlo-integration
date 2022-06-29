@@ -62,6 +62,9 @@ class KafkaLogHandler(Handler):
         has an 'encoding' attribute, it is used to determine how to do the
         output to the stream.
         """
+        if record.request_id == "":
+            record.request_id = 'internal'
+        
         try:
             msg = {
                     "esIndexName":environ.get("MENLO_ENV", "dev"),
