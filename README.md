@@ -253,6 +253,32 @@ See the [Middleware Documentation](#Middleware-documentation) for details.
 5. Click on the table entry and you'll see the analyis details on the right side. 
 
 
+### Logging guide
+
+```
+SERVICE > TYPE > DETAILS
+
+SERVICE
+    - MenloPlugin
+    - MetaDefenderCloud
+
+TYPE:
+    - Request
+    - Response
+    - Iternal
+
+DETAILS: 
+    - <JSON Object>
+
+Exapmple:
+    MenloPlugin > Request > {method: GET, endpoint: "/api/v1/file/bzIyMDYyNDl6ekt5TElTZVMxNmllVHR2TWE"}
+    MetadeDefenderCloud > Request > {https://api.metadefender.com/v4/file/converted/bzIyMDYyNDl6ekt5TElTZVMxNmllVHR2TWE | {'apikey': '4da78a411dd24a44d839e16fa2be7c1f', 'x-forwarded-for': '81.196.34.198', 'x-real-ip': '81.196.34.198'}}
+    MetadeDefenderCloud > Response > {status_500}
+    MeloPlugin > Internal > "Error from md cloud"
+    MenloPlugin > Response > {500 response: sanitized file (binary data)}
+```
+
+
 ## Extras
 * [Postman collection](api/Menlo%20Security%20-%20Sanitization%20Public%20API.postman_collection.json)
 * [OpenAPI 3.0 Spec File](api/menlo-sanitization-openapi.yaml)
