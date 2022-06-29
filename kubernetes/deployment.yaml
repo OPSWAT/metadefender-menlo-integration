@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: metadefender-menlo-deployment
+  name: metadefender-menlo
 spec:
   selector:
     matchLabels:
@@ -13,11 +13,21 @@ spec:
         app: metadefender-menlo
     spec:
       containers:
-      - name: "metadefender-menlo-integration"
-        image: "<<middleware-container>>"
+      - name: metadefender-menlo
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 250m
+            memory: 512Mi
+        image: ${AWS_ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:${MENLO_ENV}-${VERSION}
         env:
-        - name: "apikey"
-          value: "<<MetaDefender-Cloud-apikey>>"
+          - name: MENLO_ENV
+            value: ${MENLO_ENV}
+          - name: AWS_REGION
+            value: us-west-2
+        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /api/v1/health

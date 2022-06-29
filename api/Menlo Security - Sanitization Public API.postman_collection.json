@@ -1,1836 +1,1477 @@
 {
-	"info": {
-		"_postman_id": "b2b9665d-d6f5-4607-9c0f-051a8d1304f2",
-		"name": "Menlo Security - Sanitization Public API",
-		"description": "This document outlines the required processing flow and API for a service implementing the Menlo REST API. This configurable interface will allow the MSIP to provide a file to an externally controlled API implementing the following defined interface. The primary purpose of this integration is to submit a file to the external API for additional file processing. The external API can then process the file and make the outcome available to the MSIP. Along with sending the file, MSIP will also be able to send specific metadata that can be used for auditing or as part of the analysis process",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Check for existing report",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/check?sha256=4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"check"
-					],
-					"query": [
-						{
-							"key": "sha256",
-							"value": "4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31",
-							"description": "(Required) The SHA256 for the file"
-						}
-					]
-				},
-				"description": "Retrieve existing report, if existing, based on SHA256."
-			},
-			"response": [
-				{
-					"name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"check"
-							],
-							"query": [
-								{
-									"key": "sha256",
-									"value": "<<SHA256 example>>"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"check"
-							],
-							"query": [
-								{
-									"key": "sha256",
-									"value": "<<SHA256 example>>"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Request processed successfully.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"check"
-							],
-							"query": [
-								{
-									"key": "sha256",
-									"value": "<<SHA256 example>>"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"result\": \"found\",\n \"uuid\": \"“<unique identifier>”\"\n}"
-				},
-				{
-					"name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"check"
-							],
-							"query": [
-								{
-									"key": "sha256",
-									"value": "<<SHA256 example>>"
-								}
-							]
-						}
-					},
-					"status": "Service Unavailable",
-					"code": 503,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Hash not found",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"check"
-							],
-							"query": [
-								{
-									"key": "sha256",
-									"value": "<<SHA256 example>>"
-								}
-							]
-						}
-					},
-					"status": "Not Found",
-					"code": 404,
-					"_postman_previewlanguage": "text",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "text/plain"
-						}
-					],
-					"cookie": [],
-					"body": ""
-				},
-				{
-					"name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"check"
-							],
-							"query": [
-								{
-									"key": "sha256",
-									"value": "<<SHA256 example>>"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				}
-			]
-		},
-		{
-			"name": "File metadata",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "multipart/form-data"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "userid",
-							"value": "<string>",
-							"description": "The user ID of the user requesting the file"
-						},
-						{
-							"key": "srcuri",
-							"value": "<string>",
-							"description": "The URI of the original request for the file"
-						},
-						{
-							"key": "clientip",
-							"value": "<string>",
-							"description": "The detected IP of the client requesting the file."
-						},
-						{
-							"key": "sha256",
-							"value": "<string>",
-							"description": "The sha256 of the requested file"
-						},
-						{
-							"key": "filename",
-							"value": "<string>",
-							"description": "The filename of the requested file"
-						},
-						{
-							"key": "file_type",
-							"value": "<string>",
-							"description": "The file type as determined by MSIP"
-						},
-						{
-							"key": "filesize",
-							"value": "<integer>",
-							"description": "The file size"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{baseUrl}}/inbound",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"inbound"
-					]
-				},
-				"description": "Provide file metadata"
-			},
-			"response": [
-				{
-					"name": "Request processed successfully.",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/inbound",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"inbound"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"result\": \"accepted\",\n \"uuid\": \"“<unique identifier>”\"\n}"
-				},
-				{
-					"name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/inbound",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"inbound"
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/inbound",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"inbound"
-							]
-						}
-					},
-					"status": "Service Unavailable",
-					"code": 503,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/inbound",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"inbound"
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "The user ID of the user requesting the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "The URI of the original request for the file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "The detected IP of the client requesting the file.",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "The sha256 of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "The filename of the requested file",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "The file type as determined by MSIP",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "The file size",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/inbound",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"inbound"
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				}
-			]
-		},
-		{
-			"name": "File submission",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "bd60d206-df10-405f-a87e-259dd1de63dc",
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"pm.environment.set(\"uuid\", jsonData[\"uuid\"]);",
-							"",
-							"postman.setNextRequest('Get Result');"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "multipart/form-data"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "userid",
-							"value": "<<your-user>>",
-							"description": "undefined"
-						},
-						{
-							"key": "srcuri",
-							"value": "https://corporate.com/demo.pdf",
-							"description": "undefined"
-						},
-						{
-							"key": "clientip",
-							"value": "10.0.1.231",
-							"description": "undefined"
-						},
-						{
-							"key": "sha256",
-							"value": "4bfd253d72f73ccb3003c7f6ab71176e101b327f95a7e36619c53e630579fd31",
-							"description": "undefined"
-						},
-						{
-							"key": "filename",
-							"value": "demo.pdf",
-							"description": "undefined"
-						},
-						{
-							"key": "file_type",
-							"value": "PDF",
-							"description": "undefined"
-						},
-						{
-							"key": "filesize",
-							"value": "2321",
-							"description": "undefined"
-						},
-						{
-							"key": "report",
-							"type": "file",
-							"src": "/Users/george-work/Downloads/demo.pdf"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/submit",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"submit"
-					]
-				},
-				"description": "Submit the file for analysis"
-			},
-			"response": [
-				{
-					"name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/submit",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"submit"
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/submit",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"submit"
-							]
-						}
-					},
-					"status": "Service Unavailable",
-					"code": 503,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Request processed successfully.",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/submit",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"submit"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "{\n \"result\": \"accepted\",\n \"uuid\": \"“<unique identifier>”\"\n}"
-				},
-				{
-					"name": "Unprocessable Entity - Could not process the submitted file Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/submit",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"submit"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/submit",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"submit"
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "userid",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "srcuri",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "clientip",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "sha256",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filename",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "file_type",
-									"value": "<string>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								},
-								{
-									"key": "filesize",
-									"value": "<integer>",
-									"description": {
-										"content": "undefined",
-										"type": "text/plain"
-									}
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/submit",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"submit"
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				}
-			]
-		},
-		{
-			"name": "Get result",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "878e6021-4720-439a-96c5-e5ed51b82902",
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"var status = jsonData[\"result\"]",
-							"",
-							"if (status == 'pending') {",
-							"    setTimeout(function(){}, 500); ",
-							"    postman.setNextRequest('Fetch Analysis Result');",
-							"}",
-							"else {",
-							"    postman.setNextRequest('Retrieve sanitized file');    ",
-							"}"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/result?uuid=b160e42680994907ba19bf6af5145d6a",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"result"
-					],
-					"query": [
-						{
-							"key": "uuid",
-							"value": "b160e42680994907ba19bf6af5145d6a",
-							"description": "(Required) unique identifier (operation id)"
-						}
-					]
-				},
-				"description": "Retrieve the full analysis result."
-			},
-			"response": [
-				{
-					"name": "Identified (SHA256/UUID) was not found. Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/result?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"result"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Not Found",
-					"code": 404,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/result?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"result"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/result?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"result"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Result returned successfully.",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/result?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"result"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "text",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "multipart/form-data"
-						}
-					],
-					"cookie": [],
-					"body": ""
-				},
-				{
-					"name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/result?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"result"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Service Unavailable",
-					"code": 503,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/result?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"result"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				}
-			]
-		},
-		{
-			"name": "Retrieve sanitized file",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/file?uuid=bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"file"
-					],
-					"query": [
-						{
-							"key": "uuid",
-							"value": "bzIwMDgwNzNMLXY4OFRHZUxSLTN3SEl5eW9k",
-							"description": "(Required) unique identifier (operation id)"
-						}
-					]
-				},
-				"description": "This endpoint will only be invoked if file modification (CDR) is enabled. The /file endpoint will be called after a ‘completed’ result has been returned. If an HTTP 200 is returned, the binary file data in the body will be used to replace the ‘original file’ and used for any subsequent content inspection and download. Optionally the filename can be changed by including a ‘filename’ in the response to the /api/v1/result. Including the filename parameter is essential if the filetype has changed. If an `HTTP 204` is returned, the API will parse this as no modifications to the original file are needed and to use the original.\n"
-			},
-			"response": [
-				{
-					"name": "The sanitized file",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/file?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"file"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "text",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/octet-stream"
-						}
-					],
-					"cookie": [],
-					"body": "<binary>"
-				},
-				{
-					"name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/file?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"file"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Service Unavailable",
-					"code": 503,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/file?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"file"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/file?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"file"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				},
-				{
-					"name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/file?uuid=<string>",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"file"
-							],
-							"query": [
-								{
-									"key": "uuid",
-									"value": "<string>"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					],
-					"cookie": [],
-					"body": "\"<object>\""
-				}
-			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"id": "463f7efb-c6a8-4412-a51a-965f922138f0",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"id": "81ab6c03-af3b-4ee5-bc05-dcc67e26922e",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"id": "ed801e21-05d2-4b09-9d01-84d733b8fe4a",
-			"key": "baseUrl",
-			"value": "http://localhost/api/v1",
-			"type": "string"
-		}
-	],
-	"protocolProfileBehavior": {}
+  "info": {
+    "_postman_id": "5c4d66ae-89a4-4d36-b732-fc55c5e1a81a",
+    "name": "Menlo Security - Sanitization Public API",
+    "description": "This document outlines the required processing flow and API for a service implementing the Menlo REST API. This configurable interface will allow the MSIP to provide a file to an externally controlled API implementing the following defined interface. The primary purpose of this integration is to submit a file to the external API for additional file processing. The external API can then process the file and make the outcome available to the MSIP. Along with sending the file, MSIP will also be able to send specific metadata that can be used for auditing or as part of the analysis process",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Healthcheck",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/api/v1/health",
+          "host": ["{{host}}"],
+          "path": ["api", "v1", "health"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "File submission",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "pm.environment.set(\"uuid\", jsonData[\"uuid\"]);",
+              "",
+              "postman.setNextRequest('Get Result');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "multipart/form-data"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{apikey}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "userid",
+              "value": "<<your-user>>"
+            },
+            {
+              "key": "srcuri",
+              "value": "https://corporate.com/demo.pdf"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/home/andrei/Downloads/MDCL-Testing/Images/Portable Network Graphics.png"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{host}}/api/v1/submit",
+          "host": ["{{host}}"],
+          "path": ["api", "v1", "submit"]
+        },
+        "description": "Submit the file for analysis"
+      },
+      "response": [
+        {
+          "name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "undefined"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["submit"]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "undefined"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["submit"]
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Request processed successfully.",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "undefined"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["submit"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n \"result\": \"accepted\",\n \"uuid\": \"“<unique identifier>”\"\n}"
+        },
+        {
+          "name": "Unprocessable Entity - Could not process the submitted file Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "undefined"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["submit"]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "undefined"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["submit"]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "undefined"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "undefined"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["submit"]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        }
+      ]
+    },
+    {
+      "name": "Check for existing report",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{apikey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{host}}/api/v1/check?sha256=B9FDC10B47950B9E503EF4DC0EF42D28E7C37CCD749D4A5DCD7D9B3218996B7F",
+          "host": ["{{host}}"],
+          "path": ["api", "v1", "check"],
+          "query": [
+            {
+              "key": "apikey",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "sha256",
+              "value": "B9FDC10B47950B9E503EF4DC0EF42D28E7C37CCD749D4A5DCD7D9B3218996B7F"
+            }
+          ]
+        },
+        "description": "Retrieve existing report, if existing, based on SHA256."
+      },
+      "response": [
+        {
+          "name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
+              "host": ["{{baseUrl}}"],
+              "path": ["check"],
+              "query": [
+                {
+                  "key": "sha256",
+                  "value": "<<SHA256 example>>"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
+              "host": ["{{baseUrl}}"],
+              "path": ["check"],
+              "query": [
+                {
+                  "key": "sha256",
+                  "value": "<<SHA256 example>>"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Request processed successfully.",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
+              "host": ["{{baseUrl}}"],
+              "path": ["check"],
+              "query": [
+                {
+                  "key": "sha256",
+                  "value": "<<SHA256 example>>"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n \"result\": \"found\",\n \"uuid\": \"“<unique identifier>”\"\n}"
+        },
+        {
+          "name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
+              "host": ["{{baseUrl}}"],
+              "path": ["check"],
+              "query": [
+                {
+                  "key": "sha256",
+                  "value": "<<SHA256 example>>"
+                }
+              ]
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Hash not found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
+              "host": ["{{baseUrl}}"],
+              "path": ["check"],
+              "query": [
+                {
+                  "key": "sha256",
+                  "value": "<<SHA256 example>>"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        },
+        {
+          "name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/check?sha256=<<SHA256 example>>",
+              "host": ["{{baseUrl}}"],
+              "path": ["check"],
+              "query": [
+                {
+                  "key": "sha256",
+                  "value": "<<SHA256 example>>"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        }
+      ]
+    },
+    {
+      "name": "Get result",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "var status = jsonData[\"result\"]",
+              "",
+              "if (status == 'pending') {",
+              "    setTimeout(function(){}, 500); ",
+              "    postman.setNextRequest('Fetch Analysis Result');",
+              "}",
+              "else {",
+              "    postman.setNextRequest('Retrieve sanitized file');    ",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{apikey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{host}}/api/v1/result?uuid=bzIyMDMxNzZhdWk1WGRjUFdCNHlhOVVvdkk",
+          "host": ["{{host}}"],
+          "path": ["api", "v1", "result"],
+          "query": [
+            {
+              "key": "uuid",
+              "value": "bzIyMDMxNzZhdWk1WGRjUFdCNHlhOVVvdkk",
+              "description": "(Required) unique identifier (operation id)"
+            }
+          ]
+        },
+        "description": "Retrieve the full analysis result."
+      },
+      "response": [
+        {
+          "name": "Identified (SHA256/UUID) was not found. Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/result?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["result"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/result?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["result"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/result?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["result"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Result returned successfully.",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/result?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["result"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "multipart/form-data"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        },
+        {
+          "name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/result?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["result"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/result?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["result"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        }
+      ]
+    },
+    {
+      "name": "Retrieve sanitized file",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{apikey}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{host}}/api/v1/file?uuid=bzIyMDMxNzZhdWk1WGRjUFdCNHlhOVVvdkk",
+          "host": ["{{host}}"],
+          "path": ["api", "v1", "file"],
+          "query": [
+            {
+              "key": "uuid",
+              "value": "bzIyMDMxNzZhdWk1WGRjUFdCNHlhOVVvdkk",
+              "description": "(Required) unique identifier (operation id)"
+            }
+          ]
+        },
+        "description": "This endpoint will only be invoked if file modification (CDR) is enabled. The /file endpoint will be called after a ‘completed’ result has been returned. If an HTTP 200 is returned, the binary file data in the body will be used to replace the ‘original file’ and used for any subsequent content inspection and download. Optionally the filename can be changed by including a ‘filename’ in the response to the /api/v1/result. Including the filename parameter is essential if the filetype has changed. If an `HTTP 204` is returned, the API will parse this as no modifications to the original file are needed and to use the original.\n"
+      },
+      "response": [
+        {
+          "name": "The sanitized file",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/file?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["file"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/octet-stream"
+            }
+          ],
+          "cookie": [],
+          "body": "<binary>"
+        },
+        {
+          "name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/file?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["file"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/file?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["file"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/file?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["file"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/file?uuid=<string>",
+              "host": ["{{baseUrl}}"],
+              "path": ["file"],
+              "query": [
+                {
+                  "key": "uuid",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        }
+      ]
+    },
+    {
+      "name": "File metadata (not-implemented)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "multipart/form-data"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{apikey}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "userid",
+              "value": "<string>",
+              "description": "The user ID of the user requesting the file"
+            },
+            {
+              "key": "srcuri",
+              "value": "<string>",
+              "description": "The URI of the original request for the file"
+            },
+            {
+              "key": "clientip",
+              "value": "<string>",
+              "description": "The detected IP of the client requesting the file."
+            },
+            {
+              "key": "sha256",
+              "value": "<string>",
+              "description": "The sha256 of the requested file"
+            },
+            {
+              "key": "filename",
+              "value": "<string>",
+              "description": "The filename of the requested file"
+            },
+            {
+              "key": "file_type",
+              "value": "<string>",
+              "description": "The file type as determined by MSIP"
+            },
+            {
+              "key": "filesize",
+              "value": "<integer>",
+              "description": "The file size"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{host}}/api/v1/inbound",
+          "host": ["{{host}}"],
+          "path": ["api", "v1", "inbound"]
+        },
+        "description": "Provide file metadata"
+      },
+      "response": [
+        {
+          "name": "Request processed successfully.",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "The user ID of the user requesting the file"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "The URI of the original request for the file"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "The detected IP of the client requesting the file."
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "The sha256 of the requested file"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "The filename of the requested file"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "The file type as determined by MSIP"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "The file size"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inbound",
+              "host": ["{{baseUrl}}"],
+              "path": ["inbound"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n \"result\": \"accepted\",\n \"uuid\": \"“<unique identifier>”\"\n}"
+        },
+        {
+          "name": "Unauthorized request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "The user ID of the user requesting the file"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "The URI of the original request for the file"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "The detected IP of the client requesting the file."
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "The sha256 of the requested file"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "The filename of the requested file"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "The file type as determined by MSIP"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "The file size"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inbound",
+              "host": ["{{baseUrl}}"],
+              "path": ["inbound"]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Service Unavailable Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "The user ID of the user requesting the file"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "The URI of the original request for the file"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "The detected IP of the client requesting the file."
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "The sha256 of the requested file"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "The filename of the requested file"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "The file type as determined by MSIP"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "The file size"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inbound",
+              "host": ["{{baseUrl}}"],
+              "path": ["inbound"]
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Internal Server Error Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "The user ID of the user requesting the file"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "The URI of the original request for the file"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "The detected IP of the client requesting the file."
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "The sha256 of the requested file"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "The filename of the requested file"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "The file type as determined by MSIP"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "The file size"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inbound",
+              "host": ["{{baseUrl}}"],
+              "path": ["inbound"]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        },
+        {
+          "name": "Bad request Plugin will halt and fallback to configured on-error outcome.\n",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userid",
+                  "value": "<string>",
+                  "description": "The user ID of the user requesting the file"
+                },
+                {
+                  "key": "srcuri",
+                  "value": "<string>",
+                  "description": "The URI of the original request for the file"
+                },
+                {
+                  "key": "clientip",
+                  "value": "<string>",
+                  "description": "The detected IP of the client requesting the file."
+                },
+                {
+                  "key": "sha256",
+                  "value": "<string>",
+                  "description": "The sha256 of the requested file"
+                },
+                {
+                  "key": "filename",
+                  "value": "<string>",
+                  "description": "The filename of the requested file"
+                },
+                {
+                  "key": "file_type",
+                  "value": "<string>",
+                  "description": "The file type as determined by MSIP"
+                },
+                {
+                  "key": "filesize",
+                  "value": "<integer>",
+                  "description": "The file size"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inbound",
+              "host": ["{{baseUrl}}"],
+              "path": ["inbound"]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "\"<object>\""
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost/api/v1",
+      "type": "string"
+    }
+  ]
 }

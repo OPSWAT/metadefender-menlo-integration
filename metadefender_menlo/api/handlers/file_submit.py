@@ -4,12 +4,11 @@ import logging
 
 from metadefender_menlo.api.responses.file_submit import FileSubmit
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
-
 class FileSubmitHandler(BaseHandler):
 
-    async def post(self):   
+    async def post(self):
         logging.info("POST /api/v1/file > Parse multipart")   
-
+        apikey = self.request.headers.get('Authorization')
         #TODO: log errors     
         if len(self.request.files) < 1:
             logging.error("No file uploaded > is call originating from Menlo?")
@@ -30,8 +29,7 @@ class FileSubmitHandler(BaseHandler):
             logging.debug("{0}: {1}".format(arg, self.get_argument(arg)))
             metadata[arg] = str(self.request.arguments[arg])
 
-
-        # make request to MetaDefender         
-        json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata)    
+        # make request to MetaDefender
+        json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata, apikey=apikey, ip=self.client_ip)
         json_response, http_status = FileSubmit().handle_response(http_status, json_response)
         self.json_response(json_response, http_status)

@@ -1,8 +1,5 @@
-# import requests
 from tornado.httpclient import AsyncHTTPClient
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-import datetime
-import os
 import json
 import logging
 
@@ -15,8 +12,6 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
     
     def _get_submit_file_headers(self, filename, metadata):    
-        metadata_str = json.dumps(metadata) if metadata is not None else ""
-    
         headers = {
             "filename": filename, 
             "Content-Type": "application/octet-stream", 
@@ -32,9 +27,9 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             print("Unexpected response from MetaDefender: {0}".format(json_response))
             return False
         
-    async def retrieve_sanitized_file(self, data_id):        
+    async def retrieve_sanitized_file(self, data_id, apikey, ip):        
         logging.info("MetaDefender > Retrieve Sanitized file for {0}".format(data_id))
-        response, http_status = await self._request_as_json_status("sanitized_file", fields={"data_id": data_id})
+        response, http_status = await self._request_as_json_status("sanitized_file", fields={"data_id": data_id}, headers={'apikey':apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
         if "sanitizedFilePath" in response:
             fileurl = response["sanitizedFilePath"]

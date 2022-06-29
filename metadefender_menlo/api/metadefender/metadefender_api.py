@@ -1,9 +1,7 @@
-# import requests
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPClientError
 from abc import ABC, abstractmethod
 import datetime
-import os
 import json
 import logging
 
@@ -13,7 +11,6 @@ class MetaDefenderAPI(ABC):
     server_url = 'http://localhost:8008'
     md_cls = lambda url, key: None
     report_url = ""
-    
     api_endpoints = {
         "submit_file": {
             "type": "POST",
@@ -26,12 +23,13 @@ class MetaDefenderAPI(ABC):
         "sanitized_file": {
             "type": "GET",
             "endpoint": "/file/converted/{data_id}"
-        }, 
+        },
         "hash_lookup": {
-            "type": "GET", 
+            "type": "GET",
             "endpoint": "/hash/{hash}"
         }
     }
+
     @staticmethod
     def config(url, apikey, metadefender_cls):
         MetaDefenderAPI.server_url = url
@@ -50,41 +48,41 @@ class MetaDefenderAPI(ABC):
     @abstractmethod
     def _get_submit_file_headers(self, filename, metadata):
         pass
-    
+
     @abstractmethod
     def check_analysis_complete(self, json_response):
         pass
-    
-    async def submit_file(self, filename, fp, analysis_callback_url=None, metadata=None):  
-        logging.info("Submit file > filename: {0} ".format(filename))   
-    
+
+    async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
+        logging.info("Submit file > filename: {0} ".format(filename))
+
         headers = self._get_submit_file_headers(filename, metadata)
-        
+        headers = {**headers, **{'apikey': apikey}, 'x-forwarded-for': ip, 'x-real-ip': ip}
         json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
 
         return (json_response, http_status)
 
-    async def retrieve_result(self, data_id):
+    async def retrieve_result(self, data_id, apikey):
         logging.info("MetaDefender > Retrieve result for {0}".format(data_id))
-        
+
         analysis_completed = False
-        
-        while (not analysis_completed):            
-            json_response, http_status = await self.check_result(data_id)
-            analysis_completed = self._check_analysis_complete(json_response)            
-        
+
+        while (not analysis_completed):
+            json_response, http_status = await self.check_result(data_id, apikey)
+            analysis_completed = self._check_analysis_complete(json_response)
+
         return (json_response, http_status)
 
-    async def check_result(self, data_id):
-        logging.info("MetaDefender > Check result for {0}".format(data_id))        
-        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id})
-    
-    async def hash_lookup(self, sha256):
-        logging.info("MetaDefender > Hash Lookup for {0}".format(sha256))    
-        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256})
-    
+    async def check_result(self, data_id, apikey, ip):
+        logging.info("MetaDefender > Check result for {0}".format(data_id))
+        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
+
+    async def hash_lookup(self, sha256, apikey, ip):
+        logging.info("MetaDefender > Hash Lookup for {0}".format(sha256))
+        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
+
     @abstractmethod
-    async def retrieve_sanitized_file(self, data_id):        
+    async def retrieve_sanitized_file(self, data_id,apikey, ip):
         pass
 
     async def _request_as_json_status(self, endpoint_id, fields=None, headers=None, body=None):
@@ -96,23 +94,28 @@ class MetaDefenderAPI(ABC):
 
     async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
 
-        logging.info("MetaDefender Request > ({0}) for {1}".format(endpoint_id, fields))   
+        logging.info("{0} > {1} > {2}".format("MetaDefenderCloud", "Reqeust", {
+            "endpoint": endpoint_id,
+            "fields": fields
+        }))
 
         endpoint_details = self.api_endpoints[endpoint_id]
         endpoint_path = endpoint_details["endpoint"]
         if fields is not None:
             endpoint_path = endpoint_details["endpoint"].format(**fields)
         metadefender_url = self.server_url + endpoint_path
+
         request_method = endpoint_details["type"]
-        
-        if self.apikey is not None: 
-            if not headers:
-                headers = {}
-            logging.debug("Add apikey: {0}".format(self.apikey))
+
+        if headers and self.apikey and headers["apikey"] is None:
             headers["apikey"] = self.apikey
 
-        before_submission = datetime.datetime.now()        
-        logging.info("Request [{0}]: {1}".format(request_method, metadefender_url))
+        before_submission = datetime.datetime.now()
+        logging.info("{0} > {1} >{2}".format("MetaDefenderCloud", "Request", {
+            "request_method": request_method,
+            "endpoint": metadefender_url, 
+            "headers": headers 
+        }))
 
         http_status = None
         response_body = None
@@ -127,9 +130,13 @@ class MetaDefenderAPI(ABC):
         except Exception as e:
             http_status = 500
             response_body = '{"error": "' + e.strerror + '"}'
-                            
+
         total_submission_time = datetime.datetime.now() - before_submission
 
-        logging.info("{timestamp} {name} >> time: {total_time}, http status: {status}".format(timestamp=before_submission, name=endpoint_id, total_time=total_submission_time, status=http_status))                
+        logging.info("{0} > {1} > {2}".format("MenloPlugin", "Internal", {
+            "endpoint": endpoint_id,
+            "request_time": total_submission_time,
+            "http_status": http_status
+        }))
 
         return (response_body, http_status)
