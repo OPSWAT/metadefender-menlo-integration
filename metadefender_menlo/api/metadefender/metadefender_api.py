@@ -94,7 +94,10 @@ class MetaDefenderAPI(ABC):
 
     async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
 
-        logging.info("MetaDefender Request > ({0}) for {1}".format(endpoint_id, fields))
+        logging.info("{0} > {1} > {2}".format("MetaDefenderCloud", "Reqeust", {
+            "endpoint": endpoint_id,
+            "fields": fields
+        }))
 
         endpoint_details = self.api_endpoints[endpoint_id]
         endpoint_path = endpoint_details["endpoint"]
@@ -108,7 +111,11 @@ class MetaDefenderAPI(ABC):
             headers["apikey"] = self.apikey
 
         before_submission = datetime.datetime.now()
-        logging.info("Request [{0}]: {1} | {2}".format(request_method, metadefender_url, headers))
+        logging.info("{0} > {1} >{2}".format("MetaDefenderCloud", "Request", {
+            "request_method": request_method,
+            "endpoint": metadefender_url, 
+            "headers": headers 
+        }))
 
         http_status = None
         response_body = None
@@ -126,6 +133,10 @@ class MetaDefenderAPI(ABC):
 
         total_submission_time = datetime.datetime.now() - before_submission
 
-        logging.info("{timestamp} {name} >> time: {total_time}, http status: {status}".format(timestamp=before_submission, name=endpoint_id, total_time=total_submission_time, status=http_status))
+        logging.info("{0} > {1} > {2}".format("MenloPlugin", "Internal", {
+            "endpoint": endpoint_id,
+            "request_time": total_submission_time,
+            "http_status": http_status
+        }))
 
         return (response_body, http_status)

@@ -1,5 +1,7 @@
 
 
+from ast import Not
+from queue import Empty
 import sys 
 from os import environ
 import json
@@ -62,12 +64,15 @@ class KafkaLogHandler(Handler):
         has an 'encoding' attribute, it is used to determine how to do the
         output to the stream.
         """
+        if not record.request_id:
+            record.request_id = 'internal'
+        
         try:
             msg = {
-                    "esIndexName":environ.get("MENLO_ENV"),
+                    "esIndexName":environ.get("MENLO_ENV", "dev"),
                     "type":record.levelname,
                     "id":record.request_id,
-                    "region":environ.get("AWS_REGION"),
+                    "region":environ.get("AWS_REGION", "us-west-2"),
                     "message":record.getMessage()
                 }
             try:
