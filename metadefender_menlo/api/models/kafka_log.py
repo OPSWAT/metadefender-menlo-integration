@@ -64,10 +64,10 @@ class KafkaLogHandler(Handler):
         """
         try:
             msg = {
-                    "esIndexName":environ.get("MENLO_ENV"),
+                    "esIndexName":environ.get("MENLO_ENV", "dev"),
                     "type":record.levelname,
                     "id":record.request_id,
-                    "region":environ.get("AWS_REGION"),
+                    "region":environ.get("AWS_REGION", "us-west-2"),
                     "message":record.getMessage()
                 }
             try:
