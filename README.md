@@ -269,6 +269,7 @@ TYPE:
 
 DETAILS: 
     - <JSON Object>
+    - <Order>
 
 Exapmple:
     MenloPlugin > Request > {method: GET, endpoint: "/api/v1/file/bzIyMDYyNDl6ekt5TElTZVMxNmllVHR2TWE"}
