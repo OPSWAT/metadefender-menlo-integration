@@ -1,7 +1,7 @@
 from metadefender_menlo.api.responses.retrieve_sanitized import RetrieveSanitized
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 import logging
-from log_types import SERVICE, TYPE
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
 class RetrieveSanitizedHandler(BaseHandler):
@@ -9,7 +9,7 @@ class RetrieveSanitizedHandler(BaseHandler):
         uuid = self.get_argument('uuid')
         apikey = self.request.headers.get('Authorization')
         logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-                     "method": "GET", "endpoint": "/api/v1/file/%s" % uuid}))
+            "order": 1, "method": "GET", "endpoint": "/api/v1/file/%s" % uuid}))
 
         file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid, apikey, self.client_ip)
 

@@ -5,7 +5,7 @@ import datetime
 import os
 import json
 import logging
-from metadefender_menlo.log_types import SERVICE, TYPE
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
 class MetaDefenderCoreAPI(MetaDefenderAPI):

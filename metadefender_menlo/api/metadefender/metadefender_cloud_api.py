@@ -1,7 +1,7 @@
 from tornado.httpclient import AsyncHTTPClient
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 import json
-from log_types import SERVICE, TYPE
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 import logging
 
 
@@ -32,13 +32,13 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip):
         logging.info(
-            "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Retrieve Sanitized file for %s" % data_id}))
+            "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"order": "2-3", "message": "Retrieve Sanitized file for %s" % data_id}))
         response, http_status = await self._request_as_json_status("sanitized_file", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
         if "sanitizedFilePath" in response:
             fileurl = response["sanitizedFilePath"]
             logging.info(
-                "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Download Sanitized file from %s" % fileurl}))
+                "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"order": 7, "message": "Download Sanitized file from %s" % fileurl}))
 
             http_client = AsyncHTTPClient(None, defaults=dict(
                 user_agent="MetaDefenderMenloMiddleware", validate_cert=False))

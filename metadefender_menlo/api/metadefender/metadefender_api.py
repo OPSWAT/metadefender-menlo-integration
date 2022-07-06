@@ -6,7 +6,7 @@ import datetime
 import json
 import logging
 
-from metadefender_menlo.log_types import SERVICE, TYPE
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
 class MetaDefenderAPI(ABC):
@@ -58,7 +58,7 @@ class MetaDefenderAPI(ABC):
 
     async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
         logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Iternal, {
-                     "message": "Submit file > filename: %s" % filename}))
+            "order": 3, "message": "Submit file > filename: %s" % filename}))
 
         headers = self._get_submit_file_headers(filename, metadata)
         headers = {**headers, **{'apikey': apikey},
@@ -81,12 +81,12 @@ class MetaDefenderAPI(ABC):
 
     async def check_result(self, data_id, apikey, ip):
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Check result for %s" % data_id}))
+            SERVICE.MetaDefenderCloud, TYPE.Response, {"order": "2-3", "message": "Check result for % s" % data_id}))
         return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     async def hash_lookup(self, sha256, apikey, ip):
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Request, {"message": "Hash Lookup for" % sha256}))
+            SERVICE.MetaDefenderCloud, TYPE.Request, {"order": "2-3", "message": "Hash Lookup for {0}".format(sha256)}))
         return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     @abstractmethod
@@ -102,7 +102,8 @@ class MetaDefenderAPI(ABC):
 
     async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
 
-        logging.info("{0} > {1} > {2}".format( SERVICE.MetaDefenderCloud, TYPE.Request, {
+        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Request, {
+            "order": 4,
             "endpoint": endpoint_id,
             "fields": fields
         }))
@@ -120,6 +121,7 @@ class MetaDefenderAPI(ABC):
 
         before_submission = datetime.datetime.now()
         logging.info("{0} > {1} >{2}".format(SERVICE.MetaDefenderCloud, TYPE.Request, {
+            "order": 5,
             "request_method": request_method,
             "endpoint": metadefender_url,
             "headers": headers
@@ -143,6 +145,7 @@ class MetaDefenderAPI(ABC):
         total_submission_time = datetime.datetime.now() - before_submission
 
         logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Iternal, {
+            "order": 6,
             "endpoint": endpoint_id,
             "request_time": total_submission_time,
             "http_status": http_status

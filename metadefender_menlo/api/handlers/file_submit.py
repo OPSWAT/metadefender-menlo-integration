@@ -1,7 +1,7 @@
 import tornado
 from tornado.web import HTTPError
 import logging
-from log_types import SERVICE, TYPE
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.responses.file_submit import FileSubmit
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 
@@ -9,7 +9,7 @@ from metadefender_menlo.api.handlers.base_handler import BaseHandler
 class FileSubmitHandler(BaseHandler):
 
     async def post(self):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {"order": 1,
                      "method": "POST", "endpoint": "/api/v1/file > Parse multipart"}))
         apikey = self.request.headers.get('Authorization')
         # TODO: log errors
@@ -26,14 +26,14 @@ class FileSubmitHandler(BaseHandler):
         info = self.request.files[field_name][0]
         filename, content_type = info["filename"], info["content_type"]
         fp = info["body"]
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {"message": 'Submit "%s" "%s" %d bytes' %
-                     filename % content_type % len(fp)}))
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {"order": 2,
+                     "message": "Submit {0} {1} {2} bytes".format(filename, content_type, len(fp))}))
 
         metadata = {}
         logging.debug("List of headers:")
         for arg in self.request.arguments.keys():
             logging.debug("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-                          "headers": "%s : %s" % arg % self.get_argument(arg)}))
+                          "headers": "{0} : {1}".format(arg, self.get_argument(arg))}))
             metadata[arg] = str(self.request.arguments[arg])
 
         # make request to MetaDefender

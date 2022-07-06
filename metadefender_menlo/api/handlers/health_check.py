@@ -1,7 +1,7 @@
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 import logging
 import json
-from log_types import SERVICE, TYPE
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
 class HealthCheckHandler(BaseHandler):
