@@ -57,7 +57,7 @@ class MetaDefenderAPI(ABC):
         pass
 
     async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Iternal, {
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
             "order": 3, "message": "Submit file > filename: %s" % filename}))
 
         headers = self._get_submit_file_headers(filename, metadata)
@@ -144,7 +144,7 @@ class MetaDefenderAPI(ABC):
 
         total_submission_time = datetime.datetime.now() - before_submission
 
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Iternal, {
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
             "order": 6,
             "endpoint": endpoint_id,
             "request_time": total_submission_time,

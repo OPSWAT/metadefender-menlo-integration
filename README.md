@@ -265,7 +265,7 @@ SERVICE
 TYPE:
     - Request
     - Response
-    - Iternal
+    - Internal
 
 DETAILS: 
     - <JSON Object>

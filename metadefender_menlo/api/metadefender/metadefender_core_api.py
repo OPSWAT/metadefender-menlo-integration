@@ -24,7 +24,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             "metadata": metadata_str
         }
         logging.debug("{0} > {1} > {2}Add headers: {0}".format(
-            SERVICE.MenloPlugin, TYPE.Iternal, {"headers": headers}))
+            SERVICE.MenloPlugin, TYPE.Internal, {"headers": headers}))
         return headers
 
     def check_analysis_complete(self, json_response):

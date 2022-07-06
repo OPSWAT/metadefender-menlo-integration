@@ -14,7 +14,7 @@ class FileSubmitHandler(BaseHandler):
         apikey = self.request.headers.get('Authorization')
         # TODO: log errors
         if len(self.request.files) < 1:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Iternal, {
+            logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
                           "message": "No file uploaded > is call originating from Menlo?"}))
             raise HTTPError(400, 'No file uploaded')
         elif len(self.request.files) > 1:

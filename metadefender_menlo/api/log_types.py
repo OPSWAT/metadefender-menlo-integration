@@ -5,4 +5,4 @@ class SERVICE:
 class TYPE:
     Request="Request"
     Response="Response"
-    Iternal="Iternal"
+    Internal="Internal"
