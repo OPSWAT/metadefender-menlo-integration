@@ -57,8 +57,6 @@ class MetaDefenderAPI(ABC):
         pass
 
     async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
-            "order": 3, "message": "Submit file > filename: %s" % filename}))
 
         headers = self._get_submit_file_headers(filename, metadata)
         headers = {**headers, **{'apikey': apikey},
@@ -80,13 +78,11 @@ class MetaDefenderAPI(ABC):
         return (json_response, http_status)
 
     async def check_result(self, data_id, apikey, ip):
-        logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Response, {"order": "2-3", "message": "Check result for % s" % data_id}))
         return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     async def hash_lookup(self, sha256, apikey, ip):
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Request, {"order": "2-3", "message": "Hash Lookup for {0}".format(sha256)}))
+            SERVICE.MetaDefenderCloud, TYPE.Request, { "message": "Hash Lookup for {0}".format(sha256)}))
         return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     @abstractmethod
@@ -102,12 +98,6 @@ class MetaDefenderAPI(ABC):
 
     async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
 
-        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Request, {
-            "order": 4,
-            "endpoint": endpoint_id,
-            "fields": fields
-        }))
-
         endpoint_details = self.api_endpoints[endpoint_id]
         endpoint_path = endpoint_details["endpoint"]
         if fields is not None:
@@ -121,10 +111,9 @@ class MetaDefenderAPI(ABC):
 
         before_submission = datetime.datetime.now()
         logging.info("{0} > {1} >{2}".format(SERVICE.MetaDefenderCloud, TYPE.Request, {
-            "order": 5,
             "request_method": request_method,
             "endpoint": metadefender_url,
-            "headers": headers
+            "apikey": headers["apikey"]
         }))
 
         http_status = None
@@ -143,12 +132,10 @@ class MetaDefenderAPI(ABC):
             response_body = '{"error": "' + e.strerror + '"}'
 
         total_submission_time = datetime.datetime.now() - before_submission
-
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
-            "order": 6,
-            "endpoint": endpoint_id,
-            "request_time": total_submission_time,
-            "http_status": http_status
+        
+        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            "request_time": total_submission_time.total_seconds(),
+            "http_status": http_status,
         }))
 
         return (response_body, http_status)

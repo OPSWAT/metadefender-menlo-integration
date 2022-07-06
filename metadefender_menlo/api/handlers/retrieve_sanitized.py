@@ -9,7 +9,7 @@ class RetrieveSanitizedHandler(BaseHandler):
         uuid = self.get_argument('uuid')
         apikey = self.request.headers.get('Authorization')
         logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-            "order": 1, "method": "GET", "endpoint": "/api/v1/file/%s" % uuid}))
+            "method": "GET", "endpoint": "/api/v1/file/%s" % uuid}))
 
         file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid, apikey, self.client_ip)
 

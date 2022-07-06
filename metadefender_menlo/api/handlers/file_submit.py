@@ -9,8 +9,6 @@ from metadefender_menlo.api.handlers.base_handler import BaseHandler
 class FileSubmitHandler(BaseHandler):
 
     async def post(self):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {"order": 1,
-                     "method": "POST", "endpoint": "/api/v1/file > Parse multipart"}))
         apikey = self.request.headers.get('Authorization')
         # TODO: log errors
         if len(self.request.files) < 1:
@@ -26,8 +24,10 @@ class FileSubmitHandler(BaseHandler):
         info = self.request.files[field_name][0]
         filename, content_type = info["filename"], info["content_type"]
         fp = info["body"]
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {"order": 2,
-                     "message": "Submit {0} {1} {2} bytes".format(filename, content_type, len(fp))}))
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request,
+                                              {"method": "POST", "fileName": filename, "endpoint": "/api/v1/file",
+                                               "content_type": content_type, "dimension": "{0} bytes".format(len(fp))
+                                               }))
 
         metadata = {}
         logging.debug("List of headers:")

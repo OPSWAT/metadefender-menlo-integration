@@ -9,9 +9,8 @@ class CheckExistingHandler(BaseHandler):
         sha256 = self.get_query_argument('sha256')
         apikey = self.request.headers.get('Authorization')
         logging.info("{0} > {1} > {2}".format("MenloPlugin", "Request", {
-            "order": 1,
             "method": "GET",
-            "endpoint": "/api/v1/result/%s" % sha256
+            "endpoint": "/api/v1/result/".format(sha256)
         }))
 
         json_response, http_status = await self.metaDefenderAPI.hash_lookup(sha256, apikey, self.client_ip)

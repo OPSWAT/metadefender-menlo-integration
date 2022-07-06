@@ -19,7 +19,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             "rule": "multiscan,sanitize,unarchive"
         }
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
-            SERVICE.MenloPlugin, TYPE.Internal, {"headers": headers}))
+            SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
         return headers
 
     def check_analysis_complete(self, json_response):
@@ -31,14 +31,12 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             return False
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip):
-        logging.info(
-            "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"order": "2-3", "message": "Retrieve Sanitized file for %s" % data_id}))
         response, http_status = await self._request_as_json_status("sanitized_file", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
         if "sanitizedFilePath" in response:
             fileurl = response["sanitizedFilePath"]
             logging.info(
-                "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"order": 7, "message": "Download Sanitized file from %s" % fileurl}))
+                "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Download Sanitized file from %s" % fileurl}))
 
             http_client = AsyncHTTPClient(None, defaults=dict(
                 user_agent="MetaDefenderMenloMiddleware", validate_cert=False))

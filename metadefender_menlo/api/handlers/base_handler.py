@@ -25,13 +25,13 @@ class BaseHandler(RequestHandler):
 
     def json_response(self, data, status_code=200):
         logging.info("{0} > {1} > {2}".format("MenloPlugin", "Response", {
-                     "order": 7, "status": status_code, "result": data}))
+                     "status": status_code, "response": data}))
         self.set_status(status_code)
         self.set_header("Content-Type", 'application/json')
         self.write(json.dumps(data))
 
     def stream_response(self, data, status_code=200):
-        logging.info("{0} > {1} > {2}".format("MenloPlugin", "Response", status_code, {"order": 8,
+        logging.info("{0} > {1} > {2}".format("MenloPlugin", "Response", status_code, {
                      "status": status_code, "message": "sanitized file (binary data)"}))
         self.set_status(status_code)
         self.set_header("Content-Type", 'application/octet-stream')
