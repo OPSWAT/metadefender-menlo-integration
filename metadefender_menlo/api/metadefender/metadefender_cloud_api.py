@@ -32,12 +32,12 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip):
         response, http_status = await self._request_as_json_status("sanitized_file", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
-
+        fileurl = ""
         if "sanitizedFilePath" in response:
             fileurl = response["sanitizedFilePath"]
+        if fileurl != "":
             logging.info(
                 "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Download Sanitized file from %s" % fileurl}))
-
             http_client = AsyncHTTPClient(None, defaults=dict(
                 user_agent="MetaDefenderMenloMiddleware", validate_cert=False))
             response = await http_client.fetch(request=fileurl, method="GET")
@@ -45,5 +45,5 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             return (response.body, http_status)
         else:
             logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-                         "message": "Sanitized file not available!"}))
-        return (response, http_status)
+                "message": "Sanitized file not available!"}))
+        return ({"message": "Sanitized file not available!"}, http_status)
