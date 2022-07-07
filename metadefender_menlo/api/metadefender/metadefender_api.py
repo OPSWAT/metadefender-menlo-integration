@@ -1,3 +1,4 @@
+from typing import Type
 from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPClientError
 from abc import ABC, abstractmethod
@@ -5,11 +6,13 @@ import datetime
 import json
 import logging
 
+from metadefender_menlo.api.log_types import SERVICE, TYPE
+
 
 class MetaDefenderAPI(ABC):
     apikey = None
     server_url = 'http://localhost:8008'
-    md_cls = lambda url, key: None
+    def md_cls(url, key): return None
     report_url = ""
     api_endpoints = {
         "submit_file": {
@@ -38,7 +41,7 @@ class MetaDefenderAPI(ABC):
 
     @staticmethod
     def get_instance():
-        cls_func= MetaDefenderAPI.md_cls
+        cls_func = MetaDefenderAPI.md_cls
         return cls_func(MetaDefenderAPI.server_url, MetaDefenderAPI.apikey)
 
     @abstractmethod
@@ -54,16 +57,17 @@ class MetaDefenderAPI(ABC):
         pass
 
     async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
-        logging.info("Submit file > filename: {0} ".format(filename))
 
         headers = self._get_submit_file_headers(filename, metadata)
-        headers = {**headers, **{'apikey': apikey}, 'x-forwarded-for': ip, 'x-real-ip': ip}
+        headers = {**headers, **{'apikey': apikey},
+                   'x-forwarded-for': ip, 'x-real-ip': ip}
         json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
 
         return (json_response, http_status)
 
     async def retrieve_result(self, data_id, apikey):
-        logging.info("MetaDefender > Retrieve result for {0}".format(data_id))
+        logging.info("{0} > {1} > {2}".format(
+            SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Retrieve result for %s" % data_id}))
 
         analysis_completed = False
 
@@ -74,15 +78,15 @@ class MetaDefenderAPI(ABC):
         return (json_response, http_status)
 
     async def check_result(self, data_id, apikey, ip):
-        logging.info("MetaDefender > Check result for {0}".format(data_id))
         return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     async def hash_lookup(self, sha256, apikey, ip):
-        logging.info("MetaDefender > Hash Lookup for {0}".format(sha256))
+        logging.info("{0} > {1} > {2}".format(
+            SERVICE.MetaDefenderCloud, TYPE.Request, { "message": "Hash Lookup for {0}".format(sha256)}))
         return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     @abstractmethod
-    async def retrieve_sanitized_file(self, data_id,apikey, ip):
+    async def retrieve_sanitized_file(self, data_id, apikey, ip):
         pass
 
     async def _request_as_json_status(self, endpoint_id, fields=None, headers=None, body=None):
@@ -93,11 +97,6 @@ class MetaDefenderAPI(ABC):
         return (json_resp, http_status)
 
     async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
-
-        logging.info("{0} > {1} > {2}".format("MetaDefenderCloud", "Reqeust", {
-            "endpoint": endpoint_id,
-            "fields": fields
-        }))
 
         endpoint_details = self.api_endpoints[endpoint_id]
         endpoint_path = endpoint_details["endpoint"]
@@ -111,15 +110,16 @@ class MetaDefenderAPI(ABC):
             headers["apikey"] = self.apikey
 
         before_submission = datetime.datetime.now()
-        logging.info("{0} > {1} >{2}".format("MetaDefenderCloud", "Request", {
+        logging.info("{0} > {1} >{2}".format(SERVICE.MetaDefenderCloud, TYPE.Request, {
             "request_method": request_method,
-            "endpoint": metadefender_url, 
-            "headers": headers 
+            "endpoint": metadefender_url,
+            "apikey": headers["apikey"]
         }))
 
         http_status = None
         response_body = None
-        http_client = AsyncHTTPClient(None, defaults=dict(user_agent="MenloTornadoIntegration", validate_cert=False))
+        http_client = AsyncHTTPClient(None, defaults=dict(
+            user_agent="MenloTornadoIntegration", validate_cert=False))
         try:
             response = await http_client.fetch(request=metadefender_url, method=request_method, headers=headers, body=body)
             http_status = response.code
@@ -132,11 +132,10 @@ class MetaDefenderAPI(ABC):
             response_body = '{"error": "' + e.strerror + '"}'
 
         total_submission_time = datetime.datetime.now() - before_submission
-
-        logging.info("{0} > {1} > {2}".format("MenloPlugin", "Internal", {
-            "endpoint": endpoint_id,
-            "request_time": total_submission_time,
-            "http_status": http_status
+        
+        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            "request_time": total_submission_time.total_seconds(),
+            "http_status": http_status,
         }))
 
         return (response_body, http_status)
