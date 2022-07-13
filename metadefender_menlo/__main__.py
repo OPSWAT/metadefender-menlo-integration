@@ -37,6 +37,7 @@ def init_logging(config):
 
     logger = logging.getLogger()
     logging.getLogger('tornado.access').disabled = True
+    logging.getLogger('kafka.access').disabled = True
     logger.setLevel(config["level"])
     logfile = config["logfile"]
     log_handler = TimedRotatingFileHandler(filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])

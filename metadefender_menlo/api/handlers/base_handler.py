@@ -25,18 +25,18 @@ class BaseHandler(RequestHandler):
         self.client_ip = client_ip
 
     def json_response(self, data, status_code=200):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                     "status": status_code, "response": data}))
+        if data["result"]!='pending':
+            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                        "status": status_code, "response": data}))
         self.set_status(status_code)
         self.set_header("Content-Type", 'application/json')
         self.write(json.dumps(data))
 
     def stream_response(self, data, status_code=200):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                     "status": status_code, "message": "sanitized file (binary data)"}))
         self.set_status(status_code)
         self.set_header("Content-Type", 'application/octet-stream')
-        self.write(data)
+        if status_code!=204:
+            self.write(data)
 
 
 class MyFilter(logging.Filter):
