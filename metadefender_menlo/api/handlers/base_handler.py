@@ -25,8 +25,7 @@ class BaseHandler(RequestHandler):
         self.client_ip = client_ip
 
     def json_response(self, data, status_code=200):
-        if data["result"]!='pending':
-            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
                         "status": status_code, "response": data}))
         self.set_status(status_code)
         self.set_header("Content-Type", 'application/json')
