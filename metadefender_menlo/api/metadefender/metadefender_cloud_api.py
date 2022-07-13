@@ -44,6 +44,6 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             http_status = response.code
             return (response.body, http_status)
         else:
-            logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
                 "message": "Sanitized file not available!"}))
-        return ({"message": "Sanitized file not available!"}, http_status)
+            return ({"message": "Sanitized file not available!"}, 204)
