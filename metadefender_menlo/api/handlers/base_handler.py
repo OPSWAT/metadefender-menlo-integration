@@ -29,7 +29,8 @@ class BaseHandler(RequestHandler):
                         "status": status_code, "response": data}))
         self.set_status(status_code)
         self.set_header("Content-Type", 'application/json')
-        self.write(json.dumps(data))
+        if status_code!=204:
+            self.write(json.dumps(data))
 
     def stream_response(self, data, status_code=200):
         self.set_status(status_code)
