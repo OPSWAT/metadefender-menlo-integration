@@ -13,7 +13,7 @@ class FileSubmit(BaseResponse):
         self._http_responses["411"] = self.__response411
         self._http_responses["400"] = self.__response400
         self._http_responses["401"] = self.__response400
-        self._http_responses["429"] = self.__response204
+        self._http_responses["429"] = self.__response401
 
     def __response200(self, json_response, status_code):
         translation = {
@@ -39,3 +39,6 @@ class FileSubmit(BaseResponse):
         return (json_response, 401)
     def __response204(self, json_response, status_code):
         return (json_response, 204)
+    def __response401(self, json_response, status_code):
+        return (json_response, 401)
+    
