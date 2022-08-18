@@ -1,6 +1,6 @@
 from tornado.httpclient import AsyncHTTPClient
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-import json
+from os import environ
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 import logging
 
@@ -16,7 +16,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         headers = {
             "filename": filename,
             "Content-Type": "application/octet-stream",
-            "rule": "multiscan,sanitize,unarchive"
+            "rule": environ.get("MDCLOUD_RULE","multiscan, sanitize, unarchive")
         }
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
