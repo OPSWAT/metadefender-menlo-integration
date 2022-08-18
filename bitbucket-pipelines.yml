@@ -20,6 +20,7 @@ definitions:
             if [[ $CDR_WORKFLOW == "true" ]]; then
               export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
             else export EKS_NAMESPACE=menlo-${MENLO_ENV}
+            fi
             cd kubernetes
             ./deploy.aws.sh build_image
             ./deploy.aws.sh ecr_login
