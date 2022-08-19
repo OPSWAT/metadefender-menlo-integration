@@ -9,7 +9,10 @@
       "type": "python",
       "request": "launch",
       "module": "metadefender_menlo",
-      "justMyCode": true
+      "justMyCode": true,
+      "env": {
+        "MDCLOUD_RULE": "multiscan, sanitize, unarchive",
+      }
     }
   ]
 }
