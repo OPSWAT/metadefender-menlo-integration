@@ -36,14 +36,6 @@ definitions:
             ./deploy.aws.sh apply_service
             ./deploy.aws.sh apply_ingress
 
-pipelines:
-  branches:
-    develop:
-      - step:
-          <<: *build_deploy
-          name: Auto deploy to dev
-          deployment: dev
-
   custom:
     manual-dev:
       - variables:
