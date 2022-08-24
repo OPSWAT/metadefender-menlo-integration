@@ -10,7 +10,7 @@ info:
       processing. The external API can then process the file and make the outcome available to the
       MSIP. Along with sending the file, MSIP will also be able to send specific metadata that can be
       used for auditing or as part of the analysis process 
-      The maximum file size per request is set to 150MB
+      The maximum file size per request is set to 200MB
 servers:
   - url: http://localhost/api/v1
 paths:
