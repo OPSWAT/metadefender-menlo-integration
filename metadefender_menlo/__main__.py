@@ -27,7 +27,7 @@ SERVER_PORT = 3000
 HOST = "0.0.0.0"
 API_VERSION = "/api/v1"
 
-max_buffer_size=157286400
+max_buffer_size = 209715200
 settings = {}
 
 def init_logging(config):    
@@ -60,7 +60,7 @@ def init_logging(config):
         handler.addFilter(my_filter)
         
 def initial_config():
-    
+
     settings["max_buffer_size"] = max_buffer_size
     
     with open("config.yml", 'r') as stream:
