@@ -27,6 +27,7 @@ SERVER_PORT = 3000
 HOST = "0.0.0.0"
 API_VERSION = "/api/v1"
 
+max_buffer_size=157286400
 settings = {}
 
 def init_logging(config):    
@@ -127,7 +128,7 @@ def main():
     
     logging.info("Start the app: {0}:{1}".format(HOST, SERVER_PORT))
 
-    http_server = tornado.httpserver.HTTPServer(app, **settings)
+    http_server = tornado.httpserver.HTTPServer(app, max_buffer_size=max_buffer_size)
     http_server.listen(SERVER_PORT, HOST)
     tornado.ioloop.IOLoop.current().start()
 

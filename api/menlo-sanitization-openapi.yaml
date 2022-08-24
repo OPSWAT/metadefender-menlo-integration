@@ -9,7 +9,8 @@ info:
       The primary purpose of this integration is to submit a file to the external API for additional file
       processing. The external API can then process the file and make the outcome available to the
       MSIP. Along with sending the file, MSIP will also be able to send specific metadata that can be
-      used for auditing or as part of the analysis process
+      used for auditing or as part of the analysis process 
+      The maximum file size per request is set to 150MB
 servers:
   - url: http://localhost/api/v1
 paths:
