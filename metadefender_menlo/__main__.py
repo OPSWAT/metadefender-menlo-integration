@@ -61,6 +61,8 @@ def init_logging(config):
         
 def initial_config():
     
+    settings["max_buffer_size"] = max_buffer_size
+    
     with open("config.yml", 'r') as stream:
         try:
             config = yaml.safe_load(stream)
@@ -128,7 +130,7 @@ def main():
     
     logging.info("Start the app: {0}:{1}".format(HOST, SERVER_PORT))
 
-    http_server = tornado.httpserver.HTTPServer(app, max_buffer_size=max_buffer_size)
+    http_server = tornado.httpserver.HTTPServer(app, **settings)
     http_server.listen(SERVER_PORT, HOST)
     tornado.ioloop.IOLoop.current().start()
 
