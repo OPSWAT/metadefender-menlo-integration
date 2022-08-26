@@ -6,10 +6,11 @@ class CheckExisting(BaseResponse):
     
     def __init__(self, allowedResponses=None):
         
-        allowedResponses = [200, 500]
+        allowedResponses = [200, 400, 500]
         super().__init__(allowedResponses)
 
         self._http_responses["200"] = self.__response200
+        self._http_responses["400"] = self.__response400
 
     def __response200(self, response, status_code):
         translation = {
@@ -26,3 +27,8 @@ class CheckExisting(BaseResponse):
         else:
             return (response, 404)
 
+    def __response400(self, response, status_code):
+            return ({
+                'uuid': response['sha256'],
+                'result': '404'
+            }, 200)
