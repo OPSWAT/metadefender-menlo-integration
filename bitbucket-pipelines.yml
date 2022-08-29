@@ -17,19 +17,13 @@ definitions:
             export VERSION=${BITBUCKET_COMMIT:0:7}
             export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
             export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
-            if [[ $MENLO_ENV == 'dev' ]]; then
+            if [[ $CDR_WORKFLOW == "true" ]]; then
+              export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
+              export MDCLOUD_RULE="cdr"
+            else 
               export EKS_NAMESPACE=menlo-${MENLO_ENV}
-              export MDCLOUD_RULE=${MDCLOUD_RULE}
-            else
-              if [[ $CDR_WORKFLOW == "true" ]]; then
-                export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
-                export MDCLOUD_RULE="cdr"
-              else 
-                export EKS_NAMESPACE=menlo-${MENLO_ENV}
-                export MDCLOUD_RULE="multiscan,sanitize,unarchive"
-              fi
+              export MDCLOUD_RULE="multiscan, sanitize, unarchive"
             fi
-            export MDCLOUD_RULE=${MDCLOUD_RULE}
             cd kubernetes
             ./deploy.aws.sh build_image
             ./deploy.aws.sh ecr_login
@@ -46,20 +40,14 @@ pipelines:
   custom:
     manual-dev:
       - variables:
-          - name: MDCLOUD_RULE
-            allowed-values:
-              - cdr
-              - multiscan,sanitize,unarchive
-            default: multiscan,sanitize,unarchive 
+          - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
+            default: false
       - step: 
           <<: *build_deploy
           deployment: dev
     manual-prod:
       - variables:
           - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
-            allowed-values:
-              - true
-              - false
             default: false
       - step:
           <<: *build_deploy
