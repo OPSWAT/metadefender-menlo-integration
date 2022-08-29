@@ -26,8 +26,10 @@ class FileAnalyis(BaseResponse):
             return 'unknown'
 
     def check_analysis_complete(self, json_response):
-        if ("process_info" in json_response and "progress_percentage" in json_response["process_info"]):
-            return json_response["process_info"]["progress_percentage"] == 100
+        if (("process_info" in json_response and "progress_percentage" in json_response["process_info"]) 
+            and ("sanitized" in json_response and "progress_percentage" in json_response["sanitized"])):
+            return (json_response["process_info"]["progress_percentage"] == 100 
+                and json_response["sanitized"]["progress_percentage"] == 100)
         else:
             return False
         
