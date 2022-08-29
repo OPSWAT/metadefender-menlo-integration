@@ -17,10 +17,19 @@ class FileAnalyis(BaseResponse):
     def model_outcome(self, result, json_response):
         if result == 'completed':
             if json_response['process_info']['profile'] == 'cdr':
-                return 'clean' if json_response['sanitized']['result'] == 'Allowed' else 'unknown'
+                return 'clean' if ("sanitized" in json_response 
+                    and "result" in json_response["sanitized"] 
+                    and json_response['sanitized']['result'] == 'Allowed'
+                    ) else 'unknown'
             return 'clean' if json_response['process_info']['result'] == 'Allowed' else 'infected'
         else:
             return 'unknown'
+
+    def check_analysis_complete(self, json_response):
+        if ("process_info" in json_response and "progress_percentage" in json_response["process_info"]):
+            return json_response["process_info"]["progress_percentage"] == 100
+        else:
+            return False
         
     def __response200(self, json_response, status_code):
 
@@ -28,12 +37,16 @@ class FileAnalyis(BaseResponse):
             return (json_response, 404)
 
         model = FileAnalysisResponse()
-        analysis_completed = MetaDefenderAPI.get_instance().check_analysis_complete(json_response)
+        analysis_completed = self.check_analysis_complete(json_response)
 
         model.result = 'pending' if not analysis_completed else 'completed'
         model.outcome = self.model_outcome(model.result, json_response)
         model.report_url = MetaDefenderAPI.get_instance().report_url.format(data_id=json_response['data_id'])
         model.filename = json_response['file_info']['display_name']
+
+        if model.outcome == 'unknown':
+            model.modifications = []
+            return (model.to_dict(), 200)
 
         post_process = json_response['process_info']['post_processing']
         if 'sanitization_details' in post_process:
