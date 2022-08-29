@@ -17,21 +17,19 @@ class FileAnalyis(BaseResponse):
     def model_outcome(self, result, json_response):
         if result == 'completed':
             if json_response['process_info']['profile'] == 'cdr':
-                return 'clean' if ("sanitized" in json_response 
+                return 'unknown' if ("sanitized" in json_response 
                     and "result" in json_response["sanitized"] 
-                    and json_response['sanitized']['result'] == 'Allowed'
-                    ) else 'unknown'
+                    and json_response['sanitized']['result'] != 'Allowed'
+                    ) else 'clean'
             return 'clean' if json_response['process_info']['result'] == 'Allowed' else 'infected'
         else:
             return 'unknown'
 
     def check_analysis_complete(self, json_response):
-        if (("process_info" in json_response and "progress_percentage" in json_response["process_info"]) 
-            and ("sanitized" in json_response and "progress_percentage" in json_response["sanitized"])):
-            return (json_response["process_info"]["progress_percentage"] == 100 
-                and json_response["sanitized"]["progress_percentage"] == 100)
-        else:
-            return False
+        scan_progress = 0 if not ("process_info" in json_response and "progress_percentage" in json_response["process_info"]) else json_response["process_info"]["progress_percentage"]
+        sanitized_progress = 100 if not ("sanitized" in json_response and "progress_percentage" in json_response["sanitized"]) else json_response["sanitized"]["progress_percentage"]
+
+        return scan_progress == 100 and sanitized_progress == 100
         
     def __response200(self, json_response, status_code):
 
