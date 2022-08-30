@@ -14,6 +14,7 @@ class CheckExistingHandler(BaseHandler):
         }))
 
         json_response, http_status = await self.metaDefenderAPI.hash_lookup(sha256, apikey, self.client_ip)
+        json_response['sha256'] = sha256
         json_response, http_status = CheckExisting(
         ).handle_response(http_status, json_response)
         self.json_response(json_response, http_status)

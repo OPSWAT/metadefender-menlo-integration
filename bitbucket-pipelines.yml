@@ -6,63 +6,49 @@ image:
 
 definitions:
   steps:
-    - step: &build
-        name: Build images
+    - step: &build_deploy
+        name: Build images and deploy to EKS
         services:
           - docker
         caches:
           - docker
         script:
           - |
-            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_dev
-            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_dev
             export VERSION=${BITBUCKET_COMMIT:0:7}
-            if [[ $BITBUCKET_BRANCH == "develop" ]]; then
-              ENV="dev"
-            elif [[ $BITBUCKET_BRANCH == "main" ]]; then
-              ENV="prod"
-            else ENV="dev"
+            export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
+            if [[ $CDR_WORKFLOW == "true" ]]; then
+              export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
+              export MDCLOUD_RULE="cdr"
+            else 
+              export EKS_NAMESPACE=menlo-${MENLO_ENV}
+              export MDCLOUD_RULE="multiscan, sanitize, unarchive"
             fi
-            export MENLO_ENV=$ENV
             cd kubernetes
             ./deploy.aws.sh build_image
             ./deploy.aws.sh ecr_login
             ./deploy.aws.sh push_image
-    - step: &deploy
-        name: Deploy to EKS
-        deployment: dev
-        services:
-          - docker
-        caches:
-          - docker
-        script:
-          - export VERSION=${BITBUCKET_COMMIT:0:7}
-          - cd kubernetes
-          - ./deploy.aws.sh configure_cluster
-          - kubectl get namespace $EKS_NAMESPACE || kubectl create namespace $EKS_NAMESPACE
-          - envsubst < deployment.yaml > deployment.yaml.tmp && mv deployment.yaml.tmp deployment.yaml
-          - envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
-          - ./deploy.aws.sh apply_deployment
-          - ./deploy.aws.sh apply_service
-          - ./deploy.aws.sh apply_ingress
+            ./deploy.aws.sh configure_cluster
+            kubectl get namespace $EKS_NAMESPACE || kubectl create namespace $EKS_NAMESPACE
+            envsubst < deployment.yaml > deployment.yaml.tmp && mv deployment.yaml.tmp deployment.yaml
+            envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
+            ./deploy.aws.sh apply_deployment
+            ./deploy.aws.sh apply_service
+            ./deploy.aws.sh apply_ingress
 
 pipelines:
-  branches:
-    develop:
-      - step: *build
-      - step:
-          <<: *deploy
-          name: Deploy to dev
-          deployment: dev
-    main:
-      - step: *build
-      - step:
-          <<: *deploy
-          name: Deploy to prod
-          deployment: prod
   custom:
-    manual:
-      - step: *build
+    manual-dev:
+      - variables:
+          - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
+            default: false
       - step: 
-          <<: *deploy
+          <<: *build_deploy
           deployment: dev
+    manual-prod:
+      - variables:
+          - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
+            default: false
+      - step:
+          <<: *build_deploy
+          deployment: prod

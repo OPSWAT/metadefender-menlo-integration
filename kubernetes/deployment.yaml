@@ -27,6 +27,8 @@ spec:
             value: ${MENLO_ENV}
           - name: AWS_REGION
             value: us-west-2
+          - name: MDCLOUD_RULE
+            value: ${MDCLOUD_RULE}
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
