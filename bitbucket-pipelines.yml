@@ -35,6 +35,9 @@ definitions:
             ./deploy.aws.sh apply_deployment
             ./deploy.aws.sh apply_service
             ./deploy.aws.sh apply_ingress
+            if [[ $MENLO_ENV == "prod" ]]; then 
+              ./deploy.aws.sh apply_hpa
+            fi
 
 pipelines:
   custom:

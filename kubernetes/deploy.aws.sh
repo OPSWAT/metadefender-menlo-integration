@@ -22,6 +22,7 @@ if [[ "$CMD" = '' ]]; then
   echo "apply_deployment"
   echo "apply_service"
   echo "apply_ingress"
+  echo "apply_hpa"
 fi
 
 function configure_cluster() {
@@ -69,6 +70,10 @@ function apply_service() {
 
 function apply_ingress() {
   kubectl -n $EKS_NAMESPACE apply -f ingress.yaml
+}
+
+function apply_hpa() {
+  kubectl -n $EKS_NAMESPACE apply -f hpa.yaml
 }
 
 # execute commands
