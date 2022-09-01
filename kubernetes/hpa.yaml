@@ -8,17 +8,17 @@ spec:
     kind: Deployment
     name: metadefender-menlo
   minReplicas: 2
-  maxReplicas: 4
+  maxReplicas: 10
   metrics:
   - type: Resource
     resource:
       name: cpu 
       target:
         type: Utilization
-        averageUtilization: 80
+        averageUtilization: 75
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: 80
+        averageUtilization: 75
