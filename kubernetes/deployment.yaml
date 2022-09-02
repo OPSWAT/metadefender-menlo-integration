@@ -29,6 +29,8 @@ spec:
             value: us-west-2
           - name: MDCLOUD_RULE
             value: ${MDCLOUD_RULE}
+          - name: BITBUCKET_COMMIT_HASH
+            value: ${VERSION}
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
