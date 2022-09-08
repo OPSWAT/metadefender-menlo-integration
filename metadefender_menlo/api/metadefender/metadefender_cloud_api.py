@@ -14,7 +14,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
-            "filename": filename,
+            "filename": filename.encode('utf-8').decode('unicode-escape'),
             "Content-Type": "application/octet-stream",
             "rule": environ.get("MDCLOUD_RULE","multiscan, sanitize, unarchive")
         }

@@ -3,3 +3,4 @@ kubernetes/ssl
 docker/kafka-docker
 app.log
 .env
+.venv
