@@ -1,11 +1,17 @@
-from tornado.httpclient import AsyncHTTPClient
-from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from os import environ
-from metadefender_menlo.api.log_types import SERVICE, TYPE
+# pylint: disable=W1202:logging-format-interpolation,W1203:logging-fstring-interpolation,C0116:missing-function-docstring,C0209:consider-using-f-string
 import logging
+
+from os import environ
+from tornado.httpclient import AsyncHTTPClient
+
+from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
+from metadefender_menlo.api.log_types import SERVICE, TYPE
+from metadefender_menlo.api.config import Config
 
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
+    """MetaDefenderCloudAPI
+    """
 
     def __init__(self, url, apikey):
         self.server_url = url
@@ -26,8 +32,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         if ("sanitized" in json_response and "progress_percentage" in json_response["sanitized"]):
             return json_response["sanitized"]["progress_percentage"] == 100
         else:
-            print("Unexpected response from MetaDefender: {0}".format(
-                json_response))
+            print(f"Unexpected response from MetaDefender: {json_response}")
             return False
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip):
@@ -35,14 +40,35 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         fileurl = ""
         if "sanitizedFilePath" in response:
             fileurl = response["sanitizedFilePath"]
+
         if fileurl != "":
             logging.info(
-                "{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Download Sanitized file from %s" % fileurl}))
-            http_client = AsyncHTTPClient(None, defaults=dict(
-                user_agent="MetaDefenderMenloMiddleware", validate_cert=False))
-            response = await http_client.fetch(request=fileurl, method="GET")
-            http_status = response.code
-            return (response.body, http_status)
+                "{0} > {1} > {2}".format(
+                    SERVICE.MetaDefenderCloud,
+                    TYPE.Response,
+                    {"message": f"Download Sanitized file from {fileurl}"}
+                ))
+            
+            try:
+                http_client = AsyncHTTPClient(None, defaults=dict(
+                        user_agent="MetaDefenderMenloMiddleware",
+                        validate_cert=False
+                    ))
+                http_client.initialize(max_buffer_size=Config.get("limits")["max_buffer_size"])
+                response = await http_client.fetch(
+                    request=fileurl,
+                    method="GET",
+                    request_timeout=300
+                )
+                http_status = response.code
+                return (response.body, http_status)
+            except Exception as error:
+                logging.error("{0} > {1} > {2}".format(
+                    SERVICE.MenloPlugin,
+                    TYPE.Internal,
+                    str(error)
+                ))
+                return ("", 500)
         else:
             http_status=204
             logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {

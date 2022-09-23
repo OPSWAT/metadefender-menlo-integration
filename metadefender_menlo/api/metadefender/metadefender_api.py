@@ -130,6 +130,7 @@ class MetaDefenderAPI(ABC):
         except Exception as e:
             http_status = 500
             response_body = '{"error": "' + e.strerror + '"}'
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, e))
 
         total_submission_time = datetime.datetime.now() - before_submission
         
