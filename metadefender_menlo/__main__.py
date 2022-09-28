@@ -18,17 +18,19 @@ from metadefender_menlo.api.handlers.retrieve_sanitized import RetrieveSanitized
 from metadefender_menlo.api.handlers.check_existing import CheckExistingHandler
 from metadefender_menlo.api.handlers.health_check import HealthCheckHandler
 
-from metadefender_menlo.api.models.file_submit_body import FileSubmitBody
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
 from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefenderCloudAPI
+
+from metadefender_menlo.api.config import Config 
 
 SERVER_PORT = 3000
 HOST = "0.0.0.0"
 API_VERSION = "/api/v1"
 
-max_buffer_size = 209715200
 settings = {}
+
+Config('config.yml')
 
 def init_logging(config):    
     if "enabled" not in config or not config["enabled"]:
@@ -61,48 +63,41 @@ def init_logging(config):
         
 def initial_config():
 
-    settings["max_buffer_size"] = max_buffer_size
+    config = Config.get_all()
+
+    settings["max_buffer_size"] = config["limits"]["max_buffer_size"]
+
+    if "logging" in config: 
+        init_logging(config["logging"])
+
+    logging.info("Set API configuration")
+
+    api = config["api"]
+    md_type = api["type"]
+    url = api["url"][md_type] if "url" in api and md_type in api["url"] else "http://localhost:8008"
+    apikey = api["params"]["apikey"] if "params" in api and "apikey" in api["params"] else None
+
+    env_apikey = os.environ.get('apikey')
+    if env_apikey:
+        apikey = env_apikey
     
-    with open("config.yml", 'r') as stream:
-        try:
-            config = yaml.safe_load(stream)
-
-            if "logging" in config: 
-                init_logging(config["logging"])
-
-            logging.info("Set API configuration")
-
-            api = config["api"]
-            md_type = api["type"]
-            url = api["url"][md_type] if "url" in api and md_type in api["url"] else "http://localhost:8008"
-            apikey = api["params"]["apikey"] if "params" in api and "apikey" in api["params"] else None
-
-            env_apikey = os.environ.get('apikey')
-            if env_apikey:
-                apikey = env_apikey
+    md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
+    MetaDefenderAPI.config(url, apikey, md_cls)
+    
+    if "https" in config: 
+        if "load_local" in config["https"] and config["https"]["load_local"]:
             
-            md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
-            MetaDefenderAPI.config(url, apikey, md_cls)
+            settings["ssl_options"] = {
+                "certfile": config["https"]["crt"],
+                "keyfile": config["https"]["key"],
+            }
             
-            if "https" in config: 
-                if "load_local" in config["https"] and config["https"]["load_local"]:
-                    
-                    settings["ssl_options"] = {
-                        "certfile": config["https"]["crt"],
-                        "keyfile": config["https"]["key"],
-                    }
-                    
-
-            if "server" in config:
-                logging.info("Set Server configuration")
-                server_details = config["server"]
-                SERVER_PORT = server_details["port"] if "port" in server_details else SERVER_PORT
-                HOST = server_details["host"] if "host" in server_details else HOST
-                API_VERSION = server_details["api_version"] if "api_version" in server_details else HOST
-            
-            
-        except yaml.YAMLError as exc:
-            logging.exception("Cannot load config file. Details: {0}".format(exc))
+    if "server" in config:
+        logging.info("Set Server configuration")
+        server_details = config["server"]
+        SERVER_PORT = server_details["port"] if "port" in server_details else SERVER_PORT
+        HOST = server_details["host"] if "host" in server_details else HOST
+        API_VERSION = server_details["api_version"] if "api_version" in server_details else HOST
 
 def make_app():
     logging.info("Define endpoints handlers")
