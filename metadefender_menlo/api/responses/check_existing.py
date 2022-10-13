@@ -1,11 +1,13 @@
 
 from metadefender_menlo.api.responses.base_response import BaseResponse
+import logging
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
 class CheckExisting(BaseResponse):
-    
+
     def __init__(self, allowedResponses=None):
-        
+
         allowedResponses = [200, 400, 404, 500]
         super().__init__(allowedResponses)
 
@@ -18,18 +20,22 @@ class CheckExisting(BaseResponse):
             'uuid': '{0}',
             'result': '{0}'
         }
+        try:
+            if 'data_id' in response:
 
-        if 'data_id' in response: 
-            
-            self._translate('uuid', translation, response['data_id'])
-            self._translate('result', translation, 'found')
+                self._translate('uuid', translation, response['data_id'])
+                self._translate('result', translation, 'found')
 
-            return (translation, status_code)
-        else:
-            return (response, 404)
+                return (translation, status_code)
+            else:
+                return (response, 404)
+        except Exception as error:
+            logging.error("{0} > {1} > {2}".format(
+                SERVICE.MetaDefenderCloud, TYPE.Response, {"error": error, "MdCloudResponse": response}))
+            return ({"error": str(error)}, 500)
 
     def __response400(self, response, status_code):
-            return ({
-                'uuid': response['sha256'],
-                'result': '404'
-            }, 200)
+        return ({
+            'uuid': response['sha256'],
+            'result': '404'
+        }, 200)
