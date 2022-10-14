@@ -1,10 +1,10 @@
-from typing import Type
-from tornado.httpclient import AsyncHTTPClient
-from tornado.httpclient import HTTPClientError
+
 from abc import ABC, abstractmethod
 import datetime
 import json
 import logging
+from tornado.httpclient import AsyncHTTPClient
+from tornado.httpclient import HTTPClientError
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
@@ -82,7 +82,7 @@ class MetaDefenderAPI(ABC):
 
     async def hash_lookup(self, sha256, apikey, ip):
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Request, { "message": "Hash Lookup for {0}".format(sha256)}))
+            SERVICE.MetaDefenderCloud, TYPE.Request, {"message": "Hash Lookup for {0}".format(sha256)}))
         return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     @abstractmethod
@@ -126,17 +126,27 @@ class MetaDefenderAPI(ABC):
             response_body = response.body
         except HTTPClientError as error:
             http_status = error.code
-            response_body = '{"error": "' + error.message + '"}'
-        except Exception as e:
+            response_body = reponse_body_error(error.message)
+        except OSError as error:
+            logging.error("{0} > {1} > {2}".format(
+                SERVICE.MetaDefenderCloud, TYPE.Response, error.strerror))
             http_status = 500
-            response_body = '{"error": "' + e.strerror + '"}'
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, e))
+            response_body = reponse_body_error(error.strerror)
+        except Exception as error:
+            logging.error("{0} > {1} > {2}".format(
+                SERVICE.MetaDefenderCloud, TYPE.Response, error))
+            http_status = 500
+            response_body = reponse_body_error(error)
 
         total_submission_time = datetime.datetime.now() - before_submission
-        
+
         logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
             "request_time": total_submission_time.total_seconds(),
             "http_status": http_status,
         }))
 
         return (response_body, http_status)
+
+
+def reponse_body_error(message):
+    return '{"error": "' + str(message) + '"}'

@@ -1,6 +1,5 @@
-# pylint: disable=W1202:logging-format-interpolation,W1203:logging-fstring-interpolation,C0116:missing-function-docstring,C0209:consider-using-f-string
-import logging
 
+import logging
 from os import environ
 from tornado.httpclient import AsyncHTTPClient
 
@@ -22,7 +21,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         headers = {
             "filename": filename.encode('utf-8').decode('unicode-escape'),
             "Content-Type": "application/octet-stream",
-            "rule": environ.get("MDCLOUD_RULE","multiscan, sanitize, unarchive")
+            "rule": environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
         }
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
@@ -36,41 +35,58 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             return False
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip):
-        response, http_status = await self._request_as_json_status("sanitized_file", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
-        fileurl = ""
-        if "sanitizedFilePath" in response:
-            fileurl = response["sanitizedFilePath"]
 
-        if fileurl != "":
-            logging.info(
-                "{0} > {1} > {2}".format(
-                    SERVICE.MetaDefenderCloud,
-                    TYPE.Response,
-                    {"message": f"Download Sanitized file from {fileurl}"}
-                ))
-            
-            try:
-                http_client = AsyncHTTPClient(None, defaults=dict(
+        response, http_status = await self._request_as_json_status(
+            "sanitized_file",
+            fields={
+                "data_id": data_id
+            },
+            headers={
+                'apikey': apikey,
+                'x-forwarded-for': ip,
+                'x-real-ip': ip
+            })
+
+        try:
+            fileurl = ""
+            if "sanitizedFilePath" in response:
+                fileurl = response["sanitizedFilePath"]
+
+            if fileurl != "":
+                logging.info(
+                    "{0} > {1} > {2}".format(
+                        SERVICE.MetaDefenderCloud,
+                        TYPE.Response,
+                        {"message": f"Download Sanitized file from {fileurl}"}
+                    ))
+
+                try:
+                    http_client = AsyncHTTPClient(None, defaults=dict(
                         user_agent="MetaDefenderMenloMiddleware",
                         validate_cert=False
                     ))
-                http_client.initialize(max_buffer_size=Config.get("limits")["max_buffer_size"])
-                response = await http_client.fetch(
-                    request=fileurl,
-                    method="GET",
-                    request_timeout=300
-                )
-                http_status = response.code
-                return (response.body, http_status)
-            except Exception as error:
-                logging.error("{0} > {1} > {2}".format(
-                    SERVICE.MenloPlugin,
-                    TYPE.Internal,
-                    str(error)
-                ))
-                return ("", 500)
-        else:
-            http_status=204
-            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                "message": "Sanitized file not available!","status":http_status}))
-            return ("", http_status)
+                    http_client.initialize(
+                        max_buffer_size=Config.get("limits")["max_buffer_size"])
+                    response = await http_client.fetch(
+                        request=fileurl,
+                        method="GET",
+                        request_timeout=300
+                    )
+                    http_status = response.code
+                    return (response.body, http_status)
+                except Exception as error:
+                    logging.error("{0} > {1} > {2}".format(
+                        SERVICE.MenloPlugin,
+                        TYPE.Internal,
+                        str(error)
+                    ))
+                    return ({"error": str(error)}, 500)
+            else:
+                http_status = 204
+                logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                    "message": "Sanitized file not available!", "status": http_status}))
+                return ("", http_status)
+        except Exception as error:
+            logging.error("{0} > {1} > {2}".format(
+                SERVICE.MetaDefenderCloud, TYPE.Response,  {"error": error, "MdCloudResponse": response}))
+            return ({"error": str(error)}, 500)
