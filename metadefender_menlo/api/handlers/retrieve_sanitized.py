@@ -12,6 +12,11 @@ class RetrieveSanitizedHandler(BaseHandler):
             "method": "GET", "endpoint": "/api/v1/file/%s" % uuid}))
 
         file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid, apikey, self.client_ip)
-
-        sanitized_file, status = RetrieveSanitized().handle_response(status_code, file)
-        self.stream_response(sanitized_file, status)
+        try:
+            sanitized_file, status = RetrieveSanitized().handle_response(status_code, file)
+            self.stream_response(sanitized_file, status)
+        except Exception as error:
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+                "error": repr(error)
+            }))
+            self.json_response({}, 500)
