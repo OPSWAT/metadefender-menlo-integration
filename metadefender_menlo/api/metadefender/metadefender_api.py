@@ -66,8 +66,9 @@ class MetaDefenderAPI(ABC):
         return (json_response, http_status)
 
     async def retrieve_result(self, data_id, apikey):
-        logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Response, {"message": "Retrieve result for %s" % data_id}))
+        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            "message": f"Retrieve result for {data_id}"
+        }))
 
         analysis_completed = False
 
@@ -124,26 +125,28 @@ class MetaDefenderAPI(ABC):
             response = await http_client.fetch(request=metadefender_url, method=request_method, headers=headers, body=body)
             http_status = response.code
             response_body = response.body
+
+            total_submission_time = datetime.datetime.now() - before_submission
+
+            logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+                "request_time": total_submission_time.total_seconds(),
+                "http_status": http_status
+            }))
         except HTTPClientError as error:
             http_status = error.code
-            response_body = reponse_body_error(error.message)
+            response_body = reponse_body_error(error)
         except OSError as error:
-            logging.error("{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderCloud, TYPE.Response, error.strerror))
-            http_status = 500
-            response_body = reponse_body_error(error.strerror)
-        except Exception as error:
-            logging.error("{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderCloud, TYPE.Response, error))
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+                "error": repr(error)
+            }))
             http_status = 500
             response_body = reponse_body_error(error)
-
-        total_submission_time = datetime.datetime.now() - before_submission
-
-        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-            "request_time": total_submission_time.total_seconds(),
-            "http_status": http_status,
-        }))
+        except Exception as error:
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+                "error": repr(error)
+            }))
+            http_status = 500
+            response_body = reponse_body_error(error)
 
         return (response_body, http_status)
 

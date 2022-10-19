@@ -4,6 +4,7 @@ import json
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from os import environ
 
+
 class HealthCheckHandler(BaseHandler):
     def get(self):
         logging.debug("{0} > {1} > {2}".format(
@@ -13,7 +14,7 @@ class HealthCheckHandler(BaseHandler):
         self.write(json.dumps({
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
-            "version": "1.3.3",
+            "version": "1.3.4",
             "commitHash": environ.get("BITBUCKET_COMMIT_HASH", "-"),
-            "rule": environ.get("MDCLOUD_RULE","multiscan, sanitize, unarchive")
+            "rule": environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
         }))

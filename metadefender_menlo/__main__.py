@@ -1,28 +1,26 @@
-import yaml
-import os
-import asyncio
-import sys
-import logging
-from logging.handlers import TimedRotatingFileHandler
-from metadefender_menlo.api.models.kafka_log import KafkaLogHandler
-from dotenv import load_dotenv
 
+import asyncio
+import logging
+import os
+import sys
+from logging.handlers import TimedRotatingFileHandler
+
+from dotenv import load_dotenv
 import tornado.ioloop
 import tornado.web
-from metadefender_menlo.api.handlers.base_handler import MyFilter
 
+from metadefender_menlo.api.config import Config
 from metadefender_menlo.api.handlers.analysis_result import AnalysisResultHandler
+from metadefender_menlo.api.handlers.base_handler import MyFilter
+from metadefender_menlo.api.handlers.check_existing import CheckExistingHandler
 from metadefender_menlo.api.handlers.file_metadata import InboundMetadataHandler
 from metadefender_menlo.api.handlers.file_submit import FileSubmitHandler
-from metadefender_menlo.api.handlers.retrieve_sanitized import RetrieveSanitizedHandler
-from metadefender_menlo.api.handlers.check_existing import CheckExistingHandler
 from metadefender_menlo.api.handlers.health_check import HealthCheckHandler
-
+from metadefender_menlo.api.handlers.retrieve_sanitized import RetrieveSanitizedHandler
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
 from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefenderCloudAPI
-
-from metadefender_menlo.api.config import Config 
+from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
+from metadefender_menlo.api.models.kafka_log import KafkaLogHandler
 
 SERVER_PORT = 3000
 HOST = "0.0.0.0"
@@ -32,7 +30,8 @@ settings = {}
 
 Config('config.yml')
 
-def init_logging(config):    
+
+def init_logging(config):
     if "enabled" not in config or not config["enabled"]:
         return
 
@@ -43,16 +42,18 @@ def init_logging(config):
     logging.getLogger('kafka.access').disabled = True
     logger.setLevel(config["level"])
     logfile = config["logfile"]
-    log_handler = TimedRotatingFileHandler(filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
+    log_handler = TimedRotatingFileHandler(
+        filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
     log_handlerKafka = KafkaLogHandler()
     my_filter = MyFilter()
     log_format = '%(asctime)s - %(levelname)s - %(filename)s > %(funcName)s:%(lineno)d - %(message)s'
 
-    formatter = logging.Formatter(fmt=log_format, datefmt='%m/%d/%Y %I:%M:%S %p')
+    formatter = logging.Formatter(
+        fmt=log_format, datefmt='%m/%d/%Y %I:%M:%S %p')
 
     log_handler.setFormatter(formatter)
-    
-    if not(hasattr(log_handlerKafka,"sender")):
+
+    if not hasattr(log_handlerKafka, "sender"):
         logger.addHandler(log_handler)
         logging.error("Kafka error")
     else:
@@ -60,14 +61,15 @@ def init_logging(config):
 
     for handler in logging.getLogger().handlers:
         handler.addFilter(my_filter)
-        
+
+
 def initial_config():
 
     config = Config.get_all()
 
     settings["max_buffer_size"] = config["limits"]["max_buffer_size"]
 
-    if "logging" in config: 
+    if "logging" in config:
         init_logging(config["logging"])
 
     logging.info("Set API configuration")
@@ -80,18 +82,18 @@ def initial_config():
     env_apikey = os.environ.get('apikey')
     if env_apikey:
         apikey = env_apikey
-    
+
     md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
     MetaDefenderAPI.config(url, apikey, md_cls)
-    
-    if "https" in config: 
+
+    if "https" in config:
         if "load_local" in config["https"] and config["https"]["load_local"]:
-            
+
             settings["ssl_options"] = {
                 "certfile": config["https"]["crt"],
                 "keyfile": config["https"]["key"],
             }
-            
+
     if "server" in config:
         logging.info("Set Server configuration")
         server_details = config["server"]
@@ -99,8 +101,8 @@ def initial_config():
         HOST = server_details["host"] if "host" in server_details else HOST
         API_VERSION = server_details["api_version"] if "api_version" in server_details else HOST
 
+
 def make_app():
-    logging.info("Define endpoints handlers")
     endpoints_list = [
         ('/', HealthCheckHandler),
         (API_VERSION + '/health', HealthCheckHandler),
@@ -112,22 +114,21 @@ def make_app():
     ]
     return tornado.web.Application(endpoints_list)
 
-def main():    
-    
+
+def main():
     # ugly patch to address https://github.com/tornadoweb/tornado/issues/2608
     # asyncio won't work on Windows when using python 3.8+
-    if sys.version_info[0]==3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
+    if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     initial_config()
-    
-    app = make_app()
-    
     logging.info("Start the app: {0}:{1}".format(HOST, SERVER_PORT))
 
+    app = make_app()
     http_server = tornado.httpserver.HTTPServer(app, **settings)
     http_server.listen(SERVER_PORT, HOST)
     tornado.ioloop.IOLoop.current().start()
+
 
 if __name__ == "__main__":
     main()

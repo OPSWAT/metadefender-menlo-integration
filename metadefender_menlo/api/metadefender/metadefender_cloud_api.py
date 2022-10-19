@@ -47,18 +47,19 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
                 'x-real-ip': ip
             })
 
+        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            "response": f"{response}", "status": f"{http_status}"
+        }))
+
         try:
             fileurl = ""
             if "sanitizedFilePath" in response:
                 fileurl = response["sanitizedFilePath"]
 
             if fileurl != "":
-                logging.info(
-                    "{0} > {1} > {2}".format(
-                        SERVICE.MetaDefenderCloud,
-                        TYPE.Response,
-                        {"message": f"Download Sanitized file from {fileurl}"}
-                    ))
+                logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+                    "message": f"Download Sanitized file from {fileurl}"
+                }))
 
                 try:
                     http_client = AsyncHTTPClient(None, defaults=dict(
@@ -84,9 +85,11 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             else:
                 http_status = 204
                 logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                    "message": "Sanitized file not available!", "status": http_status}))
+                    "message": "Sanitized file not available!", "status": http_status
+                }))
                 return ("", http_status)
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderCloud, TYPE.Response,  {"error": error, "MdCloudResponse": response}))
-            return ({"error": str(error)}, 500)
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+                "error": repr(error), "MdCloudResponse": response
+            }))
+            return ({}, 500)
