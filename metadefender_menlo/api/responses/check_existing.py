@@ -30,9 +30,10 @@ class CheckExisting(BaseResponse):
             else:
                 return (response, 404)
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderCloud, TYPE.Response, {"error": error, "MdCloudResponse": response}))
-            return ({"error": str(error)}, 500)
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+                "error": repr(error), "MdCloudResponse": response
+            }))
+            return ({}, 500)
 
     def __response400(self, response, status_code):
         return ({
