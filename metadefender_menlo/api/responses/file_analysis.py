@@ -48,7 +48,7 @@ class FileAnalyis(BaseResponse):
             model.outcome = self.model_outcome(model.result, json_response)
             model.report_url = MetaDefenderAPI.get_instance(
             ).report_url.format(data_id=json_response['data_id'])
-            model.filename = json_response['file_info']['display_name']
+            model.filename = json_response['file_info']['display_name'].encode('latin1').decode('unicode-escape')
 
             if model.outcome == 'unknown':
                 model.modifications = []
