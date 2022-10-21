@@ -48,7 +48,14 @@ class FileAnalyis(BaseResponse):
             model.outcome = self.model_outcome(model.result, json_response)
             model.report_url = MetaDefenderAPI.get_instance(
             ).report_url.format(data_id=json_response['data_id'])
-            model.filename = json_response['file_info']['display_name'].encode('latin1').decode('unicode-escape')
+            try:
+                model.filename = json_response['file_info']['display_name'].encode('latin1').decode('unicode-escape')
+            except Exception as error:
+                logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                "Exception": repr(error)
+                }))
+                model.filename=""
+
 
             if model.outcome == 'unknown':
                 model.modifications = []
