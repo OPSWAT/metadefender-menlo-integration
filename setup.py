@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 NAME = "metadefender_menlo"
-VERSION = "1.3.4"
+VERSION = "1.3.5"
 
 # To install the library, run the following
 #

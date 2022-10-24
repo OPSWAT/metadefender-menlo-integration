@@ -14,7 +14,7 @@ class HealthCheckHandler(BaseHandler):
         self.write(json.dumps({
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
-            "version": "1.3.4",
+            "version": "1.3.5",
             "commitHash": environ.get("BITBUCKET_COMMIT_HASH", "-"),
             "rule": environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
         }))
