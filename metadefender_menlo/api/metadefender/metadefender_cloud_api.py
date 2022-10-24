@@ -19,7 +19,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
-            "filename": filename.encode('utf-8').decode('unicode-escape'),
+            "filename":filename.encode('unicode-escape').decode('latin1') ,
             "Content-Type": "application/octet-stream",
             "rule": environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
         }
@@ -79,7 +79,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
                     logging.error("{0} > {1} > {2}".format(
                         SERVICE.MenloPlugin,
                         TYPE.Internal,
-                        str(error)
+                        repr(error)
                     ))
                     return ({"error": str(error)}, 500)
             else:
