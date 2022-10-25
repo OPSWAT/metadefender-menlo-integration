@@ -3,9 +3,8 @@ from abc import ABC, abstractmethod
 import datetime
 import json
 import logging
-from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPClientError
-
+import urllib3
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
@@ -119,12 +118,17 @@ class MetaDefenderAPI(ABC):
 
         http_status = None
         response_body = None
-        http_client = AsyncHTTPClient(None, defaults=dict(
-            user_agent="MenloTornadoIntegration", validate_cert=False))
+
+        http_client = urllib3.PoolManager()
+        headers["User-Agent"]="MenloTornadoIntegration"
         try:
-            response = await http_client.fetch(request=metadefender_url, method=request_method, headers=headers, body=body)
-            http_status = response.code
-            response_body = response.body
+            if request_method=="POST":
+                request_body={"file": (headers['filename'], body)}
+            else:
+                request_body={}
+            response = http_client.request(request_method, metadefender_url,request_body,headers )
+            http_status = response.status
+            response_body = response.data
 
             total_submission_time = datetime.datetime.now() - before_submission
 
