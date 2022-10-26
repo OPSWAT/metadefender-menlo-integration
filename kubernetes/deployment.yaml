@@ -25,6 +25,8 @@ spec:
         env:
           - name: MENLO_ENV
             value: ${MENLO_ENV}
+          - name: SENTRY_DSN
+            value: ${SENTRY_DSN}
           - name: AWS_REGION
             value: us-west-2
           - name: MDCLOUD_RULE
