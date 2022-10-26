@@ -4,11 +4,13 @@ import logging
 import os
 import sys
 from logging.handlers import TimedRotatingFileHandler
+from os import environ
 
 from dotenv import load_dotenv
 import tornado.ioloop
 import tornado.web
-
+import sentry_sdk
+from sentry_sdk.integrations.tornado import TornadoIntegration
 from metadefender_menlo.api.config import Config
 from metadefender_menlo.api.handlers.analysis_result import AnalysisResultHandler
 from metadefender_menlo.api.handlers.base_handler import MyFilter
@@ -21,6 +23,7 @@ from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefenderCloudAPI
 from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
 from metadefender_menlo.api.models.kafka_log import KafkaLogHandler
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 SERVER_PORT = 3000
 HOST = "0.0.0.0"
@@ -31,6 +34,19 @@ settings = {}
 Config('config.yml')
 
 
+def init_sentry():
+    menlo_env = environ.get("MENLO_ENV", 'local')
+    if menlo_env != 'local':
+        sentry_sdk.init(
+            dsn=environ.get("SENTRY_DSN"),
+            integrations=[
+                TornadoIntegration(),
+            ],
+            environment=menlo_env,
+            traces_sample_rate=1.0,
+        )
+
+
 def init_logging(config):
     if "enabled" not in config or not config["enabled"]:
         return
@@ -39,6 +55,7 @@ def init_logging(config):
 
     logger = logging.getLogger()
     logging.getLogger('tornado.access').disabled = True
+    logging.getLogger('kafka.conn').disabled = True
     logging.getLogger('kafka.access').disabled = True
     logger.setLevel(config["level"])
     logfile = config["logfile"]
@@ -55,7 +72,9 @@ def init_logging(config):
 
     if not hasattr(log_handlerKafka, "sender"):
         logger.addHandler(log_handler)
-        logging.error("Kafka error")
+        logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
+            "Error: ": "Could not connect to kafka."
+        }))
     else:
         logger.addHandler(log_handlerKafka)
 
@@ -64,7 +83,12 @@ def init_logging(config):
 
 
 def initial_config():
-
+    try:
+        init_sentry()
+    except Exception as error:
+        logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
+            "Exception: ": repr(error)
+        }))
     config = Config.get_all()
 
     settings["max_buffer_size"] = config["limits"]["max_buffer_size"]
