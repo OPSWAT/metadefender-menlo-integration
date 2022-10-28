@@ -16,6 +16,7 @@ definitions:
           - |
             export VERSION=${BITBUCKET_COMMIT:0:7}
             export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            export SENTRY_DSN=${SENTRY_DSN}
             export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
             if [[ $CDR_WORKFLOW == "true" ]]; then
               export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
