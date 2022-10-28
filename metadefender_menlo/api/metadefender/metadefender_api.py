@@ -4,8 +4,8 @@ import datetime
 import json
 import logging
 from tornado.httpclient import HTTPClientError
-import urllib3
 from metadefender_menlo.api.log_types import SERVICE, TYPE
+import httpx
 
 
 class MetaDefenderAPI(ABC):
@@ -119,16 +119,16 @@ class MetaDefenderAPI(ABC):
         http_status = None
         response_body = None
 
-        http_client = urllib3.PoolManager()
-        headers["User-Agent"]="MenloTornadoIntegration"
+        headers["User-Agent"] = "MenloTornadoIntegration"
         try:
-            if request_method=="POST":
-                request_body={"file": (headers['filename'], body)}
-            else:
-                request_body={}
-            response = http_client.request(request_method, metadefender_url,request_body,headers )
-            http_status = response.status
-            response_body = response.data
+            async with httpx.AsyncClient() as client:
+                if request_method == "POST":
+                    request_body = {"file": (headers['filename'], body)}
+                    response:httpx.Response = await client.post(metadefender_url, headers=headers, files=request_body,timeout=60)
+                else:
+                    response:httpx.Response = await client.get(metadefender_url, headers=headers, timeout=60)
+                http_status = response.status_code
+                response_body = response.content
 
             total_submission_time = datetime.datetime.now() - before_submission
 

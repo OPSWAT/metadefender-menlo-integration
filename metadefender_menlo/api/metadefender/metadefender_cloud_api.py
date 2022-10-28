@@ -5,7 +5,7 @@ import urllib3
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.config import Config
-
+import httpx
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
     """MetaDefenderCloudAPI
@@ -62,14 +62,12 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
                 try:
 
-                    http_client = urllib3.PoolManager()
-                    headers = {"User-Agent": "MenloTornadoIntegration"}
+                    async with httpx.AsyncClient() as client:
+                        headers = {"User-Agent": "MenloTornadoIntegration"}
+                        response:httpx.Response = await client.get(fileurl, headers=headers, timeout=300)
 
-                    response = http_client.request(
-                        "GET", fileurl, timeout=300, headers=headers)
-
-                    http_status = response.status
-                    return (response.data, http_status)
+                        http_status = response.status_code
+                        return (response.content, http_status)
                 except Exception as error:
                     logging.error("{0} > {1} > {2}".format(
                         SERVICE.MenloPlugin,
