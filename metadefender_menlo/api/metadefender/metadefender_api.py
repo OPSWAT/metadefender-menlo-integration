@@ -122,11 +122,7 @@ class MetaDefenderAPI(ABC):
         headers["User-Agent"] = "MenloTornadoIntegration"
         try:
             async with httpx.AsyncClient() as client:
-                if request_method == "POST":
-                    request_body = {"file": (headers['filename'], body)}
-                    response:httpx.Response = await client.post(metadefender_url, headers=headers, files=request_body,timeout=60)
-                else:
-                    response:httpx.Response = await client.get(metadefender_url, headers=headers, timeout=60)
+                response: httpx.Response = await client.request(request_method, metadefender_url, headers=headers, timeout=60, content=body)
                 http_status = response.status_code
                 response_body = response.content
 
