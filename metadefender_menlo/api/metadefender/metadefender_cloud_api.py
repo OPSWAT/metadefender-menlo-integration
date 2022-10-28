@@ -1,10 +1,8 @@
 
 import logging
 from os import environ
-import urllib3
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-from metadefender_menlo.api.config import Config
 import httpx
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
