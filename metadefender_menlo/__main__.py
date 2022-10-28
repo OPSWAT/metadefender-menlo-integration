@@ -24,8 +24,7 @@ from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefen
 from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
 from metadefender_menlo.api.models.kafka_log import KafkaLogHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-from urllib3.exceptions import InsecureRequestWarning
-from urllib3 import disable_warnings
+
 
 SERVER_PORT = 3000
 HOST = "0.0.0.0"
@@ -85,8 +84,12 @@ def init_logging(config):
 
 
 def initial_config():
-
-    disable_warnings(InsecureRequestWarning)
+    try:
+        init_sentry()
+    except Exception as error:
+        logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
+            "Exception: ": repr(error)
+        }))
 
     config = Config.get_all()
 
