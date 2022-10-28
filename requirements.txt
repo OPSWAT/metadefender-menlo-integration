@@ -1,7 +1,9 @@
 tornado==6.1
-urllib3==1.25.8
+urllib3==1.26.12
 pyyaml==5.3.1
 six==1.14.0
 typing==3.7.4.3
 kafka-python==2.0.2
 python-dotenv==0.19.2
+aiocontextvars==0.2.2
+sentry-sdk==1.10.1
