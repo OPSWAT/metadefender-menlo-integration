@@ -14,7 +14,7 @@ definitions:
           - docker
         script:
           - |
-            export VERSION=${BITBUCKET_COMMIT:0:7}
+            export VERSION=m_${BITBUCKET_COMMIT:0:7}
             export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
             export SENTRY_DSN=${SENTRY_DSN}
             export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
