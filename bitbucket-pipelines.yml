@@ -19,7 +19,10 @@ definitions:
             export SENTRY_DSN=${SENTRY_DSN}
             export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
             if [[ $CDR_WORKFLOW == "true" ]]; then
-              export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
+              if [[ $MENLO_ENV == "prod" ]]; then
+                export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
+              else
+                export EKS_NAMESPACE=menlo-${MENLO_ENV}
               export MDCLOUD_RULE="cdr"
             else 
               export EKS_NAMESPACE=menlo-${MENLO_ENV}
