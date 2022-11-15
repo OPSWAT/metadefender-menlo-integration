@@ -127,8 +127,13 @@ def initial_config():
 
 
 def make_app():
+    web_root = os.path.dirname(__file__) + '/../docs/'
     endpoints_list = [
         ('/', HealthCheckHandler),
+        ("/docs/(.*)", tornado.web.StaticFileHandler, {
+            "path": web_root,
+            "default_filename": "Menlo Sanitization API.html"
+        }),
         (API_VERSION + '/health', HealthCheckHandler),
         (API_VERSION + '/check', CheckExistingHandler),
         (API_VERSION + '/inbound', InboundMetadataHandler),
