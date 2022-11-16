@@ -1,12 +1,9 @@
 
 import logging
 from os import environ
-from tornado.httpclient import AsyncHTTPClient
-
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-from metadefender_menlo.api.config import Config
-
+import httpx
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
     """MetaDefenderCloudAPI
@@ -19,7 +16,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
-            "filename":filename.encode('unicode-escape').decode('latin1') ,
+            "filename": filename.encode('unicode-escape').decode('latin1'),
             "Content-Type": "application/octet-stream",
             "rule": environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
         }
@@ -62,19 +59,13 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
                 }))
 
                 try:
-                    http_client = AsyncHTTPClient(None, defaults=dict(
-                        user_agent="MetaDefenderMenloMiddleware",
-                        validate_cert=False
-                    ))
-                    http_client.initialize(
-                        max_buffer_size=Config.get("limits")["max_buffer_size"])
-                    response = await http_client.fetch(
-                        request=fileurl,
-                        method="GET",
-                        request_timeout=300
-                    )
-                    http_status = response.code
-                    return (response.body, http_status)
+
+                    async with httpx.AsyncClient() as client:
+                        headers = {"User-Agent": "MenloTornadoIntegration"}
+                        response:httpx.Response = await client.get(fileurl, headers=headers, timeout=300)
+
+                        http_status = response.status_code
+                        return (response.content, http_status)
                 except Exception as error:
                     logging.error("{0} > {1} > {2}".format(
                         SERVICE.MenloPlugin,

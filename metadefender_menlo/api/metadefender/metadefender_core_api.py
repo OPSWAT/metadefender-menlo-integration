@@ -1,5 +1,4 @@
 # import requests
-from tornado.httpclient import AsyncHTTPClient
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 import datetime
 import os
