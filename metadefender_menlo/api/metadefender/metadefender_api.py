@@ -3,10 +3,9 @@ from abc import ABC, abstractmethod
 import datetime
 import json
 import logging
-from tornado.httpclient import AsyncHTTPClient
 from tornado.httpclient import HTTPClientError
-
 from metadefender_menlo.api.log_types import SERVICE, TYPE
+import httpx
 
 
 class MetaDefenderAPI(ABC):
@@ -119,12 +118,13 @@ class MetaDefenderAPI(ABC):
 
         http_status = None
         response_body = None
-        http_client = AsyncHTTPClient(None, defaults=dict(
-            user_agent="MenloTornadoIntegration", validate_cert=False))
+
+        headers["User-Agent"] = "MenloTornadoIntegration"
         try:
-            response = await http_client.fetch(request=metadefender_url, method=request_method, headers=headers, body=body)
-            http_status = response.code
-            response_body = response.body
+            async with httpx.AsyncClient() as client:
+                response: httpx.Response = await client.request(request_method, metadefender_url, headers=headers, timeout=60, content=body)
+                http_status = response.status_code
+                response_body = response.content
 
             total_submission_time = datetime.datetime.now() - before_submission
 

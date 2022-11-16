@@ -25,6 +25,7 @@ from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefend
 from metadefender_menlo.api.models.kafka_log import KafkaLogHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
+
 SERVER_PORT = 3000
 HOST = "0.0.0.0"
 API_VERSION = "/api/v1"
@@ -89,6 +90,7 @@ def initial_config():
         logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
             "Exception: ": repr(error)
         }))
+
     config = Config.get_all()
 
     settings["max_buffer_size"] = config["limits"]["max_buffer_size"]
