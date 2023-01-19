@@ -13,8 +13,15 @@ VERSION = "1.3.7"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    "flask>=1.1.2",
-    "urllib3>=1.25.9"
+    "tornado==6.1",
+    "urllib3==1.26.12",
+    "pyyaml==6.0b1",
+    "typing==3.7.4.3",
+    "kafka-python==2.0.2",
+    "python-dotenv==0.19.2",
+    "aiocontextvars==0.2.2",
+    "sentry-sdk==1.10.1",
+    "httpx==0.23.0"
 ]
 
 setup(

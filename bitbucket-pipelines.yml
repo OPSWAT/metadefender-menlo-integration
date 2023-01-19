@@ -43,13 +43,18 @@ definitions:
             if [[ $MENLO_ENV == "prod" ]]; then 
               ./deploy.aws.sh apply_hpa
             fi
-    - step: &build-step
+    - step: &sonarqube-scan
         name: SonarQube analysis
         script:
           - pipe: sonarsource/sonarqube-scan:1.0.0
             variables:
               SONAR_HOST_URL: ${SONAR_HOST_URL} # Get the value from the repository/workspace variable.
               SONAR_TOKEN: ${SONAR_TOKEN} # Get the value from the repository/workspace variable. You shouldn't set secret in clear text here.
+    - step: &blackduck-scan
+        name: Blackduck analysis
+        script:
+          - pip install -r ./requirements.txt
+          - /bin/bash ./blackduck.sh $BLACKDUCK_TOKEN
 
 pipelines:
   custom:
@@ -67,12 +72,18 @@ pipelines:
       - step:
           <<: *build_deploy
           deployment: prod
+    sonarqube:
+      - step: *sonarqube-scan
+    blackduck:
+      - step: *blackduck-scan
   branches:
     '{develop}': # or the name of your main branch
-        - step: *build-step
+        - step: *sonarqube-scan
+        - step: *blackduck-scan
 
   pull-requests:
       '**':
-        - step: *build-step
+        - step: *sonarqube-scan
+        - step: *blackduck-scan
 clone:
   depth: full
