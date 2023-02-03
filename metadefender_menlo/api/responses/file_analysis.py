@@ -52,10 +52,7 @@ class FileAnalyis(BaseResponse):
             try:
                 model.filename = json_response['file_info']['display_name'].encode(
                     'latin1').decode('unicode-escape')
-            except Exception as error:
-                logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                    "Exception": repr(error)
-                }))
+            except Exception:
                 model.filename = ""
 
             if model.outcome == 'unknown':

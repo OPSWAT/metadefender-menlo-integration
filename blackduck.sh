@@ -23,7 +23,9 @@ if [[ $BITBUCKET_PIPELINE_UUID != '' ]]; then
     BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
 fi
 
-curl -s -LOk https://detect.synopsys.com/detect.sh && chmod +x ./detect.sh && bash detect.sh \
+export DETECT_LATEST_RELEASE_VERSION=6.9.1
+export DETECT_VERSION_KEY=DETECT_LATEST_6
+bash blackduck.detect.sh \
     --logging.level.com.synopsys.integration=DEBUG \
     --detect.python.python3=true \
     --detect.blackduck.signature.scanner.upload.source.mode=false \

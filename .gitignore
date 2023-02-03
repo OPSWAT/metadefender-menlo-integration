@@ -4,4 +4,3 @@ docker/kafka-docker
 app.log*
 .env
 .venv
-detect.sh
