@@ -16,6 +16,7 @@ definitions:
           - |
             export VERSION=m_${BITBUCKET_COMMIT:0:7}
             export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            export MDCLOUD_URL=$MDCLOUD_URL
             export SENTRY_DSN=${SENTRY_DSN}
             export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
             if [[ $CDR_WORKFLOW == "true" ]]; then
@@ -62,6 +63,8 @@ pipelines:
       - variables:
           - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
             default: false
+          - name: MDCLOUD_URL 
+            default: https://api.metadefender.com/v4
       - step: 
           <<: *build_deploy
           deployment: dev
