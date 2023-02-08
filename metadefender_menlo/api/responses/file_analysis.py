@@ -1,8 +1,9 @@
-from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from metadefender_menlo.api.responses.base_response import BaseResponse
-from metadefender_menlo.api.models.file_analysis_response import FileAnalysisResponse
 import logging
+
 from metadefender_menlo.api.log_types import SERVICE, TYPE
+from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
+from metadefender_menlo.api.models.file_analysis_response import FileAnalysisResponse
+from metadefender_menlo.api.responses.base_response import BaseResponse
 
 
 class FileAnalyis(BaseResponse):
@@ -36,7 +37,7 @@ class FileAnalyis(BaseResponse):
 
         return scan_progress == 100 and sanitized_progress == 100
 
-    def __response200(self, json_response, status_code):
+    def __response200(self, json_response, _status_code):
         try:
             if 'data_id' not in json_response:
                 return (json_response, 404)
@@ -49,13 +50,10 @@ class FileAnalyis(BaseResponse):
             model.report_url = MetaDefenderAPI.get_instance(
             ).report_url.format(data_id=json_response['data_id'])
             try:
-                model.filename = json_response['file_info']['display_name'].encode('latin1').decode('unicode-escape')
-            except Exception as error:
-                logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                "Exception": repr(error)
-                }))
-                model.filename=""
-
+                model.filename = json_response['file_info']['display_name'].encode(
+                    'latin1').decode('unicode-escape')
+            except Exception:
+                model.filename = ""
 
             if model.outcome == 'unknown':
                 model.modifications = []
@@ -86,5 +84,5 @@ class FileAnalyis(BaseResponse):
             }))
             return ({}, 500)
 
-    def __response400(self, json_response, status_code):
+    def __response400(self, _json_response, status_code):
         return ({}, status_code)

@@ -16,6 +16,7 @@ definitions:
           - |
             export VERSION=m_${BITBUCKET_COMMIT:0:7}
             export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            export MDCLOUD_URL=${MDCLOUD_URL}
             export SENTRY_DSN=${SENTRY_DSN}
             export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
             if [[ $CDR_WORKFLOW == "true" ]]; then
@@ -43,6 +44,18 @@ definitions:
             if [[ $MENLO_ENV == "prod" ]]; then 
               ./deploy.aws.sh apply_hpa
             fi
+    - step: &sonarqube-scan
+        name: SonarQube analysis
+        script:
+          - pipe: sonarsource/sonarqube-scan:1.0.0
+            variables:
+              SONAR_HOST_URL: ${SONAR_HOST_URL} # Get the value from the repository/workspace variable.
+              SONAR_TOKEN: ${SONAR_TOKEN} # Get the value from the repository/workspace variable. You shouldn't set secret in clear text here.
+    - step: &blackduck-scan
+        name: Blackduck analysis
+        script:
+          - pip install -r ./requirements.txt
+          - /bin/bash ./blackduck.sh $BLACKDUCK_TOKEN
 
 pipelines:
   custom:
@@ -50,6 +63,8 @@ pipelines:
       - variables:
           - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
             default: false
+          - name: MDCLOUD_URL 
+            default: https://api.metadefender.com/v4
       - step: 
           <<: *build_deploy
           deployment: dev
@@ -60,3 +75,18 @@ pipelines:
       - step:
           <<: *build_deploy
           deployment: prod
+    sonarqube:
+      - step: *sonarqube-scan
+    blackduck:
+      - step: *blackduck-scan
+  branches:
+    '{develop}': # or the name of your main branch
+        - step: *sonarqube-scan
+        - step: *blackduck-scan
+
+  pull-requests:
+      '**':
+        - step: *sonarqube-scan
+        - step: *blackduck-scan
+clone:
+  depth: full

@@ -7,7 +7,6 @@ api:
     apikey: null
   url: 
     core: https://1.2.3.4:8008
-    cloud: https://api.metadefender.com/v4    
 server: 
   port: 3000
   host: "0.0.0.0"

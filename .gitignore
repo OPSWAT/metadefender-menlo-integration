@@ -1,6 +1,6 @@
 __pycache__
 kubernetes/ssl
 docker/kafka-docker
-app.log
+app.log*
 .env
 .venv
