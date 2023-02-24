@@ -18,6 +18,7 @@ definitions:
             export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
             if [[ $MENLO_ENV == "dev" ]]; then
               export MDCLOUD_URL=${MDCLOUD_URL}
+            fi
             export SENTRY_DSN=${SENTRY_DSN}
             export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
             if [[ $CDR_WORKFLOW == "true" ]]; then
