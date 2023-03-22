@@ -87,6 +87,8 @@ pipelines:
       - step: *sonarqube-scan
     blackduck:
       - step: *blackduck-scan
+    blackduck-container-scan:
+      - step: *blackduck-container-scan
   branches:
     '{develop}': # or the name of your main branch
         - step: *sonarqube-scan
