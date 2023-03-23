@@ -41,7 +41,7 @@ bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
 	--detect.project.name=\"MD Cloud Menlo\" \
 	--detect.project.version.name=menlo-plugin-$MENLO_VERSION-container \
 	--detect.project.version.phase=DEVELOPMENT \
-  --detect.excluded.detector.types=pip,python \
+  --detect.excluded.detector.types=pip \
 	--detect.tools.excluded=BINARY_SCAN,SIGNATURE_SCAN \
   --detect.output.path="$BITBUCKET_CLONE_DIR/blackduck" \
 	--logging.level.com.synopsys.integration=DEBUG
