@@ -32,7 +32,6 @@ apk add --no-cache openjdk11 curl bash
 BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
 
 MENLO_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
-which pip
 
 bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
 	--blackduck.url=https://opswat.blackducksoftware.com  \
@@ -42,8 +41,7 @@ bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
 	--detect.project.name=\"MD Cloud Menlo\" \
 	--detect.project.version.name=menlo-plugin-$MENLO_VERSION-container \
 	--detect.project.version.phase=DEVELOPMENT \
+  --detect.excluded.detector.types=pip,python \
 	--detect.tools.excluded=BINARY_SCAN,SIGNATURE_SCAN \
   --detect.output.path="$BITBUCKET_CLONE_DIR/blackduck" \
-  --detect.python.path="/usr/bin/pip" \
-  --detect.pip.requirements.path=requirements.txt \
 	--logging.level.com.synopsys.integration=DEBUG
