@@ -23,6 +23,10 @@ done
 
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_dev
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_dev
+export AWS_REGION=us-west-2
+export AWS_ACCOUNT=108895011981
+echo "Login to AWS ECR"
+./kubernetes/deploy.aws.sh ecr_login
 
 apk add --no-cache openjdk11 curl bash
 BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre

@@ -61,9 +61,6 @@ definitions:
     - step: &blackduck-container-scan
         name: Blackduck container scanning
         script:
-          - echo "Login to AWS ECR"
-          - whereis docker
-          - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 108895011981.dkr.ecr.us-west-2.amazonaws.com
           - export IMAGE=108895011981.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:dev-m_${BITBUCKET_COMMIT:0:7}
           - /bin/bash ./blackduck-container-scan.sh -t ${BLACKDUCK_TOKEN} -i ${IMAGE}
 
