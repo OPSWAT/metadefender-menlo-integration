@@ -43,4 +43,5 @@ bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
 	--detect.project.version.phase=DEVELOPMENT \
 	--detect.tools.excluded=BINARY_SCAN,SIGNATURE_SCAN \
   --detect.output.path="$BITBUCKET_CLONE_DIR/blackduck" \
+  --detect.python.python3=true \
 	--logging.level.com.synopsys.integration=DEBUG
