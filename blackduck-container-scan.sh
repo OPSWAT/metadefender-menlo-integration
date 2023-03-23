@@ -21,6 +21,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+apk add --no-cache openjdk11 curl bash
+BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
+
 MENLO_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
 bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
