@@ -21,6 +21,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_dev
+export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_dev
+
 apk add --no-cache openjdk11 curl bash
 BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
 
