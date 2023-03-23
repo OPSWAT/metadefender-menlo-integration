@@ -29,12 +29,6 @@ BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
 
 MENLO_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
-echo "Login to AWS ECR" 
-aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 108895011981.dkr.ecr.us-west-2.amazonaws.com
-if [[ "$?" != "0" ]]; then
-    exit 1
-fi
-
 bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
 	--blackduck.url=https://opswat.blackducksoftware.com  \
 	--blackduck.api.token=\"${BLACKDUCK_TOKEN}\" \
