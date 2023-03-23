@@ -42,5 +42,5 @@ bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
 	--detect.project.version.name=menlo-plugin-$MENLO_VERSION-container \
 	--detect.project.version.phase=DEVELOPMENT \
 	--detect.tools.excluded=BINARY_SCAN \
-  --detect.output.path="$BITBUCKET_CLONE_DIR\blackduck" \
+  --detect.output.path="$BITBUCKET_CLONE_DIR/blackduck" \
 	--logging.level.com.synopsys.integration=DEBUG
