@@ -60,6 +60,10 @@ definitions:
           - /bin/bash ./blackduck.sh $BLACKDUCK_TOKEN
     - step: &blackduck-container-scan
         name: Blackduck container scanning
+        services:
+          - docker
+        caches:
+          - docker
         script:
           - export IMAGE=108895011981.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:dev-m_${BITBUCKET_COMMIT:0:7}
           - /bin/bash ./blackduck-container-scan.sh -t ${BLACKDUCK_TOKEN} -i ${IMAGE}
