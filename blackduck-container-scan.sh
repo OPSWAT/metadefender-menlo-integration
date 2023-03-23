@@ -27,7 +27,7 @@ BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
 MENLO_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
 echo "Login to AWS ECR" 
-$(aws ecr get-login --no-include-email --region ${REGION})
+$(aws ecr get-login --no-include-email --region us-west-2)
 if [[ "$?" != "0" ]]; then
     exit 1
 fi
