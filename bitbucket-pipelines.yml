@@ -97,7 +97,6 @@ pipelines:
     '{develop}': # or the name of your main branch
         - step: *sonarqube-scan
         - step: *blackduck-scan
-        - step: *blackduck-container-scan
 
   pull-requests:
       '**':
