@@ -16,21 +16,21 @@ class SNSLogHandler(Handler):
 
     def emit(self, record):
         try:
-            message = self.set_message(record)
+            message,subject = self.set_message(record)
             if self.filterMessages(record.levelname, message):
-                self.publishMessage(message)
+                self.publishMessage(message,subject)
         except RecursionError:
             raise
         except Exception as e:
             print(e)
 
             
-    def publishMessage(self, message):
+    def publishMessage(self, message,subject):
         try:
             self.client.publish(
                 TargetArn=self.arn,
                 Message=json.dumps({"default": json.dumps(message, indent=2)}),
-                Subject='MenloMiddleware',
+                Subject="MetaDefender Cloud - "+subject,
                 MessageStructure='json'
             )
         except Exception as error:
@@ -42,17 +42,21 @@ class SNSLogHandler(Handler):
                 url = record.request_info.uri
                 if "file" in url:
                     # RetrieveSanitized
-                    return self.getFileMessage(record)
+                    message = self.getFileMessage(record)
+                    return message,"Retrieve analysis result failed for file {0}".format(message["DataId"])
                 if "result" in url:
                     # AnalysisResult
-                    return self.getResultMessage(record)
+                    message = self.getResultMessage(record)
+                    return message,"Retrieve analysis result failed for file {0}".format(message["DataId"])
                 if "check" in url:
                     # CheckExisting
-                    return self.getCheckMessage(record)
+                    message = self.getCheckMessage(record)
+                    return message,"Retrieve analysis result failed for {0}".format(message["Sha256"])
                 if "submit" in url:
                     # SubmitFile
-                    return self.setSubmitMessage(record)
-        return ""
+                    message = self.setSubmitMessage(record)
+                    return message, "Processing failed for file: {0}".format(message["FileName"])
+        return "",""
 
     def getFileMessage(self, record):
         return self.getMessageDataId(record)
