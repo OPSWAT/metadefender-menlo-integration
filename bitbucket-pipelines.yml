@@ -58,6 +58,22 @@ definitions:
         script:
           - pip install -r ./requirements.txt
           - /bin/bash ./blackduck.sh $BLACKDUCK_TOKEN
+    - step: &blackduck-container-scan
+        name: Blackduck container scanning
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - export IMAGE=108895011981.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:dev-m_${BITBUCKET_COMMIT:0:7}
+          - /bin/bash ./blackduck-container-scan.sh -t ${BLACKDUCK_TOKEN} -i ${IMAGE}
+    - step: &gitleaks
+        name: GitLeaks secret scanning
+        image: zricethezav/gitleaks:latest
+        script:
+          - gitleaks detect -s . -v --no-git --redact -r ./gitleaks.json
+        artifacts:
+          - gitleaks.json
 
 pipelines:
   custom:
@@ -67,9 +83,11 @@ pipelines:
             default: false
           - name: MDCLOUD_URL 
             default: https://api.metadefender.com/v4
+      - step: *gitleaks
       - step: 
           <<: *build_deploy
           deployment: dev
+      - step: *blackduck-container-scan
     manual-prod:
       - variables:
           - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
@@ -81,14 +99,20 @@ pipelines:
       - step: *sonarqube-scan
     blackduck:
       - step: *blackduck-scan
+    blackduck-container-scan:
+      - step: *blackduck-container-scan
+    gitleaks:
+      - step: *gitleaks
   branches:
     '{develop}': # or the name of your main branch
         - step: *sonarqube-scan
         - step: *blackduck-scan
+        - step: *gitleaks
 
   pull-requests:
       '**':
         - step: *sonarqube-scan
         - step: *blackduck-scan
+        - step: *gitleaks
 clone:
   depth: full
