@@ -37,21 +37,22 @@ class SNSLogHandler(Handler):
             print(error)
 
     def set_message(self, record):
+        subjectRetrieve = "Retrieve analysis result failed for file :"
         if hasattr(record, "request_info"):
             if hasattr(record.request_info, "uri"):
                 url = record.request_info.uri
                 if "file" in url:
                     # RetrieveSanitized
                     message = self.getFileMessage(record)
-                    return message,"Retrieve analysis result failed for file :{0}".format(message["DataId"])
+                    return message,subjectRetrieve+":{0}".format(message["DataId"])
                 if "result" in url:
                     # AnalysisResult
                     message = self.getResultMessage(record)
-                    return message,"Retrieve analysis result failed for file :{0}".format(message["DataId"])
+                    return message,subjectRetrieve+":{0}".format(message["DataId"])
                 if "check" in url:
                     # CheckExisting
                     message = self.getCheckMessage(record)
-                    return message,"Retrieve analysis result failed for file :{0}".format(message["Sha256"])
+                    return message,subjectRetrieve+":{0}".format(message["Sha256"])
                 if "submit" in url:
                     # SubmitFile
                     message = self.setSubmitMessage(record)
