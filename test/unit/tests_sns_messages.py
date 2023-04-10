@@ -23,7 +23,7 @@ class TestSnsMethods(unittest.TestCase):
         record = Record()
         request_info = RequestInfo()
 
-        setattr(request_info, 'uri', 'file')
+        setattr(request_info, 'uri', '/api/v1/file')
         setattr(request_info, 'query_arguments', '')
         setattr(record, "request_info", request_info)
 
@@ -39,7 +39,7 @@ class TestSnsMethods(unittest.TestCase):
         record = Record()
         request_info = RequestInfo()
 
-        setattr(request_info, 'uri', 'result')
+        setattr(request_info, 'uri', '/api/v1/result')
         setattr(request_info, 'query_arguments', '')
         setattr(record, "request_info", request_info)
 
@@ -55,7 +55,7 @@ class TestSnsMethods(unittest.TestCase):
         record = Record()
         request_info = RequestInfo()
 
-        setattr(request_info, 'uri', 'check')
+        setattr(request_info, 'uri', '/api/v1/check')
         setattr(request_info, 'query_arguments', '')
         setattr(record, "request_info", request_info)
 
@@ -71,7 +71,7 @@ class TestSnsMethods(unittest.TestCase):
         record = Record()
         request_info = RequestInfo()
 
-        setattr(request_info, 'uri', 'submit')
+        setattr(request_info, 'uri', '/api/v1/submit')
         setattr(request_info, 'query_arguments', '')
         setattr(request_info, "body_arguments", "")
         setattr(request_info, 'files', {})

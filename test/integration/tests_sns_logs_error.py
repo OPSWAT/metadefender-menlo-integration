@@ -8,7 +8,7 @@ class TestHelloApp(AsyncHTTPTestCase):
     headers = {'Authorization': "testApiKey"}
     testDataId="test"
     testSha256="test"
-    subjectRetrieve = "Retrieve analysis result failed for file :"
+    subjectRetrieve = "Retrieve analysis result failed for: "
     subjectSubmit = "Processing failed for file: "
     def logMethod(self, message,subject):
         self.sns_log = message
