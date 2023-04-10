@@ -27,14 +27,19 @@ class FileAnalyis(BaseResponse):
                                      ) else 'clean'
             return 'clean' if json_response['process_info']['result'] == 'Allowed' else 'infected'
         else:
-            return 'unknown'
+            if "sanitized" in json_response and "result" in json_response["sanitized"] and json_response["sanitized"]["result"] != "Allowed":
+                return 'error'
+            else:
+                return 'unknown'
 
     def check_analysis_complete(self, json_response):
         scan_progress = 0 if not (
             "process_info" in json_response and "progress_percentage" in json_response["process_info"]) else json_response["process_info"]["progress_percentage"]
         sanitized_progress = 100 if not (
             "sanitized" in json_response and "progress_percentage" in json_response["sanitized"]) else json_response["sanitized"]["progress_percentage"]
-
+        if "sanitized" in json_response and "result" in json_response["sanitized"] :
+            if json_response["sanitized"]["result"] != "Allowed":
+                sanitized_progress =0
         return scan_progress == 100 and sanitized_progress == 100
 
     def __response200(self, json_response, _status_code):
