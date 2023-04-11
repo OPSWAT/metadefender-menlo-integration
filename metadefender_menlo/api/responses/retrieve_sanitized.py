@@ -20,9 +20,9 @@ class RetrieveSanitized(BaseResponse):
 
     def __response400(self, response, status_code):
         return (response, 400)
-        
-    def __response401(self, json_response, status_code):
-        return (json_response, 401)
+
+    def __response401(self, response, status_code):
+        return (response, 401)
 
     def __response403(self, response, status_code):
         return (response, 403)

@@ -86,6 +86,6 @@ class FileAnalyis(BaseResponse):
 
     def __response400(self, _json_response, status_code):
         return ({}, status_code)
-        
+
     def __response401(self, response, status_code):
-        return ({}, 401)
+        return (response, 401)

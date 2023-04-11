@@ -41,6 +41,6 @@ class CheckExisting(BaseResponse):
             'uuid': response['sha256'],
             'result': '404'
         }, 200)
-        
+
     def __response401(self, response, status_code):
-        return ({}, 401)
+        return (response, 401)

@@ -41,7 +41,7 @@ class FileSubmit(BaseResponse):
 
     def __response400(self, json_response, status_code):
         # invalid APIkey -> respond with Unauthorized
-        return (json_response, 401)
+        return (json_response, 400)
 
     def __response401(self, json_response, status_code):
         return (json_response, 401)
