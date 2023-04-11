@@ -103,12 +103,23 @@ class SNSLogHandler(Handler):
             sha256 = record.request_info.body_arguments['sha256'][0].decode(
                 "utf-8")
         except Exception:
-            sha256 = ""
+            sha256=""
+        try:
+            srcuri = record.request_info.body_arguments['srcuri'][0].decode(
+                "utf-8")
+        except Exception:
+            srcuri=""
+        try:
+            remote_ip = record.request_info.remote_ip
+        except Exception:
+            remote_ip=""
         return {
             "TimeStamp": self.getTime(),
             "FileName": file_name,
             "UserId": user_id,
             "Sha256": sha256,
+            "Url":srcuri,
+            "Ip":remote_ip,
             "Error message": record.getMessage()
         }
 
