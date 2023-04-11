@@ -52,7 +52,11 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             fileurl = ""
             if "sanitizedFilePath" in response:
                 fileurl = response["sanitizedFilePath"]
-
+            if http_status == 401:
+                logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                    "message": " Unauthorized request", "status": http_status
+                }))
+                return ("", http_status)
             if fileurl != "":
                 logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                     "message": f"Download Sanitized file from {fileurl}"

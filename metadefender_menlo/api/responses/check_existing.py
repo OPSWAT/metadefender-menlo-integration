@@ -13,7 +13,7 @@ class CheckExisting(BaseResponse):
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
-        self._http_responses["401"] = self.__response400
+        self._http_responses["401"] = self.__response401
         self._http_responses["404"] = self.__response400
 
     def __response200(self, response, status_code):
@@ -41,3 +41,6 @@ class CheckExisting(BaseResponse):
             'uuid': response['sha256'],
             'result': '404'
         }, 200)
+        
+    def __response401(self, response, status_code):
+        return ({}, 401)
