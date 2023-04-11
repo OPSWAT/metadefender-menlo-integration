@@ -56,7 +56,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
                 logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
                     "message": " Unauthorized request", "status": http_status
                 }))
-                return ("", http_status)
+                return (response, http_status)
             if fileurl != "":
                 logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                     "message": f"Download Sanitized file from {fileurl}"
