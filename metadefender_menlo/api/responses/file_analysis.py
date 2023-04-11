@@ -20,11 +20,14 @@ class FileAnalyis(BaseResponse):
 
     def model_outcome(self, result, json_response):
         if result == 'completed':
-            if json_response['process_info']['profile'] == 'cdr' or "sanitize" in json_response['process_info']['profile']:
-                return 'unknown' if ("sanitized" in json_response
-                                     and "result" in json_response["sanitized"]
-                                     and json_response['sanitized']['result'] != 'Allowed'
-                                     ) else 'clean'
+            if json_response['process_info']['profile'] == 'cdr' or json_response['process_info']['profile'].find("sanitize")!=-1:
+                if "sanitized" in json_response and "result" in json_response["sanitized"]:
+                    if json_response['sanitized']['result'] == 'Allowed':
+                        return 'clean'
+                    if json_response['sanitized']['result'] == 'Error':
+                        return 'error'
+                    if json_response['sanitized']['result'] == 'unknown':
+                        return 'unknown'
             return 'clean' if json_response['process_info']['result'] == 'Allowed' else 'infected'
         else:
             return 'unknown'
