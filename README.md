@@ -272,8 +272,8 @@ DETAILS:
     - <Order>
 
 Exapmple:
-    MenloPlugin > Request > {method: GET, endpoint: "/api/v1/file/bzIyMDYyNDl6ekt5TElTZVMxNmllVHR2TWE"}
-    MetadeDefenderCloud > Request > {https://api.metadefender.com/v4/file/converted/bzIyMDYyNDl6ekt5TElTZVMxNmllVHR2TWE | {'apikey': '4da78a411dd24a44d839e16fa2be7c1f', 'x-forwarded-for': '81.196.34.198', 'x-real-ip': '81.196.34.198'}}
+    MenloPlugin > Request > {method: GET, endpoint: "/api/v1/file/<dataId>"}
+    MetadeDefenderCloud > Request > {https://api.metadefender.com/v4/file/converted/<dataId> | {'apikey': <apikey>, 'x-forwarded-for': '81.196.34.198', 'x-real-ip': '81.196.34.198'}}
     MetadeDefenderCloud > Response > {status_500}
     MeloPlugin > Internal > "Error from md cloud"
     MenloPlugin > Response > {500 response: sanitized file (binary data)}
