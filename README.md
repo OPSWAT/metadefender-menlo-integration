@@ -281,5 +281,8 @@ Exapmple:
 
 
 ## Extras
+To generate the api documentation from menlo-sanitization-openapi.yaml run the below command:
+redocly build-docs ./api/menlo-sanitization-openapi.yaml --output './docs/Menlo Sanitization API.html'
+
 * [Postman collection](api/Menlo%20Security%20-%20Sanitization%20Public%20API.postman_collection.json)
 * [OpenAPI 3.0 Spec File](api/menlo-sanitization-openapi.yaml)
