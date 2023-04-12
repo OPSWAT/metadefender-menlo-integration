@@ -29,73 +29,73 @@ class TestSnsMethods(unittest.TestCase):
 
     def test_valid_sns_sanitized_message(self):
         sns = SNSLogHandler(sns_conf)
-        self.assertEqual(sns.set_message({}), "")
+        self.assertEqual(sns.set_message({}), ("",""))
 
         record = Record()
         request_info = RequestInfo()
 
-        setattr(request_info, 'uri', 'file')
+        setattr(request_info, 'uri', '/api/v1/file')
         setattr(request_info, 'query_arguments', {"uuid":[StubData["uuid"].encode("utf8")]})
         setattr(record, "request_info", request_info)
 
-        self.assertTrue(StubData["uuid"] , sns.set_message(record)["DataId"])
-        self.assertFalse("Sha256" in sns.set_message(record))
-        self.assertFalse("FileName" in sns.set_message(record))
-        self.assertFalse("UserId" in sns.set_message(record))
+        self.assertTrue(StubData["uuid"] , sns.set_message(record)[0]["DataId"])
+        self.assertFalse("Sha256" in sns.set_message(record)[0])
+        self.assertFalse("FileName" in sns.set_message(record)[0])
+        self.assertFalse("UserId" in sns.set_message(record)[0])
 
     def test_analysis_result_message(self):
         sns = SNSLogHandler(sns_conf)
-        self.assertEqual(sns.set_message({}), "")
+        self.assertEqual(sns.set_message({}), ('', ''))
 
         record = Record()
         request_info = RequestInfo()
 
-        setattr(request_info, 'uri', 'result')
+        setattr(request_info, 'uri', '/api/v1/result')
         setattr(request_info, 'query_arguments', {"uuid":[StubData["uuid"].encode("utf8")]})
         setattr(record, "request_info", request_info)
 
-        self.assertTrue(StubData["uuid"] , sns.set_message(record)["DataId"])
-        self.assertFalse("Sha256" in sns.set_message(record))
-        self.assertFalse("FileName" in sns.set_message(record))
-        self.assertFalse("UserId" in sns.set_message(record))
+        self.assertTrue(StubData["uuid"] , sns.set_message(record)[0]["DataId"])
+        self.assertFalse("Sha256" in sns.set_message(record)[0])
+        self.assertFalse("FileName" in sns.set_message(record)[0])
+        self.assertFalse("UserId" in sns.set_message(record)[0])
 
     def test_check_existingt_message(self):
         sns = SNSLogHandler(sns_conf)
-        self.assertEqual(sns.set_message({}), "")
+        self.assertEqual(sns.set_message({}), ('', ''))
 
         record = Record()
         request_info = RequestInfo()
 
-        setattr(request_info, 'uri', 'check')
+        setattr(request_info, 'uri', '/api/v1/check')
         setattr(request_info, 'query_arguments', {"sha256":[StubData["sha256"].encode("utf8")]})
         setattr(record, "request_info", request_info)
 
-        self.assertFalse("DataId" in sns.set_message(record))
-        self.assertTrue(StubData["sha256"] , sns.set_message(record)["Sha256"])
-        self.assertFalse("FileName" in sns.set_message(record))
-        self.assertFalse("UserId" in sns.set_message(record))
+        self.assertFalse("DataId" in sns.set_message(record)[0])
+        self.assertTrue(StubData["sha256"] , sns.set_message(record)[0]["Sha256"])
+        self.assertFalse("FileName" in sns.set_message(record)[0])
+        self.assertFalse("UserId" in sns.set_message(record)[0])
 
     def test_submit_message(self):
         sns = SNSLogHandler(sns_conf)
-        self.assertEqual(sns.set_message({}), "")
+        self.assertEqual(sns.set_message({}), ("",""))
 
         record = Record()
         request_info = RequestInfo()
         files = Files()
         setattr(files,"filename","test")
-        setattr(request_info, 'uri', 'submit')
+        setattr(request_info, 'uri', '/api/v1/submit')
         setattr(request_info, 'query_arguments', '')
         setattr(request_info, "body_arguments", {"sha256":[StubData["sha256"].encode("utf8")],"userid":[StubData["userId"].encode('utf8')]})
         setattr(request_info, 'files', {"files":[{"filename":StubData["filename"]}]})
         setattr(request_info, 'remote_ip', StubData["ip"])
         setattr(record, "request_info", request_info)
 
-        self.assertFalse("DataId" in sns.set_message(record))
-        self.assertTrue(StubData["sha256"] , sns.set_message(record)["Sha256"])
-        self.assertTrue(StubData["filename"] , sns.set_message(record)["FileName"])
-        self.assertTrue(StubData["userId"], sns.set_message(record)["UserId"])
-        self.assertTrue(StubData["ip"] in sns.set_message(record)["Ip"])
-        self.assertTrue(StubData["url"] , sns.set_message(record)["Url"])
+        self.assertFalse("DataId" in sns.set_message(record)[0])
+        self.assertTrue(StubData["sha256"] , sns.set_message(record)[0]["Sha256"])
+        self.assertTrue(StubData["filename"] , sns.set_message(record)[0]["FileName"])
+        self.assertTrue(StubData["userId"], sns.set_message(record)[0]["UserId"])
+        self.assertTrue(StubData["ip"] in sns.set_message(record)[0]["Ip"])
+        self.assertTrue(StubData["url"] , sns.set_message(record)[0]["Url"])
 
 
 class Body_arguments():
