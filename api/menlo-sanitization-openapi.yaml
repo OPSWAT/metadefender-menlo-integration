@@ -51,7 +51,7 @@ paths:
 
   /inbound:
     post:
-      summary: File metadata
+      summary: File metadata (Not implemented)
       description: Provide file metadata
       parameters:
         - name: Authorization
@@ -127,7 +127,7 @@ paths:
         '200':
           description: Result returned successfully. 
           content: 
-            multipart/form-data:
+            application/json:
               schema:
                 oneOf:
                   - $ref: '#/components/schemas/FileAllowedResponse'
@@ -175,7 +175,7 @@ paths:
         '200':        
           description: The sanitized file
           content:
-            application/octet-stream:
+            multipart/form-data:
               schema:
                 type: string
                 format: binary
