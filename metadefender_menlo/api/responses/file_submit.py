@@ -44,7 +44,7 @@ class FileSubmit(BaseResponse):
         return (json_response, 400)
 
     def __response401(self, json_response, status_code):
-        return (json_response, 401)
+        return ({}, 401)
 
     def __response422(self, json_response, status_code):
         return (json_response, 422)

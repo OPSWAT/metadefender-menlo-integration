@@ -91,4 +91,4 @@ class FileAnalyis(BaseResponse):
         return ({}, status_code)
 
     def __response401(self, response, status_code):
-        return (response, 401)
+        return ({}, 401)
