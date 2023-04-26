@@ -22,7 +22,7 @@ class RetrieveSanitized(BaseResponse):
         return (response, 400)
 
     def __response401(self, response, status_code):
-        return (response, 401)
+        return ({}, 401)
 
     def __response403(self, response, status_code):
         return (response, 403)
