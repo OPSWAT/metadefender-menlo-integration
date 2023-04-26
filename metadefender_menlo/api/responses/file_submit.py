@@ -12,7 +12,7 @@ class FileSubmit(BaseResponse):
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
-        self._http_responses["401"] = self.__response400
+        self._http_responses["401"] = self.__response401
         self._http_responses["429"] = self.__response401
         self._http_responses["411"] = self.__response422
 
@@ -41,10 +41,10 @@ class FileSubmit(BaseResponse):
 
     def __response400(self, json_response, status_code):
         # invalid APIkey -> respond with Unauthorized
-        return (json_response, 401)
+        return (json_response, 400)
 
     def __response401(self, json_response, status_code):
-        return (json_response, 401)
+        return ({}, 401)
 
     def __response422(self, json_response, status_code):
         return (json_response, 422)

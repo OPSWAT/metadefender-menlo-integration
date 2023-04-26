@@ -16,43 +16,47 @@ class SNSLogHandler(Handler):
 
     def emit(self, record):
         try:
-            message = self.set_message(record)
+            message, subject = self.set_message(record)
             if self.filterMessages(record.levelname, message):
-                self.publishMessage(message)
+                self.publishMessage(message, subject)
         except RecursionError:
             raise
         except Exception as e:
             print(e)
 
-            
-    def publishMessage(self, message):
+    def publishMessage(self, message, subject):
         try:
             self.client.publish(
                 TargetArn=self.arn,
                 Message=json.dumps({"default": json.dumps(message, indent=2)}),
-                Subject='MenloMiddleware',
+                Subject="MetaDefender Cloud - "+subject,
                 MessageStructure='json'
             )
         except Exception as error:
             print(error)
 
     def set_message(self, record):
+        subject_retrieve = "Retrieve analysis result failed for: "
         if hasattr(record, "request_info"):
             if hasattr(record.request_info, "uri"):
                 url = record.request_info.uri
-                if "file" in url:
+                if "/api/v1/file" in url:
                     # RetrieveSanitized
-                    return self.getFileMessage(record)
-                if "result" in url:
+                    message = self.getFileMessage(record)
+                    return message, subject_retrieve+"{0}".format(message["DataId"])
+                if "/api/v1/result" in url:
                     # AnalysisResult
-                    return self.getResultMessage(record)
-                if "check" in url:
+                    message = self.getResultMessage(record)
+                    return message, subject_retrieve+"{0}".format(message["DataId"])
+                if "/api/v1/check" in url:
                     # CheckExisting
-                    return self.getCheckMessage(record)
-                if "submit" in url:
+                    message = self.getCheckMessage(record)
+                    return message, subject_retrieve+"{0}".format(message["Sha256"])
+                if "/api/v1/submit" in url:
                     # SubmitFile
-                    return self.setSubmitMessage(record)
-        return ""
+                    message = self.setSubmitMessage(record)
+                    return message, "Processing failed for file: {0}".format(message["FileName"])
+        return "", ""
 
     def getFileMessage(self, record):
         return self.getMessageDataId(record)
@@ -63,9 +67,9 @@ class SNSLogHandler(Handler):
     def getMessageDataId(self, record):
         try:
             data_id = record.request_info.query_arguments["uuid"][0].decode(
-            'utf-8')
+                'utf-8')
         except Exception:
-            data_id=""
+            data_id = ""
         return {
             "TimeStamp": self.getTime(),
             "DataId": data_id,
@@ -75,9 +79,9 @@ class SNSLogHandler(Handler):
     def getCheckMessage(self, record):
         try:
             sha256 = record.request_info.query_arguments["sha256"][0].decode(
-            'utf-8')
+                'utf-8')
         except Exception:
-            sha256=""
+            sha256 = ""
         return {
             "TimeStamp": self.getTime(),
             "Sha256": sha256,
@@ -94,17 +98,28 @@ class SNSLogHandler(Handler):
             user_id = record.request_info.body_arguments['userid'][0].decode(
                 "utf-8")
         except Exception:
-            user_id=""
+            user_id = ""
         try:
             sha256 = record.request_info.body_arguments['sha256'][0].decode(
                 "utf-8")
         except Exception:
             sha256=""
+        try:
+            srcuri = record.request_info.body_arguments['srcuri'][0].decode(
+                "utf-8")
+        except Exception:
+            srcuri=""
+        try:
+            remote_ip = record.request_info.remote_ip
+        except Exception:
+            remote_ip=""
         return {
             "TimeStamp": self.getTime(),
             "FileName": file_name,
             "UserId": user_id,
             "Sha256": sha256,
+            "Url":srcuri,
+            "Ip":remote_ip,
             "Error message": record.getMessage()
         }
 
@@ -113,5 +128,3 @@ class SNSLogHandler(Handler):
 
     def getTime(self):
         return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
-

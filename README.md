@@ -272,8 +272,8 @@ DETAILS:
     - <Order>
 
 Exapmple:
-    MenloPlugin > Request > {method: GET, endpoint: "/api/v1/file/bzIyMDYyNDl6ekt5TElTZVMxNmllVHR2TWE"}
-    MetadeDefenderCloud > Request > {https://api.metadefender.com/v4/file/converted/bzIyMDYyNDl6ekt5TElTZVMxNmllVHR2TWE | {'apikey': '4da78a411dd24a44d839e16fa2be7c1f', 'x-forwarded-for': '81.196.34.198', 'x-real-ip': '81.196.34.198'}}
+    MenloPlugin > Request > {method: GET, endpoint: "/api/v1/file/<dataId>"}
+    MetadeDefenderCloud > Request > {https://api.metadefender.com/v4/file/converted/<dataId> | {'apikey': <apikey>, 'x-forwarded-for': '81.196.34.198', 'x-real-ip': '81.196.34.198'}}
     MetadeDefenderCloud > Response > {status_500}
     MeloPlugin > Internal > "Error from md cloud"
     MenloPlugin > Response > {500 response: sanitized file (binary data)}
@@ -281,5 +281,8 @@ Exapmple:
 
 
 ## Extras
+To generate the api documentation from menlo-sanitization-openapi.yaml run the below command:
+redocly build-docs ./api/menlo-sanitization-openapi.yaml --output './docs/Menlo Sanitization API.html'
+
 * [Postman collection](api/Menlo%20Security%20-%20Sanitization%20Public%20API.postman_collection.json)
 * [OpenAPI 3.0 Spec File](api/menlo-sanitization-openapi.yaml)

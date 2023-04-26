@@ -15,16 +15,19 @@ class FileAnalyis(BaseResponse):
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
-        self._http_responses["401"] = self.__response400
+        self._http_responses["401"] = self.__response401
         self._http_responses["404"] = self.__response400
 
     def model_outcome(self, result, json_response):
         if result == 'completed':
-            if json_response['process_info']['profile'] == 'cdr':
-                return 'unknown' if ("sanitized" in json_response
-                                     and "result" in json_response["sanitized"]
-                                     and json_response['sanitized']['result'] != 'Allowed'
-                                     ) else 'clean'
+            if json_response['process_info']['profile'] == 'cdr' or json_response['process_info']['profile'].find("sanitize")!=-1:
+                if "sanitized" in json_response and "result" in json_response["sanitized"]:
+                    if json_response['sanitized']['result'] == 'Allowed':
+                        return 'clean'
+                    if json_response['sanitized']['result'] == 'Error':
+                        return 'error'
+                    if json_response['sanitized']['result'] == 'unknown':
+                        return 'unknown'
             return 'clean' if json_response['process_info']['result'] == 'Allowed' else 'infected'
         else:
             return 'unknown'
@@ -34,7 +37,7 @@ class FileAnalyis(BaseResponse):
             "process_info" in json_response and "progress_percentage" in json_response["process_info"]) else json_response["process_info"]["progress_percentage"]
         sanitized_progress = 100 if not (
             "sanitized" in json_response and "progress_percentage" in json_response["sanitized"]) else json_response["sanitized"]["progress_percentage"]
-
+    
         return scan_progress == 100 and sanitized_progress == 100
 
     def __response200(self, json_response, _status_code):
@@ -86,3 +89,6 @@ class FileAnalyis(BaseResponse):
 
     def __response400(self, _json_response, status_code):
         return ({}, status_code)
+
+    def __response401(self, response, status_code):
+        return ({}, 401)
