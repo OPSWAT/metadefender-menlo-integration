@@ -28,6 +28,13 @@ paths:
           schema:
             type: string
             example: "<<SHA256 example>>"
+        - name: Authorization
+          description: MetaDefender Cloud apikey
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "<<apikey>>"
       responses:
         '200':
           $ref: "#/components/responses/Success200"
@@ -44,8 +51,16 @@ paths:
 
   /inbound:
     post:
-      summary: File metadata
+      summary: File metadata (Not implemented)
       description: Provide file metadata
+      parameters:
+        - name: Authorization
+          description: MetaDefender Cloud apikey
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "<<apikey>>"
       requestBody:
         content: 
           multipart/form-data:
@@ -66,6 +81,14 @@ paths:
     post:
       summary: File submission
       description: Submit the file for analysis
+      parameters:
+        - name: Authorization
+          description: MetaDefender Cloud apikey
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "<<apikey>>"
       requestBody:
         content: 
           multipart/form-data:
@@ -93,11 +116,18 @@ paths:
       description: Retrieve the full analysis result. 
       parameters:
         - $ref: '#/components/parameters/uuid'
+        - name: Authorization
+          description: MetaDefender Cloud apikey
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "<<apikey>>"
       responses:
         '200':
           description: Result returned successfully. 
           content: 
-            multipart/form-data:
+            application/json:
               schema:
                 oneOf:
                   - $ref: '#/components/schemas/FileAllowedResponse'
@@ -134,11 +164,18 @@ paths:
         needed and to use the original.
       parameters:
         - $ref: '#/components/parameters/uuid'
+        - name: Authorization
+          description: MetaDefender Cloud apikey
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "<<apikey>>"
       responses:        
         '200':        
           description: The sanitized file
           content:
-            application/octet-stream:
+            multipart/form-data:
               schema:
                 type: string
                 format: binary

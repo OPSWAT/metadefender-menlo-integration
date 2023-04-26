@@ -15,7 +15,7 @@ class FileAnalyis(BaseResponse):
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
-        self._http_responses["401"] = self.__response400
+        self._http_responses["401"] = self.__response401
         self._http_responses["404"] = self.__response400
 
     def model_outcome(self, result, json_response):
@@ -89,3 +89,6 @@ class FileAnalyis(BaseResponse):
 
     def __response400(self, _json_response, status_code):
         return ({}, status_code)
+
+    def __response401(self, response, status_code):
+        return (response, 401)
