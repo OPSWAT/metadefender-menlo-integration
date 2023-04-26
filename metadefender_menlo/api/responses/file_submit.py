@@ -12,7 +12,7 @@ class FileSubmit(BaseResponse):
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
-        self._http_responses["401"] = self.__response400
+        self._http_responses["401"] = self.__response401
         self._http_responses["429"] = self.__response401
         self._http_responses["411"] = self.__response422
 
