@@ -125,12 +125,12 @@ def init_logging(config, sns_config_path):
 def initial_config(config_path, sns_config_path):
     Config(config_path)
 
-    try:
-        init_sentry()
-    except Exception as error:
-        logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
-            "Exception: ": repr(error)
-        }))
+    # try:
+    #     init_sentry()
+    # except Exception as error:
+    #     logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
+    #         "Exception: ": repr(error)
+    #     }))
 
     config = Config.get_all()
 
