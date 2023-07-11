@@ -37,6 +37,12 @@ settings = {}
 CONF_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 Config(CONF_FILE_PATH+'/../config.yml')
 
+def before_send(event, hint):
+    if 'exc_info' in hint:
+        _, exc_value, _ = hint['exc_info']
+        if isinstance(exc_value, Exception):
+            return event
+    return None 
 
 def init_sentry():
     menlo_env = environ.get("MENLO_ENV", 'local')
@@ -48,6 +54,7 @@ def init_sentry():
             ],
             environment=menlo_env,
             traces_sample_rate=1.0,
+            before_send=before_send,
         )
 
 
