@@ -37,25 +37,23 @@ settings = {}
 CONF_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 Config(CONF_FILE_PATH+'/../config.yml')
 
-def before_send(event, hint):
-    if 'exc_info' in hint:
-        _, exc_value, _ = hint['exc_info']
-        if isinstance(exc_value, Exception):
-            return event
-    return None 
+def traces_sampler(sampling_context):
+    # filter healthcheck endpoint when sending transactions to sentry
+    if '/api/v1/health' in sampling_context["tornado_request"].uri:
+        return 0
+    return 1
 
 def init_sentry():
     menlo_env = environ.get("MENLO_ENV", 'local')
     if menlo_env != 'local':
         sentry_sdk.init(
-            dsn=environ.get("SENTRY_DSN"),
-            integrations=[
-                TornadoIntegration(),
-            ],
-            environment=menlo_env,
-            traces_sample_rate=1.0,
-            before_send=before_send,
-        )
+                dsn=environ.get("SENTRY_DSN"),
+                integrations=[
+                    TornadoIntegration(),
+                ],
+                environment=menlo_env,
+                traces_sampler=traces_sampler,
+            )
 
 
 def get_sns_config(config_path):
