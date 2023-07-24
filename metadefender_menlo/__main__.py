@@ -37,18 +37,23 @@ settings = {}
 CONF_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 Config(CONF_FILE_PATH+'/../config.yml')
 
+def traces_sampler(sampling_context):
+    # filter healthcheck endpoint when sending transactions to sentry
+    if '/api/v1/health' in sampling_context["tornado_request"].uri:
+        return 0
+    return 1
 
 def init_sentry():
     menlo_env = environ.get("MENLO_ENV", 'local')
     if menlo_env != 'local':
         sentry_sdk.init(
-            dsn=environ.get("SENTRY_DSN"),
-            integrations=[
-                TornadoIntegration(),
-            ],
-            environment=menlo_env,
-            traces_sample_rate=1.0,
-        )
+                dsn=environ.get("SENTRY_DSN"),
+                integrations=[
+                    TornadoIntegration(),
+                ],
+                environment=menlo_env,
+                traces_sampler=traces_sampler,
+            )
 
 
 def get_sns_config(config_path):
@@ -125,12 +130,12 @@ def init_logging(config, sns_config_path):
 def initial_config(config_path, sns_config_path):
     Config(config_path)
 
-    # try:
-    #     init_sentry()
-    # except Exception as error:
-    #     logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
-    #         "Exception: ": repr(error)
-    #     }))
+    try:
+        init_sentry()
+    except Exception as error:
+        logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
+            "Exception: ": repr(error)
+        }))
 
     config = Config.get_all()
 
