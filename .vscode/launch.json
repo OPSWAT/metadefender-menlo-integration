@@ -5,9 +5,22 @@
   "version": "0.2.0",
   "configurations": [
     {
+      // run in root
+      // python3 -m venv .venv
+      // python3 -m pip install -r requirements.txt
+      "name": "Python: Menlo",
+      "type": "python",
+      "request": "launch",
+      "module": "metadefender_menlo",
+      "justMyCode": true,
+      "env": {
+        "MDCLOUD_RULE": "multiscan, sanitize, unarchive",
+      }
+    },
+    {
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "name": "nodemon",
+      "name": "Node Project",
       "program": "${workspaceFolder}/nodejs/index.js",
       "request": "launch",
       "restart": true,
@@ -19,19 +32,6 @@
       "env": {
         // "SERVER_HOST": "api-qa.metadefender.com",
         // "SERVER_PORT": "443",
-      }
-    },
-    {
-      // run in root
-      // python3 -m venv .venv
-      // python3 -m pip install -r requirements.txt
-      "name": "Python: Module",
-      "type": "python",
-      "request": "launch",
-      "module": "metadefender_menlo",
-      "justMyCode": true,
-      "env": {
-        "MDCLOUD_RULE": "multiscan, sanitize, unarchive",
       }
     }
   ]
