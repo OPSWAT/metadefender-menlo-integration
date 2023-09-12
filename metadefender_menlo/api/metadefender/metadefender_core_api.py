@@ -16,11 +16,10 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             "/#/public/process/dataId/{data_id}"
 
     def _get_submit_file_headers(self, filename, metadata):
-        metadata_str = json.dumps(metadata) if metadata is not None else ""
-
         headers = {
-            "filename": filename,
-            "metadata": metadata_str
+            "Content-Type": "application/octet-stream",
+            "filename": filename.encode('unicode-escape').decode('latin1'),
+            "metadata": json.dumps(metadata) if metadata is not None else ""
         }
         return headers
 
