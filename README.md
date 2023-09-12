@@ -15,12 +15,16 @@ Please use the `origin` repository for internal development, syncronize only the
 ### Repo setup
 
 ```bash
+# clone repo from bitbucket
 git clone git@bitbucket.org:metascan/mdcl-menlo-middleware.git
 
+# change directory to project root
 cd mdcl-menlo-middleware
 
+# add public remote repo
 git remote add github git@github.com:OPSWAT/metadefender-menlo-integration.git
 
+# init git-flow
 git flow init
 # [gitflow "branch"]
 # 	master = main
@@ -32,6 +36,15 @@ git flow init
 # 	hotfix = hotfix/
 # 	support = support/
 # 	versiontag =
+
+# init python virtual env
+python3 -m venv .venv
+
+# activate virtual env
+source .venv/bin/activate
+
+# install requirements
+pip install -r requirements.txt
 ```
 
 Use [git-flow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) for development
@@ -45,14 +58,21 @@ Use [git-flow workflow](https://www.atlassian.com/git/tutorials/comparing-workfl
 Make sure you have `python3.5` or above installed. 
 This Middleware leverages python's async mechanism introduced in `python3.5`
 
-Before you run it, install all dependencies: 
-`pip install -r requirements.txt`
+Before you run it, install all dependencies in a virtual env:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+``` 
 
 To run the app: 
-`python3 -m metadefender_menlo`
+```bash
+python3 -m metadefender_menlo
+```
 
 Middleware should be configured using the [config](config.yml) file:
-```
+```yml
 service: metadefender                       # MetaDefender Core service is the only current integration allowed
 api: 
   type: core                                # mandatory, should be either `core` or `cloud`
