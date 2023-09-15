@@ -20,7 +20,7 @@ REQUIRES = [
     "kafka-python==2.0.2",
     "python-dotenv==0.19.2",
     "aiocontextvars==0.2.2",
-    "sentry-sdk==1.10.1",
+    "sentry-sdk==1.14.0",
     "httpx==0.23.0",
     "boto3==1.26.51"
 ]
