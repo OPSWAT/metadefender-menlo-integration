@@ -1,10 +1,9 @@
 # coding: utf-8
 
-import sys
 from setuptools import setup, find_packages
 
 NAME = "metadefender_menlo"
-VERSION = "1.0.0"
+VERSION = "1.5.2"
 
 # To install the library, run the following
 #
@@ -14,8 +13,16 @@ VERSION = "1.0.0"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    "flask>=1.1.2",
-    "urllib3>=1.25.9"
+    "tornado==6.1",
+    "urllib3==1.26.12",
+    "pyyaml==6.0.1",
+    "typing==3.7.4.3",
+    "kafka-python==2.0.2",
+    "python-dotenv==0.19.2",
+    "aiocontextvars==0.2.2",
+    "sentry-sdk==1.10.1",
+    "httpx==0.23.0",
+    "boto3==1.26.51"
 ]
 
 setup(
@@ -35,4 +42,3 @@ setup(
     This document outlines the required processing flow and API for a service implementing the Menlo REST API. This configurable interface will allow the MSIP to provide a file to an externally controlled API implementing the following defined interface. The primary purpose of this integration is to submit a file to the external API for additional file processing. The external API can then process the file and make the outcome available to the MSIP. Along with sending the file, MSIP will also be able to send specific metadata that can be used for auditing or as part of the analysis process
     """
 )
-

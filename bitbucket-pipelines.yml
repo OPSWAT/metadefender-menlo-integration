@@ -1,0 +1,118 @@
+image:
+  name: 108895011981.dkr.ecr.us-west-2.amazonaws.com/aws-terragrunt:1.0.3-eks
+  aws: 
+    access-key: $AWS_ACCESS_KEY_ID_dev
+    secret-key: $AWS_SECRET_ACCESS_KEY_dev
+
+definitions:
+  steps:
+    - step: &build_deploy
+        name: Build images and deploy to EKS
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - |
+            export VERSION=m_${BITBUCKET_COMMIT:0:7}
+            export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            if [[ $MENLO_ENV == "dev" ]]; then
+              export MDCLOUD_URL=${MDCLOUD_URL}
+            fi
+            export SENTRY_DSN=${SENTRY_DSN}
+            export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
+            if [[ $CDR_WORKFLOW == "true" ]]; then
+              if [[ $MENLO_ENV == "prod" ]]; then
+                export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
+              else
+                export EKS_NAMESPACE=menlo-${MENLO_ENV}
+              fi
+              export MDCLOUD_RULE="cdr"
+            else 
+              export EKS_NAMESPACE=menlo-${MENLO_ENV}
+              export MDCLOUD_RULE="multiscan, sanitize, unarchive"
+            fi
+            cd kubernetes
+            ./deploy.aws.sh build_image
+            ./deploy.aws.sh ecr_login
+            ./deploy.aws.sh push_image
+            ./deploy.aws.sh configure_cluster
+            kubectl get namespace $EKS_NAMESPACE || kubectl create namespace $EKS_NAMESPACE
+            envsubst < deployment.yaml > deployment.yaml.tmp && mv deployment.yaml.tmp deployment.yaml
+            envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
+            ./deploy.aws.sh apply_deployment
+            ./deploy.aws.sh apply_service
+            ./deploy.aws.sh apply_ingress
+            if [[ $MENLO_ENV == "prod" ]]; then 
+              ./deploy.aws.sh apply_hpa
+            fi
+    - step: &sonarqube-scan
+        name: SonarQube analysis
+        script:
+          - pipe: sonarsource/sonarqube-scan:1.0.0
+            variables:
+              SONAR_HOST_URL: ${SONAR_HOST_URL} # Get the value from the repository/workspace variable.
+              SONAR_TOKEN: ${SONAR_TOKEN} # Get the value from the repository/workspace variable. You shouldn't set secret in clear text here.
+    - step: &blackduck-scan
+        name: Blackduck analysis
+        script:
+          - pip install -r ./requirements.txt
+          - /bin/bash ./blackduck.sh $BLACKDUCK_TOKEN
+    - step: &blackduck-container-scan
+        name: Blackduck container scanning
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - export IMAGE=108895011981.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:dev-m_${BITBUCKET_COMMIT:0:7}
+          - /bin/bash ./blackduck-container-scan.sh -t ${BLACKDUCK_TOKEN} -i ${IMAGE}
+    - step: &gitleaks
+        name: GitLeaks secret scanning
+        image: zricethezav/gitleaks:latest
+        script:
+          - gitleaks detect -s . -v --no-git --redact -r ./gitleaks.json
+        artifacts:
+          - gitleaks.json
+
+pipelines:
+  custom:
+    manual-dev:
+      - variables:
+          - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
+            default: false
+          - name: MDCLOUD_URL 
+            default: https://api.metadefender.com/v4
+      - step: *gitleaks
+      - step: 
+          <<: *build_deploy
+          deployment: dev
+      - step: *blackduck-container-scan
+    manual-prod:
+      - variables:
+          - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
+            default: false
+      - step:
+          <<: *build_deploy
+          deployment: prod
+    sonarqube:
+      - step: *sonarqube-scan
+    blackduck:
+      - step: *blackduck-scan
+    blackduck-container-scan:
+      - step: *blackduck-container-scan
+    gitleaks:
+      - step: *gitleaks
+  branches:
+    '{develop}': # or the name of your main branch
+        - step: *sonarqube-scan
+        - step: *blackduck-scan
+        - step: *gitleaks
+
+  pull-requests:
+      '**':
+        - step: *sonarqube-scan
+        - step: *blackduck-scan
+        - step: *gitleaks
+clone:
+  depth: full

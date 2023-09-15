@@ -1,5 +1,54 @@
 # MetaDefender - Menlo Security Middleware
 
+## Development
+
+### Repositories
+
+Please use the `origin` repository for internal development, syncronize only the main and develop branches between `origin` and `github` repos.
+
+- origin: Internal remote repository  
+`origin git@bitbucket.org:metascan/mdcl-menlo-middleware.git`
+
+- github: Public remote repository  
+`github git@github.com:OPSWAT/metadefender-menlo-integration.git`
+
+### Repo setup
+
+```bash
+# clone repo from bitbucket
+git clone git@bitbucket.org:metascan/mdcl-menlo-middleware.git
+
+# change directory to project root
+cd mdcl-menlo-middleware
+
+# add public remote repo
+git remote add github git@github.com:OPSWAT/metadefender-menlo-integration.git
+
+# init git-flow
+git flow init
+# [gitflow "branch"]
+# 	master = main
+# 	develop = develop
+# [gitflow "prefix"]
+# 	feature = feature/
+# 	bugfix = bugfix/
+# 	release = release/
+# 	hotfix = hotfix/
+# 	support = support/
+# 	versiontag =
+
+# init python virtual env
+python3 -m venv .venv
+
+# activate virtual env
+source .venv/bin/activate
+
+# install requirements
+pip install -r requirements.txt
+```
+
+Use [git-flow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) for development
+
 ## Documentation
 
 * [Integration Guide](docs/Menlo%20-%20MetaDefender%20Integration%20Guide.pdf)
@@ -9,14 +58,21 @@
 Make sure you have `python3.5` or above installed. 
 This Middleware leverages python's async mechanism introduced in `python3.5`
 
-Before you run it, install all dependencies: 
-`pip install -r requirements.txt`
+Before you run it, install all dependencies in a virtual env:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+``` 
 
 To run the app: 
-`python3 -m metadefender_menlo`
+```bash
+python3 -m metadefender_menlo
+```
 
 Middleware should be configured using the [config](config.yml) file:
-```
+```yml
 service: metadefender                       # MetaDefender Core service is the only current integration allowed
 api: 
   type: core                                # mandatory, should be either `core` or `cloud`
@@ -46,10 +102,59 @@ You can add self-signed X509 certs, but have to be signed by a (custom) Certific
 
 The location can be altered also by modifiying `metadefender_menlo/__main__.py` at lines 22-23. 
 
+## AWS Cloud deployment
+
+To change the environemnt, update `.env` file.
+```bash
+# Use `local` for local development.
+# Use `dev` for testing the deployment on https://menlo-dev.metadefender.com
+# Use `prod` for deploying a new version to prod env: https://menlo.metadefender.com
+MENLO_ENV=<env>
+```
+
+Follow the next steps after the env is set.
+```bash
+# 1. Go to the kubernetes folder
+cd kubernetes
+
+# 2. Build a new image version. 
+# set different <version> for each deployment, 
+# you can append a letter to the current version number while testing. e.g. 1.1.0-c
+./deploy.aws.sh build_image 1.1.0-c
+
+# 3.a Login to AWS ECR. Once in a while if your session expires
+./deploy.aws.sh ecr_login
+
+# 3. Push image to remote
+./deploy.aws.sh push_image 1.1.0-c
+
+# 4. Deploy the new image to the dev cluster
+./deploy.aws.sh apply_deployment
+
+# Check the new deployment on 
+https://menlo-dev.metadefender.com
+```
+
+## Bitbucket automated deployment
+
+Some Bitbucket pipelines have been configured in order for everybody to easily build and deploy the Menlo middleware to any environment from the same place (Bitbucket pipelines that trigger cloud agents), thus eliminating potential deviations in the build/deploy script or others (OS, software etc.). Plus, this way all builds/deploys can be tracked.
+
+There are 3 pipelines:
+
+- **branches: develop** - automatically triggered to build/deploy to dev when there is a merge to develop
+- **branches: main** - automatically triggered to build/deploy to prod when there is a merge to main
+- **custom: manual** - manually triggered pipeline to deploy to dev from any branch other than develop/main
+
+All of the environment variables used in the scripts can be viewed and configured in Bitbucket->Repository Settings->Deployments OR Repository variables
+
+For local deployments, use the gitignored `.env` file which will be sourced in the script.
+
 ## Kubernetes deployment
 First, you’re required to build a container. There’s a `Dockerfile` in the repo, that you can use to build the container and push it to your registry. Once you have it, you will have to modify deployment.yaml and specify your own container image. 
 
 Also, check the `deploy.sh` script. It was built specifically for Google Cloud to leverage GKE (Google Kubernetes Engine). But it can be easily adapted to run in any Kubernetes supported environment. 
+
+For AWS deployment please check `deploy.aws.sh`.
 
 The GCP specific part is building the cluster and (if needed) the static IP. 
 
@@ -168,6 +273,36 @@ See the [Middleware Documentation](#Middleware-documentation) for details.
 5. Click on the table entry and you'll see the analyis details on the right side. 
 
 
+### Logging guide
+
+```
+SERVICE > TYPE > DETAILS
+
+SERVICE
+    - MenloPlugin
+    - MetaDefenderCloud
+
+TYPE:
+    - Request
+    - Response
+    - Internal
+
+DETAILS: 
+    - <JSON Object>
+    - <Order>
+
+Exapmple:
+    MenloPlugin > Request > {method: GET, endpoint: "/api/v1/file/<dataId>"}
+    MetadeDefenderCloud > Request > {https://api.metadefender.com/v4/file/converted/<dataId> | {'apikey': <apikey>, 'x-forwarded-for': '81.196.34.198', 'x-real-ip': '81.196.34.198'}}
+    MetadeDefenderCloud > Response > {status_500}
+    MeloPlugin > Internal > "Error from md cloud"
+    MenloPlugin > Response > {500 response: sanitized file (binary data)}
+```
+
+
 ## Extras
+To generate the api documentation from menlo-sanitization-openapi.yaml run the below command:
+redocly build-docs ./api/menlo-sanitization-openapi.yaml --output './docs/Menlo Sanitization API.html'
+
 * [Postman collection](api/Menlo%20Security%20-%20Sanitization%20Public%20API.postman_collection.json)
 * [OpenAPI 3.0 Spec File](api/menlo-sanitization-openapi.yaml)
