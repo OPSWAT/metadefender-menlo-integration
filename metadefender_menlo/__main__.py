@@ -57,31 +57,37 @@ def init_sentry():
 
 
 def get_sns_config(config_path):
-    sns_config_file = open(config_path, encoding="utf-8")
+    try:
+        sns_config_file = open(config_path, encoding="utf-8")
 
-    sns_config = json.load(sns_config_file)
-    rule = environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
-    if rule != "cdr":
-        rule=""
-    else:
-        rule = "_"+rule
-    environment_name = "menlo_middleware_"+environ.get("MENLO_ENV", 'dev')+rule
-    sns_config_file.close()
-    if environment_name in sns_config:
-        connection = sns_config[environment_name]
-        return {
-            "arn": connection["arn"],
-            "region": connection["region"]
-        }
+        sns_config = json.load(sns_config_file)
+        rule = environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
+        if rule != "cdr":
+            rule=""
+        else:
+            rule = "_"+rule
+        environment_name = "menlo_middleware_"+environ.get("MENLO_ENV", 'dev')+rule
+        sns_config_file.close()
+        if environment_name in sns_config:
+            connection = sns_config[environment_name]
+            return {
+                "arn": connection["arn"],
+                "region": connection["region"]
+            }
+    except Exception as error:
+        pass
+
     return None
 
 
 def get_kafka_config(kafka_config_path):
-    kafka_config_file = open(kafka_config_path, encoding="utf-8")
-    kafka_config = json.load(kafka_config_file)
-    kafka_config_file.close()
-    return kafka_config
-
+    try:
+        kafka_config_file = open(kafka_config_path, encoding="utf-8")
+        kafka_config = json.load(kafka_config_file)
+        kafka_config_file.close()
+        return kafka_config
+    except Exception as error:
+        return None
 
 def init_logging(config, sns_config_path):
     if "enabled" not in config or not config["enabled"]:
@@ -94,29 +100,31 @@ def init_logging(config, sns_config_path):
     logging.getLogger('kafka.access').disabled = True
     logger.setLevel(config["level"])
     logfile = config["logfile"]
+    
     # create log handlers
     log_handler = TimedRotatingFileHandler(
         filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
 
-    kafka_config = get_kafka_config('./metadefender_menlo/conf/kafka-config.json')
-    log_handler_kafka = KafkaLogHandler(kafka_config)
-
-    sns_cofig = get_sns_config(sns_config_path)
-    log_hanfler_sns = SNSLogHandler(sns_cofig)
-
     log_format = '%(asctime)s - %(levelname)s - %(filename)s > %(funcName)s:%(lineno)d - %(message)s'
-
     formatter = logging.Formatter(
         fmt=log_format, datefmt='%m/%d/%Y %I:%M:%S %p')
 
     log_handler.setFormatter(formatter)
-    if sns_cofig != None:
-        logger.addHandler(log_hanfler_sns)
 
-    if not hasattr(log_handler_kafka, "sender"):
-        logger.addHandler(log_handler)
+    kafka_config = get_kafka_config('./metadefender_menlo/conf/kafka-config.json')
+    if kafka_config:
+        log_handler_kafka = KafkaLogHandler(kafka_config)
+        if hasattr(log_handler_kafka, "sender"):
+            logger.addHandler(log_handler_kafka)
+        else:
+            logger.addHandler(log_handler)
     else:
-        logger.addHandler(log_handler_kafka)
+        logger.addHandler(log_handler)
+
+    sns_cofig = get_sns_config(sns_config_path)
+    if sns_cofig != None:
+        log_hanfler_sns = SNSLogHandler(sns_cofig)
+        logger.addHandler(log_hanfler_sns)
 
     log_request_filter = LogRequestFilter()
 
@@ -149,17 +157,11 @@ def initial_config(config_path, sns_config_path):
     api = config["api"]
     md_type = api["type"]
     
-    url = environ.get("MDCLOUD_URL", "https://api.metadefender.com/v4")
-    if url == "" or environ.get("MENLO_ENV", 'prod') == 'prod':
-        url = api["url"]["cloud"]
-    if md_type == "core":
-        url = api["url"][md_type] if "url" in api and  "core" in api["url"] else "http://localhost:8008"
+    url = api["url"][md_type] if "url" in api and md_type in api["url"] else "http://localhost:8008"
+    url = environ.get("MDCLOUD_URL", url)
     
     apikey = api["params"]["apikey"] if "params" in api and "apikey" in api["params"] else None
-
-    env_apikey = os.environ.get('apikey')
-    if env_apikey:
-        apikey = env_apikey
+    apikey = os.environ.get('apikey', apikey)
 
     md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
     MetaDefenderAPI.config(url, apikey, md_cls)

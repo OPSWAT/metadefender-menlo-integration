@@ -31,10 +31,10 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
                 json_response))
             return False
 
-    async def retrieve_sanitized_file(self, data_id):
+    async def retrieve_sanitized_file(self, data_id, apikey, ip):
         logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
             "message": f"Retrieve Sanitized file for {data_id}"
         }))
-        response, http_status = await self._request_status("sanitized_file", fields={"data_id": data_id})
+        response, http_status = await self._request_status("sanitized_file", fields={"data_id": data_id}, headers={"apikey": apikey})
 
         return (response, http_status)
