@@ -149,17 +149,11 @@ def initial_config(config_path, sns_config_path):
     api = config["api"]
     md_type = api["type"]
     
-    url = environ.get("MDCLOUD_URL", "https://api.metadefender.com/v4")
-    if url == "" or environ.get("MENLO_ENV", 'prod') == 'prod':
-        url = api["url"]["cloud"]
-    if md_type == "core":
-        url = api["url"][md_type] if "url" in api and  "core" in api["url"] else "http://localhost:8008"
+    url = api["url"][md_type] if "url" in api and md_type in api["url"] else "http://localhost:8008"
+    url = environ.get("MDCLOUD_URL", url)
     
     apikey = api["params"]["apikey"] if "params" in api and "apikey" in api["params"] else None
-
-    env_apikey = os.environ.get('apikey')
-    if env_apikey:
-        apikey = env_apikey
+    apikey = os.environ.get('apikey', apikey)
 
     md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
     MetaDefenderAPI.config(url, apikey, md_cls)
