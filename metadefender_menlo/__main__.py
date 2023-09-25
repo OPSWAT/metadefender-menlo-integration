@@ -43,30 +43,29 @@ def traces_sampler(sampling_context):
         return 0
     return 1
 
-def init_sentry():
-    menlo_env = environ.get("MENLO_ENV", 'local')
-    if menlo_env != 'local':
+
+def init_sentry(env, sentry_dns):
+    if env != 'local' and sentry_dns:
         sentry_sdk.init(
-                dsn=environ.get("SENTRY_DSN"),
-                integrations=[
-                    TornadoIntegration(),
-                ],
-                environment=menlo_env,
-                traces_sampler=traces_sampler,
-            )
+            dsn=sentry_dns,
+            integrations=[
+                TornadoIntegration(),
+            ],
+            environment=env,
+            traces_sampler=traces_sampler,
+        )
 
-
-def get_sns_config(config_path):
+def get_sns_config(env, rule, config_path):
     try:
-        sns_config_file = open(config_path, encoding="utf-8")
-
-        sns_config = json.load(sns_config_file)
-        rule = environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
-        if rule != "cdr":
-            rule=""
+        if rule == "cdr":
+            rule = "_" + rule
         else:
-            rule = "_"+rule
-        environment_name = "menlo_middleware_"+environ.get("MENLO_ENV", 'dev')+rule
+            rule = ""
+
+        environment_name = "menlo_middleware_" + env + rule
+
+        sns_config_file = open(config_path, encoding="utf-8")
+        sns_config = json.load(sns_config_file)
         sns_config_file.close()
         if environment_name in sns_config:
             connection = sns_config[environment_name]
@@ -90,7 +89,8 @@ def get_kafka_config(kafka_config_path):
         return None
 
 def init_logging(config, sns_config_path):
-    if "enabled" not in config or not config["enabled"]:
+    config_logging = config["logging"]
+    if "enabled" not in config_logging or not config_logging["enabled"]:
         return
 
     load_dotenv()
@@ -98,12 +98,12 @@ def init_logging(config, sns_config_path):
     logging.getLogger('tornado.access').disabled = True
     logging.getLogger('kafka.conn').disabled = True
     logging.getLogger('kafka.access').disabled = True
-    logger.setLevel(config["level"])
-    logfile = config["logfile"]
+    logger.setLevel(config_logging["level"])
+    logfile = config_logging["logfile"]
     
     # create log handlers
     log_handler = TimedRotatingFileHandler(
-        filename=logfile, when="h", interval=config["interval"], backupCount=config["backup_count"])
+        filename=logfile, when="h", interval=config_logging["interval"], backupCount=config_logging["backup_count"])
 
     log_format = '%(asctime)s - %(levelname)s - %(filename)s > %(funcName)s:%(lineno)d - %(message)s'
     formatter = logging.Formatter(
@@ -113,7 +113,7 @@ def init_logging(config, sns_config_path):
 
     kafka_config = get_kafka_config('./metadefender_menlo/conf/kafka-config.json')
     if kafka_config:
-        log_handler_kafka = KafkaLogHandler(kafka_config)
+        log_handler_kafka = KafkaLogHandler(config, kafka_config)
         if hasattr(log_handler_kafka, "sender"):
             logger.addHandler(log_handler_kafka)
         else:
@@ -121,7 +121,7 @@ def init_logging(config, sns_config_path):
     else:
         logger.addHandler(log_handler)
 
-    sns_cofig = get_sns_config(sns_config_path)
+    sns_cofig = get_sns_config(config['env'], config['scanRule'], sns_config_path)
     if sns_cofig != None:
         log_hanfler_sns = SNSLogHandler(sns_cofig)
         logger.addHandler(log_hanfler_sns)
@@ -138,37 +138,31 @@ def init_logging(config, sns_config_path):
 def initial_config(config_path, sns_config_path):
     Config(config_path)
 
+    config = Config.get_all()
+
     try:
-        init_sentry()
+        init_sentry(config['env'], config['sentryDns'])
     except Exception as error:
         logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
             "Exception: ": repr(error)
         }))
 
-    config = Config.get_all()
-
     settings["max_buffer_size"] = config["limits"]["max_buffer_size"]
 
     if "logging" in config:
-        init_logging(config["logging"], sns_config_path)
+        init_logging(config, sns_config_path)
 
     logging.info("Set API configuration")
 
-    api = config["api"]
-    md_type = api["type"]
-    
-    url = api["url"][md_type] if "url" in api and md_type in api["url"] else "http://localhost:8008"
-    url = environ.get("MDCLOUD_URL", url)
-    
-    apikey = api["params"]["apikey"] if "params" in api and "apikey" in api["params"] else None
-    apikey = os.environ.get('apikey', apikey)
+    url = config['serverUrl']
+    md_type = config["api"]["type"]
+    apikey = config["apikey"]
 
     md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
     MetaDefenderAPI.config(url, apikey, md_cls)
-
+    
     if "https" in config:
         if "load_local" in config["https"] and config["https"]["load_local"]:
-
             settings["ssl_options"] = {
                 "certfile": config["https"]["crt"],
                 "keyfile": config["https"]["key"],
@@ -181,16 +175,18 @@ def initial_config(config_path, sns_config_path):
         HOST = server_details["host"] if "host" in server_details else HOST
         API_VERSION = server_details["api_version"] if "api_version" in server_details else HOST
 
+    return config
 
-def make_app():
+
+def make_app(config):
     web_root = os.path.dirname(__file__) + '/../docs/'
     endpoints_list = [
-        ('/', HealthCheckHandler),
+        ('/', HealthCheckHandler, {'newConfig': config}),
         ("/docs/(.*)", tornado.web.StaticFileHandler, {
             "path": web_root,
             "default_filename": "Menlo Sanitization API.html"
         }),
-        (API_VERSION + '/health', HealthCheckHandler),
+        (API_VERSION + '/health', HealthCheckHandler, {'newConfig': config}),
         (API_VERSION + '/check', CheckExistingHandler),
         (API_VERSION + '/inbound', InboundMetadataHandler),
         (API_VERSION + '/submit', FileSubmitHandler),
@@ -206,10 +202,10 @@ def main():
     if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-    initial_config('./config.yml', './metadefender_menlo/conf/sns-config.json')
+    config = initial_config('./config.yml', './metadefender_menlo/conf/sns-config.json')
     logging.info("Start the app: {0}:{1}".format(HOST, SERVER_PORT))
 
-    app = make_app()
+    app = make_app(config)
     http_server = tornado.httpserver.HTTPServer(app, **settings)
     http_server.listen(SERVER_PORT, HOST)
     tornado.ioloop.IOLoop.current().start()

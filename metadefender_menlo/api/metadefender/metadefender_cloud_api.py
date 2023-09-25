@@ -9,7 +9,10 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
     """MetaDefenderCloudAPI
     """
 
-    def __init__(self, url, apikey):
+    settings = None
+
+    def __init__(self, config, url, apikey):
+        self.settings = config
         self.server_url = url
         self.apikey = apikey
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
@@ -18,7 +21,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         headers = {
             "filename": filename.encode('unicode-escape').decode('latin1'),
             "Content-Type": "application/octet-stream",
-            "rule": environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
+            "rule": self.settings['scanRule']
         }
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
