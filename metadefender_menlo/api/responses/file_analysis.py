@@ -1,4 +1,6 @@
+
 import logging
+import urllib.parse
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
@@ -53,8 +55,7 @@ class FileAnalyis(BaseResponse):
             model.report_url = MetaDefenderAPI.get_instance(
             ).report_url.format(data_id=json_response['data_id'])
             try:
-                model.filename = json_response['file_info']['display_name'].encode(
-                    'latin1').decode('unicode-escape')
+                model.filename = urllib.parse.unquote(json_response['file_info']['display_name'])
             except Exception:
                 model.filename = ""
 
