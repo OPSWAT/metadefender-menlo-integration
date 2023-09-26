@@ -56,24 +56,24 @@ def init_sentry(env, sentry_dns):
         )
 
 def get_sns_config(env, rule, config_path):
+    if rule == "cdr":
+        rule = "_" + rule
+    else:
+        rule = ""
+
+    environment_name = "menlo_middleware_" + env + rule
+
     try:
-        if rule == "cdr":
-            rule = "_" + rule
-        else:
-            rule = ""
+        with open(config_path, encoding="utf-8") as sns_config_file:
+            sns_config = json.load(sns_config_file)
 
-        environment_name = "menlo_middleware_" + env + rule
-
-        sns_config_file = open(config_path, encoding="utf-8")
-        sns_config = json.load(sns_config_file)
-        sns_config_file.close()
         if environment_name in sns_config:
             connection = sns_config[environment_name]
             return {
                 "arn": connection["arn"],
                 "region": connection["region"]
             }
-    except Exception as error:
+    except Exception as _error:
         pass
 
     return None
