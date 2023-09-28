@@ -1,9 +1,12 @@
 
 import logging
-from os import environ
-from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from metadefender_menlo.api.log_types import SERVICE, TYPE
+import urllib.parse
+
 import httpx
+
+from metadefender_menlo.api.log_types import SERVICE, TYPE
+from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
+
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
     """MetaDefenderCloudAPI
@@ -19,7 +22,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
-            "filename": filename.encode('unicode-escape').decode('latin1'),
+            "filename": urllib.parse.quote(filename),
             "Content-Type": "application/octet-stream",
             "rule": self.settings['scanRule']
         }
