@@ -1,15 +1,16 @@
-# import requests
-from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-import datetime
-import os
+
 import json
 import logging
+import urllib.parse
+
 from metadefender_menlo.api.log_types import SERVICE, TYPE
+from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 
 
 class MetaDefenderCoreAPI(MetaDefenderAPI):
 
-    def __init__(self, url, apikey):
+    def __init__(self, settings, url, apikey):
+        self.settings = settings
         self.server_url = url
         self.apikey = apikey
         self.report_url = self.server_url + \
@@ -18,7 +19,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
             "Content-Type": "application/octet-stream",
-            "filename": filename.encode('unicode-escape').decode('latin1'),
+            "filename": urllib.parse.quote(filename),
             "metadata": json.dumps(metadata) if metadata is not None else ""
         }
         return headers

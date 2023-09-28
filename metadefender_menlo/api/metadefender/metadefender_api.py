@@ -9,9 +9,9 @@ import httpx
 
 
 class MetaDefenderAPI(ABC):
+    settings = None
     apikey = None
     server_url = 'http://localhost:8008'
-    def md_cls(url, key): return None
     report_url = ""
     api_endpoints = {
         "submit_file": {
@@ -31,9 +31,11 @@ class MetaDefenderAPI(ABC):
             "endpoint": "/hash/{hash}"
         }
     }
+    def md_cls(url, key): return None
 
     @staticmethod
-    def config(url, apikey, metadefender_cls):
+    def config(settings, url, apikey, metadefender_cls):
+        MetaDefenderAPI.settings = settings
         MetaDefenderAPI.server_url = url
         MetaDefenderAPI.apikey = apikey
         MetaDefenderAPI.md_cls = metadefender_cls
@@ -41,7 +43,7 @@ class MetaDefenderAPI(ABC):
     @staticmethod
     def get_instance():
         cls_func = MetaDefenderAPI.md_cls
-        return cls_func(MetaDefenderAPI.server_url, MetaDefenderAPI.apikey)
+        return cls_func(MetaDefenderAPI.settings, MetaDefenderAPI.server_url, MetaDefenderAPI.apikey)
 
     @abstractmethod
     def __init__(self, url, apikey):

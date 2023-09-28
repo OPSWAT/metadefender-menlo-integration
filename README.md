@@ -238,6 +238,16 @@ logging:
   ```
 See the [Middleware Documentation](#Middleware-documentation) for details. 
 
+Environment variables (will overwrite some of the config.yml values)
+
+MENLO_MD_ENV --> env
+MENLO_MD_AWS_REGION --> region
+MENLO_MD_BITBUCKET_COMMIT_HASH --> commitHash
+MENLO_MD_MDCLOUD_RULE --> scanRule
+MENLO_MD_APIKEY --> config.yml:api.params.apikey
+MENLO_MD_URL --> config.yml:api.url[api.type]
+MENLO_MD_SENTRY_DSN --> sentryDns
+
 ##### Step 3: Configure Menlo Integration
 
 1. Login to Menlo Admin console (`https://admin.menlosecurity.com`)

@@ -1,0 +1,5 @@
+{
+    "isort.args": ["-l", "100"],
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+}

@@ -1,24 +1,28 @@
 
 import logging
-from os import environ
-from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from metadefender_menlo.api.log_types import SERVICE, TYPE
+import urllib.parse
+
 import httpx
+
+from metadefender_menlo.api.log_types import SERVICE, TYPE
+from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
+
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
     """MetaDefenderCloudAPI
     """
 
-    def __init__(self, url, apikey):
+    def __init__(self, settings, url, apikey):
+        self.settings = settings
         self.server_url = url
         self.apikey = apikey
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
 
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
-            "filename": filename.encode('unicode-escape').decode('latin1'),
+            "filename": urllib.parse.quote(filename),
             "Content-Type": "application/octet-stream",
-            "rule": environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive")
+            "rule": self.settings['scanRule']
         }
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))

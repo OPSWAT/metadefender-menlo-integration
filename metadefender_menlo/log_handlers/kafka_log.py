@@ -1,18 +1,18 @@
 
 
-from queue import Empty
-import sys 
-from os import environ
 import json
 from  logging import Handler
 from kafka import KafkaProducer
+
 class KafkaLogHandler(Handler):
 
     terminator = '\n'
+    settings = None
 
-    def __init__(self,kafka_config, stream=None):        
+    def __init__(self, config, kafka_config, stream=None):
         Handler.__init__(self)
-        environment_name="menlo_middleware_"+environ.get("MENLO_ENV",'local')
+        self.settings = config
+        environment_name="menlo_middleware_" + self.settings['env']
         connection=kafka_config[environment_name]
         self.bootstrap_servers=connection["SERVER"]
         self.topic=connection["TOPIC"]
@@ -32,10 +32,10 @@ class KafkaLogHandler(Handler):
         
         try:
             msg = {
-                    "esIndexName":environ.get("MENLO_ENV", "dev"),
+                    "esIndexName": self.settings['env'],
                     "type":record.levelname,
                     "id":record.request_id,
-                    "region":environ.get("AWS_REGION", "us-west-2"),
+                    "region": self.settings['region'],
                     "message":record.getMessage()
                 }
             try:
