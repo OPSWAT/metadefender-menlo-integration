@@ -12,10 +12,8 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
     """MetaDefenderCloudAPI
     """
 
-    settings = None
-
-    def __init__(self, config, url, apikey):
-        self.settings = config
+    def __init__(self, settings, url, apikey):
+        self.settings = settings
         self.server_url = url
         self.apikey = apikey
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"

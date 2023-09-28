@@ -159,7 +159,7 @@ def initial_config(config_path, sns_config_path):
     apikey = config["apikey"]
 
     md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
-    MetaDefenderAPI.config(url, apikey, md_cls)
+    MetaDefenderAPI.config(config, url, apikey, md_cls)
     
     if "https" in config:
         if "load_local" in config["https"] and config["https"]["load_local"]:

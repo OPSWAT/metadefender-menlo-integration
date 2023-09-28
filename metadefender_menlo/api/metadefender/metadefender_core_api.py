@@ -9,7 +9,8 @@ from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 
 class MetaDefenderCoreAPI(MetaDefenderAPI):
 
-    def __init__(self, url, apikey):
+    def __init__(self, settings, url, apikey):
+        self.settings = settings
         self.server_url = url
         self.apikey = apikey
         self.report_url = self.server_url + \
