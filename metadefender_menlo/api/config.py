@@ -50,6 +50,10 @@ class Config(object):
         Config._CONFIG['logging']['kafka']['topic'] = os.environ.get("MENLO_MD_KAFKA_TOPIC", Config._CONFIG['logging']['kafka']['topic'])
         Config._CONFIG['logging']['kafka']['ssl'] = bool(os.environ.get("MENLO_MD_KAFKA_SSL", Config._CONFIG['logging']['kafka']['ssl']))
 
+        Config._CONFIG['logging']['sns']['enabled'] = os.environ.get('MENLO_MD_SNS_ENABLED', Config._CONFIG['logging']['sns']['enabled'])
+        Config._CONFIG['logging']['sns']['arn'] = os.environ.get('MENLO_MD_SNS_ARN', Config._CONFIG['logging']['sns']['arn'])
+        Config._CONFIG['logging']['sns']['region'] = os.environ.get('MENLO_MD_SNS_REGION', Config._CONFIG['logging']['sns']['region'])
+
         
 
     @staticmethod

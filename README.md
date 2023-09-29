@@ -250,11 +250,15 @@ MENLO_MD_APIKEY --> config.yml:api.params.apikey  # MD Cloud or MD API Key
 MENLO_MD_URL --> config.yml:api.url[api.type] # MD Cloud or MD Url
 MENLO_MD_SENTRY_DSN --> sentryDns # Sentry endpoint if enabled
 
-MENLO_MD_KAFKA_ENABLED --> config.kafka.enabled # enable writing logs to kafka
-MENLO_MD_KAFKA_CLIENT_ID --> config.kafka.client_id # kafka client id
-MENLO_MD_KAFKA_SERVER --> config.kafka.server # list of kafka brokers
-MENLO_MD_KAFKA_TOPIC --> config.kafka.topic # kafka topic
-MENLO_MD_KAFKA_SSL --> config.kafka.ssl # use ssl or not
+MENLO_MD_KAFKA_ENABLED --> config.logging.kafka.enabled # enable writing logs to kafka
+MENLO_MD_KAFKA_CLIENT_ID --> config.logging.kafka.client_id # kafka client id
+MENLO_MD_KAFKA_SERVER --> config.logging.kafka.server # list of kafka brokers
+MENLO_MD_KAFKA_TOPIC --> config.logging.kafka.topic # kafka topic
+MENLO_MD_KAFKA_SSL --> config.logging.kafka.ssl # use ssl or not
+
+MENLO_MD_SNS_ENABLED --> config.logging.sns.enabled # enable sns notifications for errors
+MENLO_MD_SNS_ARN --> config.logging.sns.arn # sns topic arn
+MENLO_MD_SNS_REGION --> config.logging.sns.region # sns topic region
 ```
 
 ##### Step 3: Configure Menlo Integration

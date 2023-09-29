@@ -29,4 +29,8 @@ logging:
     server: ''
     ssl: true
     maximum_message_size: 900000
+  sns:
+    enabled: false
+    arn: ''
+    region: ''
 
