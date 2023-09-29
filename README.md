@@ -248,7 +248,7 @@ MENLO_MD_BITBUCKET_COMMIT_HASH --> commitHash  # git commit hash for versioning
 MENLO_MD_MDCLOUD_RULE --> scanRule  # MD Cloud Scan Workflow
 MENLO_MD_APIKEY --> config.yml:api.params.apikey  # MD Cloud or MD API Key
 MENLO_MD_URL --> config.yml:api.url[api.type] # MD Cloud or MD Url
-MENLO_MD_SENTRY_DSN --> sentryDns # Sentry endpoint if enabled
+MENLO_MD_SENTRY_DSN --> sentryDsn # Sentry endpoint if enabled
 
 MENLO_MD_KAFKA_ENABLED --> config.logging.kafka.enabled # enable writing logs to kafka
 MENLO_MD_KAFKA_CLIENT_ID --> config.logging.kafka.client_id # kafka client id

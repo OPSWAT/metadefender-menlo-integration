@@ -42,7 +42,7 @@ class Config(object):
                 Config._CONFIG['serverUrl'] = "http://localhost:8008"
         
         if os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN")):
-            Config._CONFIG['sentryDns'] = os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN"))
+            Config._CONFIG['sentryDsn'] = os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN"))
 
         Config._CONFIG['logging']['kafka']['enabled'] = bool(os.environ.get("MENLO_MD_KAFKA_ENABLED", Config._CONFIG['logging']['kafka']['enabled']))
         Config._CONFIG['logging']['kafka']['client_id'] = os.environ.get("MENLO_MD_KAFKA_CLIENT_ID", Config._CONFIG['logging']['kafka']['client_id'])

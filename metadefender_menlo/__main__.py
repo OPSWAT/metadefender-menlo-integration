@@ -44,10 +44,10 @@ def traces_sampler(sampling_context):
     return 1
 
 
-def init_sentry(env, sentry_dns):
-    if env != 'local' and sentry_dns:
+def init_sentry(env, sentry_dsn):
+    if env != 'local' and sentry_dsn:
         sentry_sdk.init(
-            dsn=sentry_dns,
+            dsn=sentry_dsn,
             integrations=[
                 TornadoIntegration(),
             ],
@@ -117,7 +117,7 @@ def initial_config(config_path):
     config = Config.get_all()
 
     try:
-        init_sentry(config['env'], config['sentryDns'])
+        init_sentry(config['env'], config['sentryDsn'])
     except Exception as error:
         logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
             "Exception: ": repr(error)
