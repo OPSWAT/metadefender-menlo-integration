@@ -240,13 +240,22 @@ See the [Middleware Documentation](#Middleware-documentation) for details.
 
 Environment variables (will overwrite some of the config.yml values)
 
-MENLO_MD_ENV --> env
-MENLO_MD_AWS_REGION --> region
-MENLO_MD_BITBUCKET_COMMIT_HASH --> commitHash
-MENLO_MD_MDCLOUD_RULE --> scanRule
-MENLO_MD_APIKEY --> config.yml:api.params.apikey
-MENLO_MD_URL --> config.yml:api.url[api.type]
-MENLO_MD_SENTRY_DSN --> sentryDns
+```shell
+MENLO_MD_ENV --> env # environment: local, dev, qa, prod, etc.
+
+MENLO_MD_AWS_REGION --> region  # aws region
+MENLO_MD_BITBUCKET_COMMIT_HASH --> commitHash  # git commit hash for versioning
+MENLO_MD_MDCLOUD_RULE --> scanRule  # MD Cloud Scan Workflow
+MENLO_MD_APIKEY --> config.yml:api.params.apikey  # MD Cloud or MD API Key
+MENLO_MD_URL --> config.yml:api.url[api.type] # MD Cloud or MD Url
+MENLO_MD_SENTRY_DSN --> sentryDns # Sentry endpoint if enabled
+
+MENLO_MD_KAFKA_ENABLED --> config.kafka.enabled # enable writing logs to kafka
+MENLO_MD_KAFKA_CLIENT_ID --> config.kafka.client_id # kafka client id
+MENLO_MD_KAFKA_SERVER --> config.kafka.server # list of kafka brokers
+MENLO_MD_KAFKA_TOPIC --> config.kafka.topic # kafka topic
+MENLO_MD_KAFKA_SSL --> config.kafka.ssl # use ssl or not
+```
 
 ##### Step 3: Configure Menlo Integration
 

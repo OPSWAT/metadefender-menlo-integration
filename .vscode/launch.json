@@ -13,9 +13,7 @@
       "request": "launch",
       "module": "metadefender_menlo",
       "justMyCode": true,
-      "env": {
-        "MDCLOUD_RULE": "multiscan, sanitize, unarchive",
-      }
+      "envFile": "${workspaceFolder}/.env"
     },
     {
       "console": "integratedTerminal",

@@ -111,9 +111,8 @@ def init_logging(config, sns_config_path):
 
     log_handler.setFormatter(formatter)
 
-    kafka_config = get_kafka_config('./metadefender_menlo/conf/kafka-config.json')
-    if kafka_config:
-        log_handler_kafka = KafkaLogHandler(config, kafka_config)
+    if config['logging']['kafka']['enabled']:
+        log_handler_kafka = KafkaLogHandler(config, config['logging']['kafka'])
         if hasattr(log_handler_kafka, "sender"):
             logger.addHandler(log_handler_kafka)
         else:

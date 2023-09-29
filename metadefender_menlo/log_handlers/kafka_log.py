@@ -1,22 +1,21 @@
 
-
 import json
-from  logging import Handler
+from logging import Handler
+
 from kafka import KafkaProducer
+
 
 class KafkaLogHandler(Handler):
 
     terminator = '\n'
     settings = None
 
-    def __init__(self, config, kafka_config, stream=None):
+    def __init__(self, settings, kafka_config):
         Handler.__init__(self)
-        self.settings = config
-        environment_name="menlo_middleware_" + self.settings['env']
-        connection=kafka_config[environment_name]
-        self.bootstrap_servers=connection["SERVER"]
-        self.topic=connection["TOPIC"]
-        self.security_protocol=connection["SSL"]
+        self.settings = settings
+        self.bootstrap_servers = kafka_config["server"]
+        self.topic = kafka_config["topic"]
+        self.security_protocol = kafka_config["ssl"]
         
         try:
             if self.security_protocol:
@@ -27,17 +26,17 @@ class KafkaLogHandler(Handler):
             pass
 
     def emit(self, record):
-        if not record.request_id:
+        if 'request_id' not in record:
             record.request_id = 'internal'
         
         try:
             msg = {
-                    "esIndexName": self.settings['env'],
-                    "type":record.levelname,
-                    "id":record.request_id,
-                    "region": self.settings['region'],
-                    "message":record.getMessage()
-                }
+                "esIndexName": self.settings['env'],
+                "type":record.levelname,
+                "id":record.request_id,
+                "region": self.settings['region'],
+                "message":record.getMessage()
+            }
             try:
                 self.sender.send(self.topic, msg)
             except Exception:

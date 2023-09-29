@@ -44,6 +44,12 @@ class Config(object):
         if os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN")):
             Config._CONFIG['sentryDns'] = os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN"))
 
+        Config._CONFIG['logging']['kafka']['enabled'] = bool(os.environ.get("MENLO_MD_KAFKA_ENABLED", Config._CONFIG['logging']['kafka']['enabled']))
+        Config._CONFIG['logging']['kafka']['client_id'] = os.environ.get("MENLO_MD_KAFKA_CLIENT_ID", Config._CONFIG['logging']['kafka']['client_id'])
+        Config._CONFIG['logging']['kafka']['server'] = os.environ.get("MENLO_MD_KAFKA_SERVER", Config._CONFIG['logging']['kafka']['server'])
+        Config._CONFIG['logging']['kafka']['topic'] = os.environ.get("MENLO_MD_KAFKA_TOPIC", Config._CONFIG['logging']['kafka']['topic'])
+        Config._CONFIG['logging']['kafka']['ssl'] = bool(os.environ.get("MENLO_MD_KAFKA_SSL", Config._CONFIG['logging']['kafka']['ssl']))
+
         
 
     @staticmethod
