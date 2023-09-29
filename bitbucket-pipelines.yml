@@ -81,7 +81,7 @@ pipelines:
       - variables:
           - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
             default: false
-          - name: MDCLOUD_URL 
+          - name: MENLO_MD_URL 
             default: https://api.metadefender.com/v4
       - step: *gitleaks
       - step: 
@@ -89,12 +89,13 @@ pipelines:
           deployment: dev
       - step: *blackduck-container-scan
     manual-prod:
-      - variables:
-          - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
-            default: false
       - step:
           <<: *build_deploy
           deployment: prod
+    manual-prod-cdr:
+      - step:
+          <<: *build_deploy
+          deployment: prod-cdr
     sonarqube:
       - step: *sonarqube-scan
     blackduck:
