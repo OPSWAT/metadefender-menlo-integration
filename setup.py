@@ -14,7 +14,7 @@ VERSION = "1.5.7"
 
 REQUIRES = [
     "tornado==6.1",
-    "urllib3==1.26.12",
+    "urllib3==1.26.17",
     "pyyaml==6.0.1",
     "typing==3.7.4.3",
     "kafka-python==2.0.2",
