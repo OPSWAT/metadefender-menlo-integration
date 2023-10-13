@@ -25,7 +25,7 @@ class Config(object):
         Config._CONFIG['scanRule'] = os.environ.get("MENLO_MD_MDCLOUD_RULE", os.environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive"))
         
         if os.environ.get('MENLO_MD_APIKEY'):
-            Config._CONFIG['apikey'] = os.environ.get('MENLO_MD_APIKEY') 
+            Config._CONFIG['apikey'] = os.environ.get('MENLO_MD_APIKEY')
         else:
             try:
                 Config._CONFIG['apikey'] = Config._CONFIG['api']["params"]["apikey"]
@@ -43,6 +43,9 @@ class Config(object):
         
         if os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN")):
             Config._CONFIG['sentryDns'] = os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN"))
+
+        if os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
+            Config._CONFIG['fallbackToOriginal'] = os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"
 
         
 

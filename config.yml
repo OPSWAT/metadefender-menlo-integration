@@ -22,3 +22,4 @@ logging:
   logfile: ./app.log
   interval: 24
   backup_count: 30
+fallbackToOriginal: false
