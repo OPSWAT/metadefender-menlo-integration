@@ -34,3 +34,4 @@ logging:
     arn: ''
     region: ''
 
+fallbackToOriginal: false

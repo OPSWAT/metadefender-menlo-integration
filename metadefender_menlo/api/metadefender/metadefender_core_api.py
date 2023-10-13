@@ -28,8 +28,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
         if ("process_info" in json_response and "progress_percentage" in json_response["process_info"]):
             return json_response["process_info"]["progress_percentage"] == 100
         else:
-            print("Unexpected response from MetaDefender: {0}".format(
-                json_response))
+            print(f"Unexpected response from MetaDefender: {json_response}")
             return False
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip):
@@ -37,5 +36,9 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             "message": f"Retrieve Sanitized file for {data_id}"
         }))
         response, http_status = await self._request_status("sanitized_file", fields={"data_id": data_id}, headers={"apikey": apikey})
+
+        if http_status == 404 and self.settings['fallbackToOriginal']:
+            http_status = 204
+            response = ""
 
         return (response, http_status)

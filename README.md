@@ -259,6 +259,11 @@ MENLO_MD_KAFKA_SSL --> config.logging.kafka.ssl # use ssl or not
 MENLO_MD_SNS_ENABLED --> config.logging.sns.enabled # enable sns notifications for errors
 MENLO_MD_SNS_ARN --> config.logging.sns.arn # sns topic arn
 MENLO_MD_SNS_REGION --> config.logging.sns.region # sns topic region
+
+MENLO_MD_FALLBACK_TO_ORIGINAL
+  Overwrites: config.yml:fallbackToOriginal 
+  Description: Send 204 to Menlo when the sanitized version is not available
+  Values: true | false
 ```
 
 ##### Step 3: Configure Menlo Integration
