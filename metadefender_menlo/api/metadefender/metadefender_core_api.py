@@ -20,7 +20,8 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
         headers = {
             "Content-Type": "application/octet-stream",
             "filename": urllib.parse.quote(filename),
-            "metadata": json.dumps(metadata) if metadata is not None else ""
+            "metadata": json.dumps(metadata) if metadata is not None else "",
+            "engines-metadata": self.settings['headers_engines_metadata']
         }
         return headers
 

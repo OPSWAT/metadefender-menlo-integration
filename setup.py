@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 NAME = "metadefender_menlo"
-VERSION = "1.5.8"
+VERSION = "1.5.9"
 
 # To install the library, run the following
 #
@@ -13,14 +13,14 @@ VERSION = "1.5.8"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    "tornado==6.1",
+    "tornado==6.3.3",
     "urllib3==1.26.18",
     "pyyaml==6.0.1",
     "typing==3.7.4.3",
     "kafka-python==2.0.2",
     "python-dotenv==0.19.2",
     "aiocontextvars==0.2.2",
-    "sentry-sdk==1.10.1",
+    "sentry-sdk==1.14.0",
     "httpx==0.23.0",
     "boto3==1.26.51"
 ]
