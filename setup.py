@@ -13,7 +13,7 @@ VERSION = "1.5.9"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    "tornado==6.1",
+    "tornado==6.3.3",
     "urllib3==1.26.12",
     "pyyaml==6.0.1",
     "typing==3.7.4.3",
