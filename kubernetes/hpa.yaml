@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: metadefender-menlo
@@ -7,8 +7,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: metadefender-menlo
-  minReplicas: 12
-  maxReplicas: 18
+  minReplicas: 1
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:
