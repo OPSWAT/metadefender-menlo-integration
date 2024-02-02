@@ -20,7 +20,7 @@ definitions:
               export MDCLOUD_URL=${MDCLOUD_URL}
             fi
             export SENTRY_DSN=${SENTRY_DSN}
-            export EKS_CLUSTER=${MENLO_ENV}-mdc-menlo
+            export EKS_CLUSTER=${MENLO_ENV}-mdc-menlo-usw2
             if [[ $CDR_WORKFLOW == "true" ]]; then
               if [[ $MENLO_ENV == "prod" ]]; then
                 export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
