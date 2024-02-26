@@ -8,7 +8,7 @@ from datetime import datetime
 
 class SNSLogHandler(Handler):
 
-    def __init__(self, config, stream=None):
+    def __init__(self, config):
         Handler.__init__(self)
         if config != None:
             self.arn = config["arn"]

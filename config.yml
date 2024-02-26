@@ -22,5 +22,17 @@ logging:
   logfile: ./app.log
   interval: 24
   backup_count: 30
+  kafka:
+    enabled: false
+    topic: ''
+    client_id: ''
+    server: ''
+    ssl: true
+    maximum_message_size: 900000
+  sns:
+    enabled: false
+    arn: ''
+    region: ''
+
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
