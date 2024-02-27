@@ -26,14 +26,14 @@ fi
 export DETECT_LATEST_RELEASE_VERSION=6.9.1
 export DETECT_VERSION_KEY=DETECT_LATEST_6
 bash blackduck.detect.sh \
-    --logging.level.com.synopsys.integration=DEBUG \
-    --detect.python.python3=true \
-    --detect.blackduck.signature.scanner.upload.source.mode=false \
-    --detect.pip.requirements.path=requirements.txt \
     --blackduck.api.token=$1 \
-    --blackduck.url=https://opswat.blackducksoftware.com \
     --blackduck.trust.cert=true \
+    --blackduck.url=https://opswat.blackducksoftware.com \
+    --detect.blackduck.signature.scanner.upload.source.mode=false \
+    --detect.detector.search.exclusion.paths=docker \
+    --detect.pip.requirements.path=requirements.txt \
     --detect.project.name=\"MD Cloud Menlo\" \
     --detect.project.version.name=menlo-plugin-$PLUGIN_VERSION \
-    --detect.detector.search.exclusion.paths=docker \
-    --detect.tools.excluded=SIGNATURE_SCAN
+    --detect.python.python3=true \
+    --detect.tools.excluded=SIGNATURE_SCAN \
+    --logging.level.com.synopsys.integration=DEBUG

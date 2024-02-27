@@ -33,15 +33,15 @@ BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
 
 MENLO_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
-bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
-	--blackduck.url=https://opswat.blackducksoftware.com  \
+bash blackduck.detect.sh \
 	--blackduck.api.token=\"${BLACKDUCK_TOKEN}\" \
 	--blackduck.trust.cert=true \
+	--blackduck.url=https://opswat.blackducksoftware.com  \
 	--detect.docker.image="${IMAGE}" \
 	--detect.project.name=\"MD Cloud Menlo\" \
 	--detect.project.version.name=menlo-plugin-$MENLO_VERSION-container \
 	--detect.project.version.phase=DEVELOPMENT \
-  --detect.excluded.detector.types=pip \
 	--detect.tools.excluded=BINARY_SCAN,SIGNATURE_SCAN \
+  --detect.excluded.detector.types=pip \
   --detect.output.path="$BITBUCKET_CLONE_DIR/blackduck" \
 	--logging.level.com.synopsys.integration=DEBUG
