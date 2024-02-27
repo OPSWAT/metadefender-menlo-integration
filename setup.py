@@ -22,7 +22,8 @@ REQUIRES = [
     "aiocontextvars==0.2.2",
     "sentry-sdk==1.40.5",
     "httpx==0.23.0",
-    "boto3==1.26.51"
+    "boto3==1.26.51",
+    "certifi==2023.7.22"
 ]
 
 setup(
