@@ -23,8 +23,8 @@ if [[ $BITBUCKET_PIPELINE_UUID != '' ]]; then
     BDS_JAVA_HOME=/usr/lib/jvm/default-jvm/jre
 fi
 
-export DETECT_LATEST_RELEASE_VERSION=6.9.1
-export DETECT_VERSION_KEY=DETECT_LATEST_6
+export DETECT_LATEST_RELEASE_VERSION=9.3.0
+export DETECT_VERSION_KEY=DETECT_LATEST_9
 bash blackduck.detect.sh \
     --blackduck.api.token=$1 \
     --blackduck.trust.cert=true \
@@ -34,6 +34,6 @@ bash blackduck.detect.sh \
     --detect.pip.requirements.path=requirements.txt \
     --detect.project.name=\"MD Cloud Menlo\" \
     --detect.project.version.name=menlo-plugin-$PLUGIN_VERSION \
-    --detect.python.python3=true \
+    --detect.python.path=/usr/bin/python3 \
     --detect.tools.excluded=SIGNATURE_SCAN \
     --logging.level.com.synopsys.integration=DEBUG
