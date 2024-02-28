@@ -56,22 +56,6 @@ definitions:
           - |
             export VERSION=m_${BITBUCKET_COMMIT:0:7}
             export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
-            if [[ $MENLO_ENV == "dev" ]]; then
-              export MDCLOUD_URL=${MDCLOUD_URL}
-            fi
-            export SENTRY_DSN=${SENTRY_DSN}
-            export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
-            if [[ $CDR_WORKFLOW == "true" ]]; then
-              if [[ $MENLO_ENV == "prod" ]]; then
-                export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
-              else
-                export EKS_NAMESPACE=menlo-${MENLO_ENV}
-              fi
-              export MDCLOUD_RULE="cdr"
-            else 
-              export EKS_NAMESPACE=menlo-${MENLO_ENV}
-              export MDCLOUD_RULE="multiscan, sanitize, unarchive"
-            fi
             cd kubernetes
             ./deploy.aws.sh build_image
             ./deploy.aws.sh ecr_login
@@ -135,11 +119,6 @@ pipelines:
     gitleaks:
       - step: *gitleaks
     build-image:
-      - variables:
-          - name: CDR_WORKFLOW
-            default: false
-          - name: MENLO_MD_URL 
-            default: https://api.metadefender.com/v4
       - step: 
           <<: *build_image
           deployment: dev
