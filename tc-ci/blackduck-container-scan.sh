@@ -5,14 +5,17 @@
 # export AWS_ACCOUNT=?
 # export AWS_REGION=?
 # export VERSION=?
-# export MENLO_ENV=?
+# export ENVIRONMENT=?
 # export BD_TOKEN=?
 # export BD_VERSION_PHASE=?
 # ./blackduck-scan.sh
 
+DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
+echo "Attempting to scan image $DOCKER_IMAGE"
+
 ./kubernetes/deploy.aws.sh ecr_login
 
-IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${MENLO_ENV}-$VERSION
+
 PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
 bash blackduck.detect.sh \
@@ -24,6 +27,6 @@ bash blackduck.detect.sh \
 	--detect.project.version.name=menlo-plugin-$PLUGIN_VERSION-container \
 	--detect.project.version.phase=\"${BD_VERSION_PHASE}\" \
 	--detect.tools.excluded=BINARY_SCAN,SIGNATURE_SCAN \
-  --detect.excluded.detector.types=pip \
+  	--detect.excluded.detector.types=pip \
 	--logging.level.com.synopsys.integration=DEBUG
   # --detect.output.path="$BITBUCKET_CLONE_DIR/blackduck" \

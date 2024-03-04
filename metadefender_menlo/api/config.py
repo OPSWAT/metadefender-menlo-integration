@@ -16,7 +16,7 @@ class Config(object):
         with open(config_file, 'r', encoding='utf-8') as file_data:
             Config._CONFIG = yaml.safe_load(file_data)
 
-        Config._CONFIG['env'] = os.environ.get("MENLO_MD_ENV", os.environ.get("MENLO_ENV",'local'))
+        Config._CONFIG['env'] = os.environ.get("MENLO_MD_ENV", os.environ.get("ENVIRONMENT",'local'))
         
         Config._CONFIG['region'] = os.environ.get("MENLO_MD_AWS_REGION", os.environ.get("AWS_REGION", "us-west-2"))
         

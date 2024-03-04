@@ -5,10 +5,11 @@
 # export AWS_ACCOUNT=?
 # export AWS_REGION=?
 # export VERSION=?
-# export MENLO_ENV=?
+# export ENVIRONMENT=?
 # ./build.sh
 
-echo "Attempting to build image ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${MENLO_ENV}-$VERSION"
+DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
+echo "Attempting to build image $DOCKER_IMAGE"
 
 CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $CWD/../kubernetes
