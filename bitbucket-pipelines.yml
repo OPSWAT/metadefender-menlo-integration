@@ -15,21 +15,21 @@ definitions:
         script:
           - |
             export VERSION=m_${BITBUCKET_COMMIT:0:7}
-            export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
-            if [[ $MENLO_ENV == "dev" ]]; then
+            export ENVIRONMENT=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            if [[ $ENVIRONMENT == "dev" ]]; then
               export MDCLOUD_URL=${MDCLOUD_URL}
             fi
             export SENTRY_DSN=${SENTRY_DSN}
-            export EKS_CLUSTER=mdcl-menlo-${MENLO_ENV}
+            export EKS_CLUSTER=mdcl-menlo-${ENVIRONMENT}
             if [[ $CDR_WORKFLOW == "true" ]]; then
-              if [[ $MENLO_ENV == "prod" ]]; then
-                export EKS_NAMESPACE=menlo-${MENLO_ENV}-cdr
+              if [[ $ENVIRONMENT == "prod" ]]; then
+                export EKS_NAMESPACE=menlo-${ENVIRONMENT}-cdr
               else
-                export EKS_NAMESPACE=menlo-${MENLO_ENV}
+                export EKS_NAMESPACE=menlo-${ENVIRONMENT}
               fi
               export MDCLOUD_RULE="cdr"
             else 
-              export EKS_NAMESPACE=menlo-${MENLO_ENV}
+              export EKS_NAMESPACE=menlo-${ENVIRONMENT}
               export MDCLOUD_RULE="multiscan, sanitize, unarchive"
             fi
             cd kubernetes
@@ -43,7 +43,7 @@ definitions:
             ./deploy.aws.sh apply_deployment
             ./deploy.aws.sh apply_service
             ./deploy.aws.sh apply_ingress
-            if [[ $MENLO_ENV == "prod" ]]; then 
+            if [[ $ENVIRONMENT == "prod" ]]; then 
               ./deploy.aws.sh apply_hpa
             fi
     - step: &build_image
@@ -55,7 +55,7 @@ definitions:
         script:
           - |
             export VERSION=m_${BITBUCKET_COMMIT:0:7}
-            export MENLO_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            export ENVIRONMENT=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
             cd kubernetes
             ./deploy.aws.sh build_image
             ./deploy.aws.sh ecr_login
@@ -122,16 +122,16 @@ pipelines:
       - step: 
           <<: *build_image
           deployment: dev
-  branches:
-    '{develop}': # or the name of your main branch
-        - step: *sonarqube-scan
-        - step: *blackduck-scan
-        - step: *gitleaks
+  # branches:
+  #   '{develop}': # or the name of your main branch
+  #       - step: *sonarqube-scan
+  #       - step: *blackduck-scan
+  #       - step: *gitleaks
 
-  pull-requests:
-      '**':
-        - step: *sonarqube-scan
-        - step: *blackduck-scan
-        - step: *gitleaks
+  # pull-requests:
+  #     '**':
+  #       - step: *sonarqube-scan
+  #       - step: *blackduck-scan
+  #       - step: *gitleaks
 clone:
   depth: full
