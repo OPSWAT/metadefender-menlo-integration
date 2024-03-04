@@ -6,3 +6,4 @@ app.log*
 .venv
 .scannerwork
 .sonar
+gitleaks.json
