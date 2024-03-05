@@ -63,7 +63,6 @@ function push_image() {
 
 function inspect() {
   docker manifest inspect ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
-
 }
 
 function apply_deployment() {

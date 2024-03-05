@@ -21,24 +21,24 @@ spec:
           requests:
             cpu: 250m
             memory: 1024Mi
-        image: ${AWS_ACCOUNT}.dkr.ecr.us-west-2.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-${VERSION}
+        image: ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-${VERSION}
         env:
           - name: ENVIRONMENT
             value: ${ENVIRONMENT}
-          - name: SENTRY_DSN
-            value: ${SENTRY_DSN}
+          - name: MENLO_MD_SENTRY_DSN
+            value: ${MENLO_MD_SENTRY_DSN}
           - name: AWS_REGION
-            value: us-west-2
-          - name: MDCLOUD_RULE
-            value: ${MDCLOUD_RULE}
+            value: ${AWS_REGION}
+          - name: MENLO_MD_MDCLOUD_RULE
+            value: ${MENLO_MD_MDCLOUD_RULE}
           - name: BITBUCKET_COMMIT_HASH
             value: ${VERSION}
           - name: AWS_ACCESS_KEY_ID
             value: ${AWS_ACCESS_KEY_ID}
           - name: AWS_SECRET_ACCESS_KEY
             value: ${AWS_SECRET_ACCESS_KEY}
-          - name: MDCLOUD_URL
-            value: ${MDCLOUD_URL}
+          - name: MENLO_MD_URL
+            value: ${MENLO_MD_URL}
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
