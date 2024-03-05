@@ -4,7 +4,11 @@
 # 
 # export BD_TOKEN=?
 # export BD_VERSION_PHASE=?
-# ./blackduck-scan.sh
+#
+# ./tc-ci/blackduck-scan.sh
+
+# get current and project dir
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ); cd $CWD/..; PWD=`pwd`
 
 PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 

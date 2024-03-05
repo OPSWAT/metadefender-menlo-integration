@@ -5,15 +5,18 @@
 # export AWS_ACCOUNT=?
 # export AWS_REGION=?
 # export ENVIRONMENT=?
-# ./build.sh
+#
+# ./tc-ci/build.sh
+
+# get current and project dir
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ); cd $CWD/..; PWD=`pwd`
 
 export VERSION=m_`git rev-parse --short HEAD`
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
-CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 echo "Attempting to build image $DOCKER_IMAGE"
 
-cd $CWD/../kubernetes
+cd $PWD/kubernetes
 
 ./deploy.aws.sh ecr_login
 ./deploy.aws.sh inspect

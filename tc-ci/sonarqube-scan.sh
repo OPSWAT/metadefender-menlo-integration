@@ -4,10 +4,11 @@
 #
 # export SONARQUBE_URL=?
 # export SONARQUBE_TOKEN=?
-# ./sonarqube-scan.sh
+# 
+# ./tc-ci/sonarqube-scan.sh
 
-CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $CWD/..; PWD=`pwd`
+# get current and project dir
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ); cd $CWD/..; PWD=`pwd`
 
 PROJECT_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 

@@ -20,9 +20,13 @@
 # export MENLO_MD_SNS_REGION=us-west-2
 # export MENLO_MD_URL=https://api.metadefender.com
 #
-# ./deploy.sh
+# ./tc-ci/deploy.sh
+
+# get current and project dir
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ); cd $CWD/..; PWD=`pwd`
 
 export VERSION=m_`git rev-parse --short HEAD`
+DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
 
 if [[ $ENVIRONMENT == "dev" ]]; then
     export MENLO_MD_URL=${MENLO_MD_URL}
@@ -42,7 +46,14 @@ else
     export MENLO_MD_MDCLOUD_RULE="multiscan, sanitize, unarchive"
 fi
 
-cd kubernetes
+cd $PWD/kubernetes
+
+./deploy.aws.sh ecr_login
+./deploy.aws.sh inspect
+if [[ $? -ne 0 ]]; then
+    echo "Image $DOCKER_IMAGE does not exist. Please build the image first!"
+    exit 1
+fi
 
 ./deploy.aws.sh configure_cluster
 
@@ -55,6 +66,6 @@ envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
 ./deploy.aws.sh apply_service
 ./deploy.aws.sh apply_ingress
 
-# if [[ $ENVIRONMENT == "prod" ]]; then 
-#     ./deploy.aws.sh apply_hpa
-# fi
+if [[ $ENVIRONMENT == "prod" ]]; then 
+    ./deploy.aws.sh apply_hpa
+fi

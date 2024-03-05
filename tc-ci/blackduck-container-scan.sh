@@ -7,15 +7,23 @@
 # export ENVIRONMENT=?
 # export BD_TOKEN=?
 # export BD_VERSION_PHASE=?
-# ./blackduck-scan.sh
+#
+# ./tc-ci/blackduck-scan.sh
 
-VERSION=m_`git rev-parse --short HEAD`
+# get current and project dir
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ); cd $CWD/..; PWD=`pwd`
+
+export VERSION=m_`git rev-parse --short HEAD`
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
 PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
 echo "Attempting to scan image $DOCKER_IMAGE"
 
-./kubernetes/deploy.aws.sh ecr_login
+cd $PWD/kubernetes
+
+./deploy.aws.sh ecr_login
+
+cd $PWD
 
 bash blackduck.detect.sh \
 	--blackduck.api.token=\"${BD_TOKEN}\" \
