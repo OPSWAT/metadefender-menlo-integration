@@ -7,8 +7,9 @@
 # 
 # ./tc-ci/sonarqube-scan.sh
 
-# get current and project dir
-CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ); cd $CWD/..; PWD=`pwd`
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
+cd $CWD/..
+PWD=$( pwd )
 
 PROJECT_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 

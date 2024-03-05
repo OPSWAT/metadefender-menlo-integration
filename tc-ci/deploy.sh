@@ -22,8 +22,8 @@
 #
 # ./tc-ci/deploy.sh
 
-# get current and project dir
-CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ); cd $CWD/..; PWD=`pwd`
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
+cd $CWD/..
 
 export VERSION=m_`git rev-parse --short HEAD`
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
@@ -46,7 +46,7 @@ else
     export MENLO_MD_MDCLOUD_RULE="multiscan, sanitize, unarchive"
 fi
 
-cd $PWD/kubernetes
+cd ./kubernetes
 
 ./deploy.aws.sh ecr_login
 ./deploy.aws.sh inspect
