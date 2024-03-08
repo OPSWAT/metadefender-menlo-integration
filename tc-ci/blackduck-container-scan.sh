@@ -36,4 +36,3 @@ bash blackduck.detect.sh \
 	--detect.tools.excluded=BINARY_SCAN,SIGNATURE_SCAN \
   	--detect.excluded.detector.types=pip \
 	--logging.level.com.synopsys.integration=DEBUG
-  # --detect.output.path="$BITBUCKET_CLONE_DIR/blackduck" \

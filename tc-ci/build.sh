@@ -23,7 +23,10 @@ cd ./kubernetes
 
 if [[ $? -ne 0 ]]; then
     ./deploy.aws.sh build_image
+    [[ $? -ne 0 ]] && exit $?
+    
     ./deploy.aws.sh push_image
+    [[ $? -ne 0 ]] && exit $?
 else
     echo "Image already exists, skipping"
 fi

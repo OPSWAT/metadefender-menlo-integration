@@ -28,6 +28,8 @@ cd $CWD/..
 export VERSION=m_`git rev-parse --short HEAD`
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
 
+echo "Attempting to deploy image $DOCKER_IMAGE"
+
 if [[ $ENVIRONMENT == "dev" ]]; then
     export MENLO_MD_URL=${MENLO_MD_URL}
 fi
@@ -49,6 +51,8 @@ fi
 cd ./kubernetes
 
 ./deploy.aws.sh ecr_login
+[[ $? -ne 0 ]] && exit $?
+
 ./deploy.aws.sh inspect
 if [[ $? -ne 0 ]]; then
     echo "Image $DOCKER_IMAGE does not exist. Please build the image first!"
@@ -56,16 +60,24 @@ if [[ $? -ne 0 ]]; then
 fi
 
 ./deploy.aws.sh configure_cluster
+[[ $? -ne 0 ]] && exit $?
 
 kubectl get namespace $EKS_NAMESPACE || kubectl create namespace $EKS_NAMESPACE
+[[ $? -ne 0 ]] && exit $?
 
 envsubst < deployment.yaml > deployment.yaml.tmp && mv deployment.yaml.tmp deployment.yaml
 envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
 
 ./deploy.aws.sh apply_deployment
+[[ $? -ne 0 ]] && exit $?
+
 ./deploy.aws.sh apply_service
+[[ $? -ne 0 ]] && exit $?
+
 ./deploy.aws.sh apply_ingress
+[[ $? -ne 0 ]] && exit $?
 
 if [[ $ENVIRONMENT == "prod" ]]; then 
     ./deploy.aws.sh apply_hpa
+    [[ $? -ne 0 ]] && exit $?
 fi
