@@ -1,0 +1,71 @@
+image:
+  name: 108895011981.dkr.ecr.us-west-2.amazonaws.com/aws-terragrunt:1.0.3-eks
+  aws: 
+    access-key: $AWS_ACCESS_KEY_ID_dev
+    secret-key: $AWS_SECRET_ACCESS_KEY_dev
+
+definitions:
+  steps:
+    - step: &build_deploy
+        name: Build images and deploy to EKS
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - |
+            export VERSION=m_${BITBUCKET_COMMIT:0:7}
+            export MENLO_MD_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            if [[ $MENLO_MD_ENV == "dev" ]]; then
+              export MDCLOUD_URL=${MDCLOUD_URL}
+            fi
+            export SENTRY_DSN=${SENTRY_DSN}
+            export EKS_CLUSTER=${MENLO_MD_ENV}-mdc-menlo-usw2
+            if [[ $CDR_WORKFLOW == "true" ]]; then
+              if [[ $MENLO_MD_ENV == "prod" ]]; then
+                export EKS_NAMESPACE=menlo-${MENLO_MD_ENV}-cdr
+              else
+                export EKS_NAMESPACE=menlo-${MENLO_MD_ENV}
+              fi
+              export MDCLOUD_RULE="cdr"
+            else 
+              export EKS_NAMESPACE=menlo-${MENLO_MD_ENV}
+              export MDCLOUD_RULE="multiscan, sanitize, unarchive"
+            fi
+            cd kubernetes
+            ./deploy.aws.sh build_image
+            ./deploy.aws.sh ecr_login
+            ./deploy.aws.sh push_image
+            ./deploy.aws.sh configure_cluster
+            kubectl get namespace $EKS_NAMESPACE || kubectl create namespace $EKS_NAMESPACE
+            envsubst < deployment.yaml > deployment.yaml.tmp && mv deployment.yaml.tmp deployment.yaml
+            envsubst < ingress.yaml > ingress.yaml.tmp && mv ingress.yaml.tmp ingress.yaml
+            ./deploy.aws.sh apply_deployment
+            ./deploy.aws.sh apply_service
+            ./deploy.aws.sh apply_ingress
+            if [[ $MENLO_MD_ENV == "prod" ]]; then 
+              ./deploy.aws.sh apply_hpa
+            fi
+
+pipelines:
+  custom:
+    manual-dev:
+      - variables:
+          - name: CDR_WORKFLOW # set to true to deploy CDR only workflow to a separate namespace
+            default: false
+          - name: MENLO_MD_URL 
+            default: https://api.metadefender.com/v4
+      - step: 
+          <<: *build_deploy
+          deployment: dev
+    manual-prod:
+      - step:
+          <<: *build_deploy
+          deployment: prod
+    manual-prod-cdr:
+      - step:
+          <<: *build_deploy
+          deployment: prod-cdr
+
+clone:
+  depth: full
