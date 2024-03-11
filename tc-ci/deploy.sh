@@ -9,6 +9,7 @@
 # export CDR_WORKFLOW=false
 # export CERTIFICATE_ARN=arn:aws:acm:us-west-2:108895011981:certificate/953cdfcd-849e-47b9-a703-f83f8fb0947e
 # export ENVIRONMENT=?
+# export EKS_CLUSTER=dev-mdc-menlo-usw2
 # export MENLO_MD_KAFKA_CLIENT_ID=menloPlugin
 # export MENLO_MD_KAFKA_ENABLED=true
 # export MENLO_MD_KAFKA_SERVER=?
@@ -33,8 +34,6 @@ echo "Attempting to deploy image $DOCKER_IMAGE"
 if [[ $ENVIRONMENT == "dev" ]]; then
     export MENLO_MD_URL=${MENLO_MD_URL}
 fi
-
-export EKS_CLUSTER=mdcl-menlo-${ENVIRONMENT}
 
 if [[ $CDR_WORKFLOW == "true" ]]; then
     if [[ $ENVIRONMENT == "prod" ]]; then
@@ -81,3 +80,5 @@ if [[ $ENVIRONMENT == "prod" ]]; then
     ./deploy.aws.sh apply_hpa
     [[ $? -ne 0 ]] && exit $?
 fi
+
+exit 0

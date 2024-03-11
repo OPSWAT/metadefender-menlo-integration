@@ -30,3 +30,5 @@ if [[ $? -ne 0 ]]; then
 else
     echo "Image already exists, skipping"
 fi
+
+exit 0
