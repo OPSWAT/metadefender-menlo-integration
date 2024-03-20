@@ -26,7 +26,7 @@ class KafkaLogHandler(Handler):
             pass
 
     def emit(self, record):
-        if 'request_id' not in record:
+        if not hasattr(record, "request_id"):
             record.request_id = 'internal'
         
         try:

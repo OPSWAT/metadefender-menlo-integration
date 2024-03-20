@@ -109,7 +109,7 @@ To change the environemnt, update `.env` file.
 # Use `local` for local development.
 # Use `dev` for testing the deployment on https://menlo-dev.metadefender.com
 # Use `prod` for deploying a new version to prod env: https://menlo.metadefender.com
-MENLO_ENV=<env>
+ENVIRONMENT=<env>
 ```
 
 Follow the next steps after the env is set.
