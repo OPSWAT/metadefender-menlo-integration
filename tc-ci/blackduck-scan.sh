@@ -12,12 +12,7 @@ cd $CWD/..
 
 PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
-python3 -m pip install --user virtualenv
-python3 -m venv .venv
-source .venv/bin/activate
-
 python3 -m pip install --upgrade pip
-
 pip install -r requirements.txt
 
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
@@ -35,5 +30,3 @@ bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
     --detect.python.path=/usr/bin/python3 \
     --detect.tools.excluded=SIGNATURE_SCAN \
     --logging.level.com.synopsys.integration=DEBUG
-
-deactivate
