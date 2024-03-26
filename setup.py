@@ -13,17 +13,17 @@ VERSION = "1.5.9"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    "tornado==6.3.3",
-    "urllib3==1.26.18",
-    "pyyaml==6.0.1",
-    "typing==3.7.4.3",
+    "aiocontextvars==0.2.2",
+    "boto3==1.26.51",
+    "certifi==2023.7.22",
+    "httpx==0.23.0",
     "kafka-python==2.0.2",
     "python-dotenv==0.19.2",
-    "aiocontextvars==0.2.2",
+    "pyyaml==6.0.1",
     "sentry-sdk==1.40.5",
-    "httpx==0.23.0",
-    "boto3==1.26.51",
-    "certifi==2023.7.22"
+    "tornado==6.3.3",
+    "typing==3.7.4.3",
+    "urllib3==1.26.18"
 ]
 
 setup(
