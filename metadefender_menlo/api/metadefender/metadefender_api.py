@@ -135,18 +135,19 @@ class MetaDefenderAPI(ABC):
                 "http_status": http_status
             }))
         except HTTPClientError as error:
+            # TODO: When is it raised (It is not raised on 4xx or 5xx from client.request)
             http_status = error.code
             response_body = reponse_body_error(error)
         except OSError as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "OSError: ": repr(error)
-            }))
+            }), apikey=self.apikey)
             http_status = 500
             response_body = reponse_body_error(error)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "Exception: ": repr(error)
-            }))
+            }), apikey=self.apikey)
             http_status = 500
             response_body = reponse_body_error(error)
 

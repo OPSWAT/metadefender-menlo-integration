@@ -79,7 +79,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
                         SERVICE.MenloPlugin,
                         TYPE.Internal,
                         repr(error)
-                    ))
+                    ), {'apikey': apikey})
                     return ({"error": str(error)}, 500)
             else:
                 http_status = 204
@@ -90,5 +90,5 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "error": repr(error), "MdCloudResponse": response
-            }))
+            }), {'apikey': apikey})
             return ({}, 500)

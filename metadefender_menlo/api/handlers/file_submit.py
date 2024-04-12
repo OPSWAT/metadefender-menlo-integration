@@ -9,12 +9,12 @@ class FileSubmitHandler(BaseHandler):
     
     async def post(self):
         
-        files = self.validateFile()
+        apikey = self.request.headers.get('Authorization')
+
+        files = self.validateFile(apikey)
         field_name = list(files.keys())[0]
         info = files[field_name][0]
         filename, content_type, fp = info["filename"], info["content_type"], info["body"]
-        
-        apikey = self.request.headers.get('Authorization')
 
         logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
             "method": "POST", "fileName": filename, "endpoint": "/api/v1/file",
@@ -35,18 +35,18 @@ class FileSubmitHandler(BaseHandler):
             self.json_response(json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
-                SERVICE.MenloPlugin, TYPE.Internal, {"error": repr(error)}))
+                SERVICE.MenloPlugin, TYPE.Internal, {"error": repr(error)}), {'apikey': apikey})
             self.json_response({}, 500)
 
-    def validateFile(self):
+    def validateFile(self, apikey):
         if len(self.request.files) < 1:
             logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
                 "message": "No file uploaded > is call originating from Menlo?"
-            }))
+            }), {'apikey': apikey})
             raise HTTPError(400, 'No file uploaded')
         if len(self.request.files) > 1:
             logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
                 "message": "Too many files uploaded > is call originating from Menlo?"
-            }))
+            }), {'apikey': apikey})
             raise HTTPError(400, 'Too many files uploaded')
         return self.request.files
