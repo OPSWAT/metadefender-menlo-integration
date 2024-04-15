@@ -141,13 +141,13 @@ class MetaDefenderAPI(ABC):
         except OSError as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "OSError: ": repr(error)
-            }), apikey=self.apikey)
+            }), {'apikey': self.apikey})
             http_status = 500
             response_body = reponse_body_error(error)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "Exception: ": repr(error)
-            }), apikey=self.apikey)
+            }),  {'apikey': self.apikey})
             http_status = 500
             response_body = reponse_body_error(error)
 
