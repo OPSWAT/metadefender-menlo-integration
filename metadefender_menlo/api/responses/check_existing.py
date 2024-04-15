@@ -24,7 +24,7 @@ class CheckExisting(BaseResponse):
         try:
             if 'data_id' in response:
 
-                self._translate('uuid', translatio, response['data_id'])
+                self._translate('uuid', translation, response['data_id'])
                 self._translate('result', translation, 'found')
 
                 return (translation, status_code)
