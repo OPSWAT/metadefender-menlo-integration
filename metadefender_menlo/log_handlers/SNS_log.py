@@ -137,10 +137,12 @@ class SNSLogHandler(Handler):
     def createMessageAttributes(self, args):
         message_attributes = {}
 
-        for key, value in args.items():
-            message_attributes[key] = {
-                'DataType': 'String',
-                'StringValue': value
-            }
+        if args is not None and isinstance(args, dict):
+            for key, value in args.items():
+                if isinstance(value, str):
+                    message_attributes[key] = {
+                        'DataType': 'String',
+                        'StringValue': value
+                    }
 
         return message_attributes
