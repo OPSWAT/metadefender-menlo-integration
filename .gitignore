@@ -2,5 +2,8 @@ __pycache__
 kubernetes/ssl
 docker/kafka-docker
 app.log*
-.env
+*.env
 .venv
+.scannerwork
+.sonar
+gitleaks.json

@@ -16,7 +16,7 @@ class Config(object):
         with open(config_file, 'r', encoding='utf-8') as file_data:
             Config._CONFIG = yaml.safe_load(file_data)
 
-        Config._CONFIG['env'] = os.environ.get("MENLO_MD_ENV", os.environ.get("MENLO_ENV",'local'))
+        Config._CONFIG['env'] = os.environ.get("MENLO_MD_ENV", os.environ.get("ENVIRONMENT",'local'))
         
         Config._CONFIG['region'] = os.environ.get("MENLO_MD_AWS_REGION", os.environ.get("AWS_REGION", "us-west-2"))
         
@@ -42,7 +42,17 @@ class Config(object):
                 Config._CONFIG['serverUrl'] = "http://localhost:8008"
         
         if os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN")):
-            Config._CONFIG['sentryDns'] = os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN"))
+            Config._CONFIG['sentryDsn'] = os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN"))
+
+        Config._CONFIG['logging']['kafka']['enabled'] = bool(os.environ.get("MENLO_MD_KAFKA_ENABLED", Config._CONFIG['logging']['kafka']['enabled']))
+        Config._CONFIG['logging']['kafka']['client_id'] = os.environ.get("MENLO_MD_KAFKA_CLIENT_ID", Config._CONFIG['logging']['kafka']['client_id'])
+        Config._CONFIG['logging']['kafka']['server'] = os.environ.get("MENLO_MD_KAFKA_SERVER", Config._CONFIG['logging']['kafka']['server'])
+        Config._CONFIG['logging']['kafka']['topic'] = os.environ.get("MENLO_MD_KAFKA_TOPIC", Config._CONFIG['logging']['kafka']['topic'])
+        Config._CONFIG['logging']['kafka']['ssl'] = bool(os.environ.get("MENLO_MD_KAFKA_SSL", Config._CONFIG['logging']['kafka']['ssl']))
+
+        Config._CONFIG['logging']['sns']['enabled'] = os.environ.get('MENLO_MD_SNS_ENABLED', Config._CONFIG['logging']['sns']['enabled'])
+        Config._CONFIG['logging']['sns']['arn'] = os.environ.get('MENLO_MD_SNS_ARN', Config._CONFIG['logging']['sns']['arn'])
+        Config._CONFIG['logging']['sns']['region'] = os.environ.get('MENLO_MD_SNS_REGION', Config._CONFIG['logging']['sns']['region'])
 
         if os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
             Config._CONFIG['fallbackToOriginal'] = os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"

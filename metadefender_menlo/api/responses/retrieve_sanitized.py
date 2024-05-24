@@ -4,10 +4,10 @@ from metadefender_menlo.api.responses.base_response import BaseResponse
 
 class RetrieveSanitized(BaseResponse):
 
-    def __init__(self, allowedResponses=None):
+    def __init__(self, apikey='', allowedResponses=None):
 
         allowedResponses = [200, 204, 401, 403, 404, 405, 500]
-        super().__init__(allowedResponses)
+        super().__init__(apikey, allowedResponses)
 
         self._http_responses["204"] = self.__response204
         self._http_responses["403"] = self.__response403
