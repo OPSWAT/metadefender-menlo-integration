@@ -25,7 +25,7 @@ cd ./kubernetes
 
 cd ../
 
-bash blackduck.detect.sh \
+bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
 	--blackduck.api.token=\"${BD_TOKEN}\" \
 	--blackduck.trust.cert=true \
 	--blackduck.url=https://opswat.blackducksoftware.com  \
