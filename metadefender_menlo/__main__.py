@@ -44,39 +44,16 @@ def traces_sampler(sampling_context):
     return 1
 
 
-def init_sentry(env, sentry_dns):
-    if env != 'local' and sentry_dns:
+def init_sentry(env, sentry_dsn):
+    if env != 'local' and sentry_dsn:
         sentry_sdk.init(
-            dsn=sentry_dns,
+            dsn=sentry_dsn,
             integrations=[
                 TornadoIntegration(),
             ],
             environment=env,
             traces_sampler=traces_sampler,
         )
-
-def get_sns_config(env, rule, config_path):
-    if rule == "cdr":
-        rule = "_" + rule
-    else:
-        rule = ""
-
-    environment_name = "menlo_middleware_" + env + rule
-
-    try:
-        with open(config_path, encoding="utf-8") as sns_config_file:
-            sns_config = json.load(sns_config_file)
-
-        if environment_name in sns_config:
-            connection = sns_config[environment_name]
-            return {
-                "arn": connection["arn"],
-                "region": connection["region"]
-            }
-    except Exception as _error:
-        pass
-
-    return None
 
 
 def get_kafka_config(kafka_config_path):
@@ -88,7 +65,8 @@ def get_kafka_config(kafka_config_path):
     except Exception as error:
         return None
 
-def init_logging(config, sns_config_path):
+
+def init_logging(config):
     config_logging = config["logging"]
     if "enabled" not in config_logging or not config_logging["enabled"]:
         return
@@ -111,9 +89,8 @@ def init_logging(config, sns_config_path):
 
     log_handler.setFormatter(formatter)
 
-    kafka_config = get_kafka_config('./metadefender_menlo/conf/kafka-config.json')
-    if kafka_config:
-        log_handler_kafka = KafkaLogHandler(config, kafka_config)
+    if config['logging']['kafka']['enabled']:
+        log_handler_kafka = KafkaLogHandler(config, config['logging']['kafka'])
         if hasattr(log_handler_kafka, "sender"):
             logger.addHandler(log_handler_kafka)
         else:
@@ -121,9 +98,8 @@ def init_logging(config, sns_config_path):
     else:
         logger.addHandler(log_handler)
 
-    sns_cofig = get_sns_config(config['env'], config['scanRule'], sns_config_path)
-    if sns_cofig != None:
-        log_hanfler_sns = SNSLogHandler(sns_cofig)
+    if config['logging']['sns']['enabled']:
+        log_hanfler_sns = SNSLogHandler(config['logging']['sns'])
         logger.addHandler(log_hanfler_sns)
 
     log_request_filter = LogRequestFilter()
@@ -135,13 +111,13 @@ def init_logging(config, sns_config_path):
             print(error)
 
 
-def initial_config(config_path, sns_config_path):
+def initial_config(config_path):
     Config(config_path)
 
     config = Config.get_all()
 
     try:
-        init_sentry(config['env'], config['sentryDns'])
+        init_sentry(config['env'], config['sentryDsn'])
     except Exception as error:
         logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
             "Exception: ": repr(error)
@@ -150,7 +126,7 @@ def initial_config(config_path, sns_config_path):
     settings["max_buffer_size"] = config["limits"]["max_buffer_size"]
 
     if "logging" in config:
-        init_logging(config, sns_config_path)
+        init_logging(config)
 
     logging.info("Set API configuration")
 
@@ -202,7 +178,7 @@ def main():
     if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-    config = initial_config('./config.yml', './metadefender_menlo/conf/sns-config.json')
+    config = initial_config('./config.yml')
     logging.info("Start the app: {0}:{1}".format(HOST, SERVER_PORT))
 
     app = make_app(config)

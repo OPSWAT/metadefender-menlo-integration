@@ -4,8 +4,9 @@ class BaseResponse(object):
     _allowed_responses = []
     _http_responses = {}
 
-    def __init__(self, allowed_responses=None):
+    def __init__(self, apikey='', allowed_responses=None):
         self._allowed_responses = allowed_responses
+        self._apikey = apikey
 
         for code in allowed_responses:
             status_code = str(code)

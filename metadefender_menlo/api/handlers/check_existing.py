@@ -17,11 +17,11 @@ class CheckExistingHandler(BaseHandler):
         json_response, http_status = await self.metaDefenderAPI.hash_lookup(sha256, apikey, self.client_ip)
         json_response['sha256'] = sha256
         try:
-            json_response, http_status = CheckExisting(
+            json_response, http_status = CheckExisting(apikey
             ).handle_response(http_status, json_response)
             self.json_response(json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "error": repr(error)
-            }))
+            }), {'apikey': apikey})
             self.json_response({}, 500)

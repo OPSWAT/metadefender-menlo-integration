@@ -1,14 +1,14 @@
 #!/bin/bash
-CWD=$(cd "$(dirname "${BASH_SOURCE[0]}")/" && pwd)
 
-# Requirements:
+## Requirements:
 # kubectl
 # eksctl
 # aws cli
 
 ## Env variables:
-# VERSION,MENLO_ENV, AWS_ACCOUNT, AWS_REGION, AWS_DEFAULT_PROFILE, EKS_CLUSTER, EKS_NAMESPACE, EKS_SERVICE, DOMAIN
-## Env variables
+# VERSION, ENVIRONMENT, AWS_ACCOUNT, AWS_REGION, AWS_DEFAULT_PROFILE, EKS_CLUSTER, EKS_NAMESPACE, EKS_SERVICE, DOMAIN
+
+CWD=$(cd "$(dirname "${BASH_SOURCE[0]}")/" && pwd)
 
 CMD=$1
 if [[ "$CMD" = '' ]]; then
@@ -23,6 +23,7 @@ if [[ "$CMD" = '' ]]; then
   echo "apply_service"
   echo "apply_ingress"
   echo "apply_hpa"
+  echo "inspect"
 fi
 
 function configure_cluster() {
@@ -49,7 +50,7 @@ function create_namespace() {
 }
 function build_image() {
   cd $CWD/../
-  docker build -t ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${MENLO_ENV}-$VERSION .
+  docker build -t ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION .
 }
 
 function ecr_login() {
@@ -57,7 +58,11 @@ function ecr_login() {
 }
 
 function push_image() {
-  docker push ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${MENLO_ENV}-$VERSION
+  docker push ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
+}
+
+function inspect() {
+  docker manifest inspect ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
 }
 
 function apply_deployment() {

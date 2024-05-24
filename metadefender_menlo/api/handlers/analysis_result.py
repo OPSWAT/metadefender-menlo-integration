@@ -19,5 +19,5 @@ class AnalysisResultHandler(BaseHandler):
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "error": repr(error)
-            }))
+            }), {'apikey': apikey})
             self.json_response({}, 500)
