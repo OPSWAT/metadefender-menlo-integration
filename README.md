@@ -109,7 +109,7 @@ To change the environemnt, update `.env` file.
 # Use `local` for local development.
 # Use `dev` for testing the deployment on https://menlo-dev.metadefender.com
 # Use `prod` for deploying a new version to prod env: https://menlo.metadefender.com
-MENLO_ENV=<env>
+ENVIRONMENT=<env>
 ```
 
 Follow the next steps after the env is set.
@@ -240,14 +240,25 @@ See the [Middleware Documentation](#Middleware-documentation) for details.
 
 Environment variables (will overwrite some of the config.yml values)
 
-```
-MENLO_MD_ENV --> env
-MENLO_MD_AWS_REGION --> region
-MENLO_MD_BITBUCKET_COMMIT_HASH --> commitHash
-MENLO_MD_MDCLOUD_RULE --> scanRule
-MENLO_MD_APIKEY --> config.yml:api.params.apikey
-MENLO_MD_URL --> config.yml:api.url[api.type]
-MENLO_MD_SENTRY_DSN --> sentryDns
+```shell
+MENLO_MD_ENV --> env # environment: local, dev, qa, prod, etc.
+
+MENLO_MD_AWS_REGION --> region  # aws region
+MENLO_MD_BITBUCKET_COMMIT_HASH --> commitHash  # git commit hash for versioning
+MENLO_MD_MDCLOUD_RULE --> scanRule  # MD Cloud Scan Workflow
+MENLO_MD_APIKEY --> config.yml:api.params.apikey  # MD Cloud or MD API Key
+MENLO_MD_URL --> config.yml:api.url[api.type] # MD Cloud or MD Url
+MENLO_MD_SENTRY_DSN --> sentryDsn # Sentry endpoint if enabled
+
+MENLO_MD_KAFKA_ENABLED --> config.logging.kafka.enabled # enable writing logs to kafka
+MENLO_MD_KAFKA_CLIENT_ID --> config.logging.kafka.client_id # kafka client id
+MENLO_MD_KAFKA_SERVER --> config.logging.kafka.server # list of kafka brokers
+MENLO_MD_KAFKA_TOPIC --> config.logging.kafka.topic # kafka topic
+MENLO_MD_KAFKA_SSL --> config.logging.kafka.ssl # use ssl or not
+
+MENLO_MD_SNS_ENABLED --> config.logging.sns.enabled # enable sns notifications for errors
+MENLO_MD_SNS_ARN --> config.logging.sns.arn # sns topic arn
+MENLO_MD_SNS_REGION --> config.logging.sns.region # sns topic region
 
 MENLO_MD_FALLBACK_TO_ORIGINAL
   Overwrites: config.yml:fallbackToOriginal 

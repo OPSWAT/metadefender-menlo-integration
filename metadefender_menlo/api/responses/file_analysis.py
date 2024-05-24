@@ -10,10 +10,10 @@ from metadefender_menlo.api.responses.base_response import BaseResponse
 
 class FileAnalyis(BaseResponse):
 
-    def __init__(self, allowedResponses=None):
-
+    def __init__(self, apikey='', allowedResponses=None):
+        
         allowedResponses = [200, 400, 401, 404, 500]
-        super().__init__(allowedResponses)
+        super().__init__(apikey, allowedResponses)
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
@@ -85,7 +85,7 @@ class FileAnalyis(BaseResponse):
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
                 "error": repr(error), "MdCloudResponse": json_response
-            }))
+            }), {'apikey': self._apikey})
             return ({}, 500)
 
     def __response400(self, _json_response, status_code):

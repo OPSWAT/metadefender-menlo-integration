@@ -8,7 +8,7 @@ from datetime import datetime
 
 class SNSLogHandler(Handler):
 
-    def __init__(self, config, stream=None):
+    def __init__(self, config):
         Handler.__init__(self)
         if config != None:
             self.arn = config["arn"]
@@ -18,18 +18,23 @@ class SNSLogHandler(Handler):
         try:
             message, subject = self.set_message(record)
             if self.filterMessages(record.levelname, message):
-                self.publishMessage(message, subject)
+                # Note: record.args should contain only string values in its properties
+                message_attributes = self.createMessageAttributes(record.args)
+                self.publishMessage(message, message_attributes, subject)
         except RecursionError:
             raise
         except Exception as e:
             print(e)
 
-    def publishMessage(self, message, subject):
+    def publishMessage(self, message, message_attributes, subject):
         try:
+            # Subject property can have a max of 100 characters (21 already used by 'MetaDefender Cloud - ')
+            subject = subject[:79]
             self.client.publish(
                 TargetArn=self.arn,
                 Message=json.dumps({"default": json.dumps(message, indent=2)}),
                 Subject="MetaDefender Cloud - "+subject,
+                MessageAttributes=message_attributes,
                 MessageStructure='json'
             )
         except Exception as error:
@@ -128,3 +133,16 @@ class SNSLogHandler(Handler):
 
     def getTime(self):
         return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+    def createMessageAttributes(self, args):
+        message_attributes = {}
+
+        if args is not None and isinstance(args, dict):
+            for key, value in args.items():
+                if isinstance(value, str):
+                    message_attributes[key] = {
+                        'DataType': 'String',
+                        'StringValue': value
+                    }
+
+        return message_attributes
