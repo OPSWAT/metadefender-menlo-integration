@@ -7,8 +7,10 @@ from metadefender_menlo.api.responses.base_response import BaseResponse
 
 class FileSubmit(BaseResponse):
 
-    def __init__(self):
-        super().__init__([200, 400, 401, 411, 422, 429, 500, 503])
+    def __init__(self, apikey='', allowedResponses=None):
+        
+        allowedResponses = [200, 400, 401, 411, 422, 429, 500, 503]
+        super().__init__(apikey, allowedResponses)
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
@@ -36,7 +38,7 @@ class FileSubmit(BaseResponse):
                 SERVICE.MetaDefenderCloud,
                 TYPE.Response,
                 {"error": repr(error), "MdCloudResponse": json_response}
-            ))
+            ), {'apikey': self._apikey})
             return ({}, 500)
 
     def __response400(self, json_response, status_code):
