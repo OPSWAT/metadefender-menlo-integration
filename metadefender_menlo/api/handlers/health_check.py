@@ -20,7 +20,7 @@ class HealthCheckHandler(BaseHandler):
         self.write(json.dumps({
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
-            "version": "1.5.9",
+            "version": "1.6.0",
             "commitHash": self.settings['commitHash'],
             "rule": self.settings['scanRule']
         }))
