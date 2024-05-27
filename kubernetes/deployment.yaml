@@ -25,6 +25,22 @@ spec:
         env:
           - name: ENVIRONMENT
             value: ${ENVIRONMENT}
+          - name: MENLO_MD_KAFKA_CLIENT_ID
+            value: ${MENLO_MD_KAFKA_CLIENT_ID}
+          - name: MENLO_MD_KAFKA_ENABLED
+            value: ${MENLO_MD_KAFKA_ENABLED}
+          - name: MENLO_MD_KAFKA_SERVER
+            value: ${MENLO_MD_KAFKA_SERVER}
+          - name: MENLO_MD_KAFKA_SSL
+            value: ${MENLO_MD_KAFKA_SSL}
+          - name: MENLO_MD_KAFKA_TOPIC
+            value: ${MENLO_MD_KAFKA_TOPIC}
+          - name: MENLO_MD_SNS_ARN
+            value: ${MENLO_MD_SNS_ARN}
+          - name: MENLO_MD_SNS_ENABLED
+            value: ${MENLO_MD_SNS_ENABLED}
+          - name: MENLO_MD_SNS_REGION
+            value: ${MENLO_MD_SNS_REGION}
           - name: MENLO_MD_SENTRY_DSN
             value: ${MENLO_MD_SENTRY_DSN}
           - name: AWS_REGION
