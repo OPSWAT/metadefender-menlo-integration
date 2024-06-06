@@ -21,7 +21,7 @@ REQUIRES = [
     "python-dotenv==0.19.2",
     "pyyaml==6.0.1",
     "sentry-sdk==1.40.5",
-    "tornado==6.3.3",
+    "tornado==6.4.1",
     "typing==3.7.4.3",
     "urllib3==1.26.18"
 ]
