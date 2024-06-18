@@ -23,7 +23,7 @@ REQUIRES = [
     "sentry-sdk==1.40.5",
     "tornado==6.3.3",
     "typing==3.7.4.3",
-    "urllib3==1.26.18"
+    "urllib3==1.26.19"
 ]
 
 setup(
