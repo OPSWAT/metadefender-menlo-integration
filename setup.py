@@ -15,7 +15,7 @@ VERSION = "1.5.10"
 REQUIRES = [
     "aiocontextvars==0.2.2",
     "boto3==1.26.51",
-    "certifi==2023.7.22",
+    "certifi==2024.7.4",
     "httpx==0.23.0",
     "kafka-python==2.0.2",
     "python-dotenv==0.19.2",
