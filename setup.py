@@ -20,7 +20,7 @@ REQUIRES = [
     "kafka-python==2.0.2",
     "python-dotenv==0.19.2",
     "pyyaml==6.0.1",
-    "sentry-sdk==1.40.5",
+    "sentry-sdk==2.8.0",
     "tornado==6.3.3",
     "typing==3.7.4.3",
     "urllib3==1.26.18"
