@@ -24,21 +24,37 @@ spec:
         image: ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-${VERSION}
         env:
           - name: ENVIRONMENT
-            value: ${ENVIRONMENT}
+            value: '${ENVIRONMENT}'
+          - name: MENLO_MD_KAFKA_CLIENT_ID
+            value: '${MENLO_MD_KAFKA_CLIENT_ID}'
+          - name: MENLO_MD_KAFKA_ENABLED
+            value: '${MENLO_MD_KAFKA_ENABLED}'
+          - name: MENLO_MD_KAFKA_SERVER
+            value: '${MENLO_MD_KAFKA_SERVER}'
+          - name: MENLO_MD_KAFKA_SSL
+            value: '${MENLO_MD_KAFKA_SSL}'
+          - name: MENLO_MD_KAFKA_TOPIC
+            value: '${MENLO_MD_KAFKA_TOPIC}'
+          - name: MENLO_MD_SNS_ARN
+            value: '${MENLO_MD_SNS_ARN}'
+          - name: MENLO_MD_SNS_ENABLED
+            value: '${MENLO_MD_SNS_ENABLED}'
+          - name: MENLO_MD_SNS_REGION
+            value: '${MENLO_MD_SNS_REGION}'
           - name: MENLO_MD_SENTRY_DSN
-            value: ${MENLO_MD_SENTRY_DSN}
+            value: '${MENLO_MD_SENTRY_DSN}'
           - name: AWS_REGION
-            value: ${AWS_REGION}
+            value: '${AWS_REGION}'
           - name: MENLO_MD_MDCLOUD_RULE
-            value: ${MENLO_MD_MDCLOUD_RULE}
+            value: '${MENLO_MD_MDCLOUD_RULE}'
           - name: BITBUCKET_COMMIT_HASH
-            value: ${VERSION}
+            value: '${VERSION}'
           - name: AWS_ACCESS_KEY_ID
-            value: ${AWS_ACCESS_KEY_ID}
+            value: '${AWS_ACCESS_KEY_ID}'
           - name: AWS_SECRET_ACCESS_KEY
-            value: ${AWS_SECRET_ACCESS_KEY}
+            value: '${AWS_SECRET_ACCESS_KEY}'
           - name: MENLO_MD_URL
-            value: ${MENLO_MD_URL}
+            value: '${MENLO_MD_URL}'
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
