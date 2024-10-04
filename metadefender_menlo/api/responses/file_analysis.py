@@ -21,18 +21,25 @@ class FileAnalyis(BaseResponse):
         self._http_responses["404"] = self.__response400
 
     def model_outcome(self, result, json_response):
-        if result == 'completed':
-            if json_response['process_info']['profile'] == 'cdr' or json_response['process_info']['profile'].find("sanitize")!=-1:
-                if "sanitized" in json_response and "result" in json_response["sanitized"]:
-                    if json_response['sanitized']['result'] == 'Allowed':
-                        return 'clean'
-                    if json_response['sanitized']['result'] == 'Error':
-                        return 'error'
-                    if json_response['sanitized']['result'] == 'unknown':
-                        return 'unknown'
-            return 'clean' if json_response['process_info']['result'] == 'Allowed' else 'infected'
-        else:
+        if result != 'completed' :
             return 'unknown'
+
+        process_info = json_response.get('process_info', {})
+        profile = process_info.get('profile', '')
+
+        if profile == 'cdr' or 'sanitize' in profile:
+            sanitized_info = json_response.get('sanitized', {})
+            sanitized_result = sanitized_info.get('result')
+            
+            if sanitized_result == 'Allowed':
+                return 'clean'
+            if sanitized_result == 'Error':
+                return 'error'
+            if sanitized_result == 'unknown':
+                return 'unknown'
+            
+        return 'clean' if sanitized_info.get('result') == 'Allowed' else 'infected'
+       
 
     def check_analysis_complete(self, json_response):
         scan_progress = 0 if not (
@@ -41,45 +48,20 @@ class FileAnalyis(BaseResponse):
             "sanitized" in json_response and "progress_percentage" in json_response["sanitized"]) else json_response["sanitized"]["progress_percentage"]
     
         return scan_progress == 100 and sanitized_progress == 100
-
+    
     def __response200(self, json_response, _status_code):
         try:
-            if 'data_id' not in json_response:
+            if 'data_id' not in json_response: 
                 return (json_response, 404)
 
-            model = FileAnalysisResponse()
-            analysis_completed = self.check_analysis_complete(json_response)
-
-            model.result = 'pending' if not analysis_completed else 'completed'
-            model.outcome = self.model_outcome(model.result, json_response)
-            model.report_url = MetaDefenderAPI.get_instance(
-            ).report_url.format(data_id=json_response['data_id'])
-            try:
-                model.filename = urllib.parse.unquote(json_response['file_info']['display_name'])
-            except Exception:
-                model.filename = ""
+            model = self._initialize_model(json_response)
 
             if model.outcome == 'unknown':
                 model.modifications = []
-                return (model.to_dict(), 200)
+                return (model.to_dict(), 200) 
 
             post_process = json_response['process_info']['post_processing']
-            if 'sanitization_details' in post_process:
-                if 'details' in post_process['sanitization_details']:
-                    details = post_process['sanitization_details']['details']
-                    modifications = []
-
-                    if (isinstance(details, list)):
-                        for item in details:
-                            action = item['action'] if 'action' in item else 'Undefined Action'
-                            count = item['count'] if 'count' in item else 'All'
-                            obj_name = item['object_name'] if 'object_name' in item else 'All'
-                            modifications.append(
-                                "Action: {0} - Count: {1} - Object type: {2}".format(action, count, obj_name))
-                    else:
-                        modifications = [details]
-
-                    model.modifications = modifications
+            self._populate(model, post_process)
 
             return (model.to_dict(), 200)
         except Exception as error:
@@ -93,3 +75,40 @@ class FileAnalyis(BaseResponse):
 
     def __response401(self, response, status_code):
         return ({}, 401)
+    
+
+    def _initialize_model(self, json_response):
+        model = FileAnalysisResponse()
+        analysis_completed = self.check_analysis_complete(json_response)
+        
+        model.result = 'pending' if not analysis_completed else 'completed'
+        model.outcome = self.model_outcome(model.result, json_response)
+        model.report_url = MetaDefenderAPI.get_instance().report_url.format(data_id=json_response['data_id'])
+        
+        model.filename = self._extract_filename(json_response)
+        return model
+    
+    def _extract_filename(self, json_response):
+        try:
+            return urllib.parse.unquote(json_response['file_info']['display_name'])
+        except Exception:
+            return ""
+
+    def _populate(self, model, post_process):
+        sanitization_details = post_process.get('sanitization_details', {})
+        details = sanitization_details.get('details', [])
+        
+        modifications = []
+        
+
+        if (isinstance(details, list)):
+            for item in details:
+                action = item['action'] if 'action' in item else 'Undefined Action'
+                count = item['count'] if 'count' in item else 'All'
+                obj_name = item['object_name'] if 'object_name' in item else 'All'
+                modifications.append(
+                    "Action: {0} - Count: {1} - Object type: {2}".format(action, count, obj_name))
+        else:
+            modifications = [details]
+
+        model.modifications = modifications

@@ -2,8 +2,8 @@
 from datetime import date, datetime  
 from typing import List, Dict  
 
-from api.models.base_model import Model
-from api import util
+from metadefender_menlo.api.models.base_model import Model
+from metadefender_menlo.api.models.base_model import util
 
 class ResultUUID(Model):
 

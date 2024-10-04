@@ -2,7 +2,6 @@ import unittest
 import string
 from metadefender_menlo.log_handlers.SNS_log import SNSLogHandler
 
-
 sns_conf = {
     "region": "us-west-2",
     "arn": "test_arn"
