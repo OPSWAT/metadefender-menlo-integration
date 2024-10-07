@@ -20,7 +20,7 @@ if [ $? != "0" ]; then
 fi
 
 # generate coverage report
-make init && make coverage 
+make coverage 
 
 docker run \
     --rm \
