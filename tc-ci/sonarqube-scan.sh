@@ -19,6 +19,9 @@ if [ $? != "0" ]; then
 	echo "10.192.9.121 sonar.opswat.com" >> /etc/hosts
 fi
 
+# generate coverage report
+make init && make coverage 
+
 docker run \
     --rm \
     --network=host \
