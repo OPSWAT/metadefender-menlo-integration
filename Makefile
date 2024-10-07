@@ -2,10 +2,11 @@
 
 init:
 	@which python3 > /dev/null 2>&1 || (echo "Python 3 is not installed. Please install it." && exit 1)
+	python3 --version
 	@echo "Current directory: $(CURDIR)"
 	@[ -d $(CURDIR)/.venv ] || (echo "Creating virtual environment..." && python3 -m venv .venv)
 	@echo "Activating virtual environment and installing dependencies..."
-	@. .venv/bin/activate && pip install -r requirements.txt
+	@. .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
 
 test_unit:
 	@echo "Running unit tests..."
