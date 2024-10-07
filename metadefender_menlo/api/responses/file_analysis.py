@@ -61,7 +61,7 @@ class FileAnalyis(BaseResponse):
                 return (model.to_dict(), 200) 
 
             post_process = json_response['process_info']['post_processing']
-            self._populate(model, post_process)
+            self._update_sanitization_details(model, post_process)
 
             return (model.to_dict(), 200)
         except Exception as error:
@@ -94,7 +94,7 @@ class FileAnalyis(BaseResponse):
         except Exception:
             return ""
 
-    def _populate(self, model, post_process):
+    def _update_sanitization_details(self, model, post_process):
         sanitization_details = post_process.get('sanitization_details', {})
         details = sanitization_details.get('details', [])
         

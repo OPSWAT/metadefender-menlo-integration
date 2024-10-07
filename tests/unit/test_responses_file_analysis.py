@@ -129,7 +129,7 @@ class TestFileAnalysis(unittest.TestCase):
                 ]
             }
         }
-        self.file_analysis._populate(model, post_process)
+        self.file_analysis._update_sanitization_details(model, post_process)
         expected_modifications = [
             "Action: Remove - Count: 1 - Object type: Macro",
             "Action: Clean - Count: 2 - Object type: Metadata"
@@ -143,7 +143,7 @@ class TestFileAnalysis(unittest.TestCase):
                 'details': "Some string details"
             }
         }
-        self.file_analysis._populate(model, post_process)
+        self.file_analysis._update_sanitization_details(model, post_process)
         self.assertEqual(model.modifications, ["Some string details"])
 
     def test_model_outcome_completed_sanitize_unknown(self):
