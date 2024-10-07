@@ -16,3 +16,11 @@ test_integration:
 	@python -m unittest discover -v ./tests/integration -p 'tests*.py'
 
 test_all: test_unit test_integration
+
+coverage:
+	@pip install coverage
+	@echo "Running coverage..."
+	@coverage run -m unittest discover -v ./tests/unit -p 'test*.py'
+	@coverage report -m
+	@coverage xml
+	@echo "Coverage report generated in htmlcov/index.html"

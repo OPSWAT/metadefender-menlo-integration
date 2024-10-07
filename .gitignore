@@ -7,3 +7,4 @@ app.log*
 .scannerwork
 .sonar
 gitleaks.json
+tests/coverage
