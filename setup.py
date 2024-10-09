@@ -24,6 +24,8 @@ REQUIRES = [
     "tornado==6.3.3",
     "typing==3.7.4.3",
     "urllib3==1.26.18"
+    "pytest==8.3.3"
+    "pytest-cov==5.0.0"
 ]
 
 setup(
