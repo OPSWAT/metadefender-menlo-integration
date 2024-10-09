@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         coverage)
             echo "Code coverage testing validation."
-            python3 -m pytest --cov=./ --cov-report xml:coverage.xml
+            python3 -m pytest --cov=./ --cov-report xml:tests/coverage/coverage.xml
             ;;
         *)
             echo "Unknown parameter: ${1}"
