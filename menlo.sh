@@ -5,6 +5,7 @@ HELP_MENLO="
     help                    # show this message
     unit                    # run unit tests
     integration             # run integration tests
+    coverage                # code coverage testing validation
 "
 
 function printHelp {
@@ -44,11 +45,15 @@ while [[ $# -gt 0 ]]; do
             ;;
         unit)
             echo "Running unit tests..."
-            python -m unittest discover -v ./tests/unit -p 'test*.py'
+            python3 -m unittest discover -v ./tests/unit -p 'test*.py'
             ;;
         integration)
             echo "Running integration tests..."
-            python -m unittest discover -v ./tests/integration -p 'tests*.py'
+            python3 -m unittest discover -v ./tests/integration -p 'tests*.py'
+            ;;
+        coverage)
+            echo "Code coverage testing validation."
+            python3 -m pytest --cov=./ --cov-report xml:coverage.xml
             ;;
         *)
             echo "Unknown parameter: ${1}"
