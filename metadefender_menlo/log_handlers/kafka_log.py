@@ -22,7 +22,7 @@ class KafkaLogHandler(Handler):
                 self.sender = KafkaProducer(security_protocol="SSL",retries=0,bootstrap_servers=self.bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
             else:
                 self.sender = KafkaProducer(bootstrap_servers=self.bootstrap_servers,retries=0,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-        except Exception:
+        except Exception as e:
             pass
 
     def emit(self, record):

@@ -1,4 +1,5 @@
 
+import json
 import logging
 import urllib.parse
 
@@ -82,10 +83,43 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
                     ), {'apikey': apikey})
                     return ({"error": str(error)}, 500)
             else:
+                try:
+                    async with httpx.AsyncClient() as client:
+                        response:httpx.Response = await client.get(self.server_url + f'/file/{data_id}', headers={'apikey': apikey}, timeout=300)
+
+                        http_status = response.status_code
+                except Exception as error:
+                    logging.error("{0} > {1} > {2}".format(
+                        SERVICE.MenloPlugin,
+                        TYPE.Internal,
+                        repr(error)
+                    ), {'apikey': apikey})
+                    return ({"error": str(error)}, 500)
+                
+                response = response.content.decode('utf-8')
+                response = json.loads(response)
+                
+                sanitized=""
+                if "sanitized" in response:
+                    sanitized = response["sanitized"]
+
+                failure_reasons = ""
+                if "failure_reasons" in sanitized:
+                    failure_reasons = sanitized["failure_reasons"];
+                elif "reason" in sanitized:
+                    failure_reasons = sanitized["reason"]
+                
                 http_status = 204
-                logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                    "message": "Sanitized file not available!", "status": http_status
-                }))
+                if failure_reasons:
+                    logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                        "message": "Sanitization failed with failure reasons.",
+                        "failure_reasons": failure_reasons,
+                        "status": http_status
+                    }))
+                else:
+                    logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                        "message": "Sanitized file not available!", "status": http_status
+                    }))
                 return ("", http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
