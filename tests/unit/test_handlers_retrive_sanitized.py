@@ -36,7 +36,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
     async def test_get_success(self, mock_retrieve_sanitized):
         """Test successful GET request."""
         test_uuid = 'test-uuid-123'
-        test_apikey = 'test-apikey-456'
+        test_apikey = 'test-apikey-456' # gitleaks:allow
         test_file = b'test file content'
         test_status_code = 200
         
@@ -95,7 +95,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
     async def test_get_sanitize_error(self, mock_retrieve_sanitized):
         """Test GET request with sanitization error."""
         test_uuid = 'test-uuid-123'
-        test_apikey = 'test-apikey-456'
+        test_apikey = 'test-apikey-456' # gitleaks:allow
         test_file = b'test file content'
         test_status_code = 200
         
@@ -135,7 +135,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
     async def test_get_api_error(self, mock_retrieve_sanitized):
         """Test GET request with API error."""
         test_uuid = 'test-uuid-123'
-        test_apikey = 'test-apikey-456'
+        test_apikey = 'test-apikey-456' # gitleaks:allow
         
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {'Authorization': test_apikey}
