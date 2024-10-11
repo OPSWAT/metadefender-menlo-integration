@@ -52,7 +52,7 @@ while [[ $# -gt 0 ]]; do
             ;;
         coverage)
             echo "Running coverage..."
-            ./.venv/bin/python3 -m pytest --cov=. --cov-report=xml:tests/coverage/coverage.xml
+            python3 -m pytest --cov=. --cov-report=xml:tests/coverage/coverage.xml
             ;;
         *)
             echo "Unknown parameter: ${1}"
