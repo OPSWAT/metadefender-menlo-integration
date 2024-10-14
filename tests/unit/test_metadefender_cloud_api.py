@@ -1,9 +1,12 @@
+import json
 import unittest
 from unittest.mock import patch, Mock, AsyncMock
 import urllib.parse
 
 import sys
 import os
+
+from httpx import TimeoutException
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefenderCloudAPI
 from metadefender_menlo.api.log_types import SERVICE, TYPE
@@ -139,6 +142,38 @@ class TestMetaDefenderCloudAPI(unittest.TestCase):
                 SERVICE.MetaDefenderCloud, TYPE.Response, {"error": "Unexpected error"}
             ), {'apikey': self.apikey}
         )
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    async def test_retrieve_sanitized_file_fallback(self, mock_client):
+        # Mocking _request_as_json_status to simulate no sanitizedFilePath
+        self.api._request_as_json_status = AsyncMock(return_value=({}, 200))
+        
+        # Mock the fallback server request to return valid data
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.content = json.dumps({"sanitized": {}}).encode('utf-8')
+        mock_client.return_value.__aenter__.return_value.get.return_value = mock_response
+        
+        response, status = await self.api.retrieve_sanitized_file('test_id', 'test_apikey', 'test_ip')
+
+        # Assert that the fallback to server_url is properly handled
+        self.assertEqual(status, 204)
+        self.assertEqual(response, "")
+        mock_client.return_value.__aenter__.return_value.get.assert_called_once_with(
+            f"{self.api.server_url}/file/test_id",
+            headers={'apikey': 'test_apikey'},
+            timeout=300
+    )
+        
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    async def test_retrieve_sanitized_file_timeout(self, mock_client):
+        self.api._request_as_json_status = AsyncMock(return_value=({"sanitizedFilePath": "https://test.file"}, 200))
+        mock_client.return_value.__aenter__.return_value.get.side_effect = TimeoutException("Request timed out")
+
+        response, status = await self.api.retrieve_sanitized_file('test_id', 'test_apikey', 'test_ip')
+
+        self.assertEqual(status, 500)
+        self.assertEqual(response, {"error": "Request timed out"})
 
 if __name__ == '__main__':
     unittest.main()
