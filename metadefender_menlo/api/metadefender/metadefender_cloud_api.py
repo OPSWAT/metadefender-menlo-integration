@@ -47,82 +47,81 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
                 'apikey': apikey,
                 'x-forwarded-for': ip,
                 'x-real-ip': ip
-            })
+            }
+        )
 
+        self._log_response(response, http_status)
+
+        if http_status == 401:
+            return self._handle_unauthorized(response, http_status)
+
+        fileurl = response.get("sanitizedFilePath", "")
+        if fileurl:
+            return await self._download_sanitized_file(fileurl, apikey)
+        
+        return await self._handle_no_sanitized_file(data_id, apikey)
+
+    def _log_response(self, response, http_status):
         logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
             "response": f"{response}", "status": f"{http_status}"
         }))
 
+    def _handle_unauthorized(self, response, http_status):
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+            "message": "Unauthorized request", "status": http_status
+        }))
+        return response, http_status
+
+    async def _download_sanitized_file(self, fileurl, apikey):
+        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            "message": f"Download Sanitized file from {fileurl}"
+        }))
+
         try:
-            fileurl = ""
-            if "sanitizedFilePath" in response:
-                fileurl = response["sanitizedFilePath"]
-            if http_status == 401:
-                logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                    "message": " Unauthorized request", "status": http_status
-                }))
-                return (response, http_status)
-            if fileurl != "":
-                logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-                    "message": f"Download Sanitized file from {fileurl}"
-                }))
-
-                try:
-
-                    async with httpx.AsyncClient() as client:
-                        headers = {"User-Agent": "MenloTornadoIntegration"}
-                        response:httpx.Response = await client.get(fileurl, headers=headers, timeout=300)
-
-                        http_status = response.status_code
-                        return (response.content, http_status)
-                except Exception as error:
-                    logging.error("{0} > {1} > {2}".format(
-                        SERVICE.MenloPlugin,
-                        TYPE.Internal,
-                        repr(error)
-                    ), {'apikey': apikey})
-                    return ({"error": str(error)}, 500)
-            else:
-                try:
-                    async with httpx.AsyncClient() as client:
-                        response:httpx.Response = await client.get(self.server_url + f'/file/{data_id}', headers={'apikey': apikey}, timeout=300)
-
-                        http_status = response.status_code
-                except Exception as error:
-                    logging.error("{0} > {1} > {2}".format(
-                        SERVICE.MenloPlugin,
-                        TYPE.Internal,
-                        repr(error)
-                    ), {'apikey': apikey})
-                    return ({"error": str(error)}, 500)
-                
-                response = response.content.decode('utf-8')
-                response = json.loads(response)
-                
-                sanitized=""
-                if "sanitized" in response:
-                    sanitized = response["sanitized"]
-
-                failure_reasons = ""
-                if "failure_reasons" in sanitized:
-                    failure_reasons = sanitized["failure_reasons"];
-                elif "reason" in sanitized:
-                    failure_reasons = sanitized["reason"]
-                
-                http_status = 204
-                if failure_reasons:
-                    logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                        "message": "Sanitization failed with failure reasons.",
-                        "failure_reasons": failure_reasons,
-                        "status": http_status
-                    }))
-                else:
-                    logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-                        "message": "Sanitized file not available!", "status": http_status
-                    }))
-                return ("", http_status)
+            async with httpx.AsyncClient() as client:
+                headers = {"User-Agent": "MenloTornadoIntegration"}
+                response = await client.get(fileurl, headers=headers, timeout=300)
+                return response.content, response.status_code
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-                "error": repr(error), "MdCloudResponse": response
-            }), {'apikey': apikey})
-            return ({}, 500)
+            return self._handle_error(error, apikey)
+
+    async def _handle_no_sanitized_file(self, data_id, apikey):
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(self.server_url + f'/file/{data_id}', headers={'apikey': apikey}, timeout=300)
+            
+            sanitized_data = self._parse_sanitized_data(response)
+            failure_reasons = self._get_failure_reasons(sanitized_data)
+            
+            return self._log_sanitization_result(failure_reasons)
+        except Exception as error:
+            return self._handle_error(error, apikey)
+
+    def _parse_sanitized_data(self, response):
+        response_data = json.loads(response.content.decode('utf-8'))
+        return response_data.get("sanitized", {})
+
+    def _get_failure_reasons(self, sanitized_data):
+        return sanitized_data.get("failure_reasons") or sanitized_data.get("reason", "")
+
+    def _log_sanitization_result(self, failure_reasons):
+        http_status = 204
+        if failure_reasons:
+            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                "message": "Sanitization failed with failure reasons.",
+                "failure_reasons": failure_reasons,
+                "status": http_status
+            }))
+        else:
+            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                "message": "Sanitized file not available!", "status": http_status
+            }))
+        return "", http_status
+
+    def _handle_error(self, error, apikey):
+        logging.error("{0} > {1} > {2}".format(
+            SERVICE.MenloPlugin,
+            TYPE.Internal,
+            repr(error)
+        ), {'apikey': apikey})
+        return {"error": str(error)}, 500
