@@ -32,5 +32,3 @@ else
 fi
 
 exit 0
-
-source .venv/bin/activate

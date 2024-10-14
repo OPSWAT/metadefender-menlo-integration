@@ -26,6 +26,7 @@ function setup {
 
     echo "Installing dependencies..."
     pip install -r requirements.txt
+    python3 -m pytest --cov=. --cov-report=xml:tests/coverage/coverage.xml
 }
 
 if [[ $# == 0 ]]; then
