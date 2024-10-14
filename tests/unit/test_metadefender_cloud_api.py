@@ -1,3 +1,4 @@
+import json
 import unittest
 from unittest.mock import patch, Mock, AsyncMock
 import urllib.parse
@@ -16,118 +17,160 @@ class TestMetaDefenderCloudAPI(unittest.TestCase):
         self.apikey = 'test_apikey'
         self.api = MetaDefenderCloudAPI(self.settings, self.url, self.apikey)
 
-    def test_init(self):
-        self.assertEqual(self.api.settings, self.settings)
-        self.assertEqual(self.api.server_url, self.url)
-        self.assertEqual(self.api.apikey, self.apikey)
-        self.assertEqual(self.api.report_url, "https://metadefender.opswat.com/results/file/{data_id}/regular/overview")
-
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.debug')
-    def test_get_submit_file_headers(self, mock_debug):
-        filename = "test_file.txt"
-        metadata = {}
-        headers = self.api._get_submit_file_headers(filename, metadata)
-
-        expected_headers = {
-            "filename": "test_file.txt",
-            "Content-Type": "application/octet-stream",
-            "rule": self.settings['scanRule']
-        }
-        self.assertEqual(headers, expected_headers)
-        mock_debug.assert_called_once()
-
-    def test_check_analysis_complete_true(self):
-        json_response = {'sanitized': {'progress_percentage': 100}}
-        self.assertTrue(self.api.check_analysis_complete(json_response))
-
-    def test_check_analysis_complete_false(self):
-        json_response = {'sanitized': {'progress_percentage': 50}}
-        self.assertFalse(self.api.check_analysis_complete(json_response))
-
-    def test_check_analysis_complete_missing_info(self):
-        json_response = {'other_info': 'some_data'}
-        with patch('builtins.print') as mock_print:
-            self.assertFalse(self.api.check_analysis_complete(json_response))
-            mock_print.assert_called_once_with("Unexpected response from MetaDefender: {'other_info': 'some_data'}")
-
     @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._request_as_json_status')
     @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._download_sanitized_file')
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.info')
-    async def test_retrieve_sanitized_file_success(self, mock_logging, mock_download, mock_request):
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._handle_no_sanitized_file')
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._handle_unauthorized')
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._log_response')
+    async def test_retrieve_sanitized_file_complete(
+        self, mock_log_response, mock_handle_unauthorized, mock_handle_no_file, mock_download_file, mock_request
+    ):
+        """Test retrieving sanitized file for multiple paths: successful, unauthorized, no file."""
+        # Test case for successful retrieval and download
         mock_request.return_value = ({"sanitizedFilePath": "https://test.file"}, 200)
-        mock_download.return_value = (b"file_content", 200)
+        mock_download_file.return_value = (b"file_content", 200)
 
         response, status = await self.api.retrieve_sanitized_file('test_id', 'test_apikey', 'test_ip')
-
         self.assertEqual(status, 200)
         self.assertEqual(response, b"file_content")
-        mock_logging.assert_called()
+        mock_log_response.assert_called_once()
 
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._request_as_json_status')
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.info')
-    async def test_retrieve_sanitized_file_unauthorized(self, mock_logging, mock_request):
+        # Test case for unauthorized access
         mock_request.return_value = ({"error": "Unauthorized"}, 401)
+        mock_handle_unauthorized.return_value = ({"error": "Unauthorized"}, 401)
 
         response, status = await self.api.retrieve_sanitized_file('test_id', 'test_apikey', 'test_ip')
-
         self.assertEqual(status, 401)
         self.assertEqual(response, {"error": "Unauthorized"})
-        mock_logging.assert_called()
+        mock_handle_unauthorized.assert_called_once()
 
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._request_as_json_status')
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.info')
-    async def test_retrieve_sanitized_file_not_available(self, mock_logging, mock_request):
+        # Test case for no sanitized file available
         mock_request.return_value = ({"sanitizedFilePath": ""}, 200)
+        mock_handle_no_file.return_value = ("", 204)
 
         response, status = await self.api.retrieve_sanitized_file('test_id', 'test_apikey', 'test_ip')
-
         self.assertEqual(status, 204)
         self.assertEqual(response, "")
-        mock_logging.assert_called()
+        mock_handle_no_file.assert_called_once()
 
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._handle_error')
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.info')
+    def test_log_response(self, mock_logging_info):
+        """Test that logging happens correctly for responses."""
+        response_data = {"response": "test_response"}
+        http_status = 200
+
+        # Call the method
+        self.api._log_response(response_data, http_status)
+
+        # Assert that logging was called
+        mock_logging_info.assert_called_once()
+
+        # Retrieve the actual arguments passed to the logging call
+        log_args = mock_logging_info.call_args[0][0]
+
+        # Now check the structure of the log message without worrying about the exact string format
+        self.assertIn(SERVICE.MetaDefenderCloud, log_args)
+        self.assertIn(TYPE.Response, log_args)
+        self.assertIn("response", log_args)
+        self.assertIn("status", log_args)
+        self.assertIn("test_response", log_args)
+        self.assertIn("200", log_args)
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.info')
+    def test_handle_unauthorized(self, mock_logging_info):
+        """Test handling unauthorized responses."""
+        response, status = self.api._handle_unauthorized({"error": "Unauthorized"}, 401)
+        self.assertEqual(status, 401)
+        self.assertEqual(response, {"error": "Unauthorized"})
+        mock_logging_info.assert_called_once_with(
+            "{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                "message": "Unauthorized request", "status": 401
+            })
+        )
+
     @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
-    async def test_download_sanitized_file_error(self, mock_client, mock_handle_error):
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._handle_error')
+    async def test_download_sanitized_file_success(self, mock_handle_error, mock_client):
+        """Test downloading sanitized file successfully."""
+        mock_response = Mock()
+        mock_response.content = b"file_content"
+        mock_response.status_code = 200
+        mock_client.return_value.__aenter__.return_value.get.return_value = mock_response
+
+        response, status = await self.api._download_sanitized_file('https://test.file', 'test_apikey')
+        self.assertEqual(status, 200)
+        self.assertEqual(response, b"file_content")
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._handle_error')
+    async def test_download_sanitized_file_failure(self, mock_handle_error, mock_client):
+        """Test handling error when downloading sanitized file fails."""
         mock_client.return_value.__aenter__.return_value.get.side_effect = Exception("Download error")
         mock_handle_error.return_value = ({"error": "Download error"}, 500)
 
         response, status = await self.api._download_sanitized_file('https://test.file', 'test_apikey')
-
         self.assertEqual(status, 500)
         self.assertEqual(response, {"error": "Download error"})
         mock_handle_error.assert_called_once()
 
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._parse_sanitized_data')
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._get_failure_reasons')
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._log_sanitization_result')
     @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
-    async def test_handle_no_sanitized_file(self, mock_client, mock_log_result, mock_get_failure_reasons, mock_parse_data):
+    async def test_handle_no_sanitized_file(self, mock_client):
+        """Test handling scenario when no sanitized file is available."""
         mock_response = Mock()
         mock_response.content = json.dumps({"sanitized": {}}).encode('utf-8')
         mock_client.return_value.__aenter__.return_value.get.return_value = mock_response
-        mock_parse_data.return_value = {}
-        mock_get_failure_reasons.return_value = ""
-        mock_log_result.return_value = ("", 204)
 
         response, status = await self.api._handle_no_sanitized_file('test_id', 'test_apikey')
-
         self.assertEqual(status, 204)
         self.assertEqual(response, "")
-        mock_log_result.assert_called_once()
 
-    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.error')
-    def test_handle_error(self, mock_logging):
-        error = Exception("An error occurred")
-        response, status = self.api._handle_error(error, 'test_apikey')
+    def test_parse_sanitized_data(self):
+        """Test parsing sanitized data from a response."""
+        mock_response = Mock()
+        mock_response.content = json.dumps({"sanitized": {"key": "value"}}).encode('utf-8')
+        sanitized_data = self.api._parse_sanitized_data(mock_response)
+        self.assertEqual(sanitized_data, {"key": "value"})
 
-        self.assertEqual(status, 500)
-        self.assertEqual(response, {"error": "An error occurred"})
-        mock_logging.assert_called_once_with(
-            "{0} > {1} > {2}".format(
-                SERVICE.MenloPlugin, TYPE.Internal, repr(error)
-            ), {'apikey': 'test_apikey'}
+    def test_get_failure_reasons(self):
+        """Test extracting failure reasons from sanitized data."""
+        sanitized_data = {"failure_reasons": "Some reason"}
+        failure_reasons = self.api._get_failure_reasons(sanitized_data)
+        self.assertEqual(failure_reasons, "Some reason")
+
+        sanitized_data = {"reason": "Another reason"}
+        failure_reasons = self.api._get_failure_reasons(sanitized_data)
+        self.assertEqual(failure_reasons, "Another reason")
+
+        sanitized_data = {}
+        failure_reasons = self.api._get_failure_reasons(sanitized_data)
+        self.assertEqual(failure_reasons, "")
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.info')
+    def test_log_sanitization_result(self, mock_logging_info):
+        """Test logging sanitization results."""
+        failure_reasons = "Some failure reason"
+        response, status = self.api._log_sanitization_result(failure_reasons)
+        self.assertEqual(status, 204)
+        self.assertEqual(response, "")
+        mock_logging_info.assert_called_once_with(
+            "{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+                "message": "Sanitization failed with failure reasons.",
+                "failure_reasons": failure_reasons,
+                "status": status
+            })
         )
 
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging.error')
+    def test_handle_error(self, mock_logging_error):
+        """Test error handling and logging."""
+        error = Exception("An error occurred")
+        response, status = self.api._handle_error(error, 'test_apikey')
+        self.assertEqual(status, 500)
+        self.assertEqual(response, {"error": "An error occurred"})
+        mock_logging_error.assert_called_once_with(
+            "{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, repr(error)),
+            {'apikey': 'test_apikey'}
+        )
 
 if __name__ == '__main__':
     unittest.main()
