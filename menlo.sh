@@ -26,7 +26,6 @@ function setup {
 
     echo "Installing dependencies..."
     pip install -r requirements.txt
-    python3 -m pytest --cov=. --cov-report=xml:tests/coverage/coverage.xml
 }
 
 if [[ $# == 0 ]]; then
@@ -52,6 +51,7 @@ while [[ $# -gt 0 ]]; do
             python3 -m unittest discover -v ./tests/integration -p 'tests*.py'
             ;;
         coverage)
+            setup
             echo "Running coverage..."
             python3 -m pytest --cov=. --cov-report=xml:tests/coverage/coverage.xml
             ;;
