@@ -292,5 +292,66 @@ class TestMetaDefenderCloudAPI(unittest.TestCase):
         self.assertIn("rule", headers)
         self.assertEqual(headers["rule"], "test_rule")
 
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._request_as_json_status')
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._download_sanitized_file')
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._handle_no_sanitized_file')
+    async def test_retrieve_sanitized_file_cases(self, mock_handle_no_file, mock_download_file, mock_request):
+        """Test retrieving sanitized file with more cases."""
+        
+        # Test case for no file url
+        mock_request.return_value = ({"sanitizedFilePath": ""}, 200)
+        mock_handle_no_file.return_value = ("", 204)
+
+        response, status = await self.api.retrieve_sanitized_file('test_id', 'test_apikey', 'test_ip')
+        self.assertEqual(status, 204)
+        self.assertEqual(response, "")
+        mock_handle_no_file.assert_called_once()
+
+        # Test case for unauthorized access
+        mock_request.return_value = ({"error": "Unauthorized"}, 401)
+        mock_handle_no_file.return_value = ({"error": "Unauthorized"}, 401)
+
+        response, status = await self.api.retrieve_sanitized_file('test_id', 'test_apikey', 'test_ip')
+        self.assertEqual(status, 401)
+        self.assertEqual(response, {"error": "Unauthorized"})
+
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    async def test_handle_no_sanitized_file_failure(self, mock_client):
+        """Test handling no sanitized file with failure reasons."""
+        mock_response = Mock()
+        mock_response.content = json.dumps({"sanitized": {"failure_reasons": "some reason"}}).encode('utf-8')
+        mock_client.return_value.__aenter__.return_value.get.return_value = mock_response
+
+        response, status = await self.api._handle_no_sanitized_file('test_id', 'test_apikey')
+        self.assertEqual(status, 204)
+        self.assertEqual(response, "")
+
+        # Verify the logs
+        # Use mock or patch logging to verify the logging was triggered correctly.
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    async def test_handle_no_sanitized_file_no_failure_reason(self, mock_client):
+        """Test handling no sanitized file without failure reasons."""
+        mock_response = Mock()
+        mock_response.content = json.dumps({"sanitized": {}}).encode('utf-8')
+        mock_client.return_value.__aenter__.return_value.get.return_value = mock_response
+
+        response, status = await self.api._handle_no_sanitized_file('test_id', 'test_apikey')
+        self.assertEqual(status, 204)
+        self.assertEqual(response, "")
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.MetaDefenderCloudAPI._handle_error')
+    async def test_download_sanitized_file_exception(self, mock_handle_error, mock_client):
+        """Test exception handling in download sanitized file."""
+        mock_client.return_value.__aenter__.return_value.get.side_effect = Exception("Download error")
+        mock_handle_error.return_value = ({"error": "Download error"}, 500)
+
+        response, status = await self.api._download_sanitized_file('https://test.file', 'test_apikey')
+        self.assertEqual(status, 500)
+        self.assertEqual(response, {"error": "Download error"})
+        mock_handle_error.assert_called_once()
+
 if __name__ == '__main__':
     unittest.main()
