@@ -143,10 +143,30 @@ class TestMetaDefenderCloudAPI(unittest.TestCase):
     async def test_retrieve_sanitized_file_unauthorized(self, mock_async_client):
         mock_response = {"message": "Unauthorized"}
         mock_async_client.return_value.__aenter__.return_value.get.return_value = AsyncMock(status_code=401, json=AsyncMock(return_value=mock_response))
-
         result = await self.api.retrieve_sanitized_file("data_id", self.apikey, "1.1.1.1")
-
         self.assertEqual(result, (mock_response, 401))
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    @patch.object(MetaDefenderCloudAPI, '_download_sanitized_file', return_value=AsyncMock())
+    async def test_retrieve_sanitized_file_success(self, mock_download, mock_async_client):
+        mock_response = {"sanitizedFilePath": "http://example.com/sanitized_file"}
+        mock_async_client.return_value.__aenter__.return_value.get.return_value = AsyncMock(status_code=200, json=AsyncMock(return_value=mock_response))
+        result = await self.api.retrieve_sanitized_file("data_id", self.apikey, "1.1.1.1")
+        mock_download.assert_called_once_with("http://example.com/sanitized_file", self.apikey)
+        self.assertIsNone(result) 
+
+    @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
+    async def test_retrieve_sanitized_file_no_file(self, mock_async_client):
+        mock_response = {}
+        mock_async_client.return_value.__aenter__.return_value.get.return_value = AsyncMock(status_code=200, json=AsyncMock(return_value=mock_response))
+        with patch.object(self.api, '_handle_no_sanitized_file', return_value=AsyncMock()) as mock_handle_no_file:
+            await self.api.retrieve_sanitized_file("data_id", self.apikey, "1.1.1.1")
+            mock_handle_no_file.assert_called_once_with("data_id", self.apikey)
+
+
+
+
+
 
     @patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.httpx.AsyncClient')
     async def test_download_sanitized_file_exception(self, mock_async_client):
