@@ -54,6 +54,7 @@ while [[ $# -gt 0 ]]; do
             setup
             echo "Running coverage..."
             python3 -m pytest --cov=. --cov-report=xml:tests/coverage/coverage.xml
+            python3 -m pytest --cov=. --cov-report=html:tests/coverage/coverage.html
             ;;
         *)
             echo "Unknown parameter: ${1}"
