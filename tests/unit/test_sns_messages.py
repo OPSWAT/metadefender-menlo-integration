@@ -1,5 +1,10 @@
 import unittest
 import string
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.log_handlers.SNS_log import SNSLogHandler
 
 sns_conf = {

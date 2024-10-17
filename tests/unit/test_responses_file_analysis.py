@@ -1,5 +1,10 @@
 import unittest
 from unittest.mock import Mock, patch
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.responses.base_response import BaseResponse
 from metadefender_menlo.api.models.file_analysis_response import FileAnalysisResponse
 from metadefender_menlo.api.responses.file_analysis import FileAnalyis

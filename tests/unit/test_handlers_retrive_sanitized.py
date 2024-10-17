@@ -1,6 +1,11 @@
 import unittest
 from unittest.mock import Mock, patch, AsyncMock
 import logging
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.handlers.retrieve_sanitized import RetrieveSanitizedHandler
 
 class TestRetrieveSanitizedHandler(unittest.TestCase):

@@ -2,6 +2,11 @@ import unittest
 from unittest.mock import patch, AsyncMock, MagicMock
 import json
 from tornado.httpclient import HTTPClientError
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI  
 
 class MetaDefenderAPIImpl(MetaDefenderAPI):

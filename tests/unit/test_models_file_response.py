@@ -1,4 +1,9 @@
 import unittest
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.models.file_response import FileResponse
 
 class TestFileResponse(unittest.TestCase):
