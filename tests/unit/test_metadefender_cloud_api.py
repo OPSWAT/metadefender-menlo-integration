@@ -1,5 +1,5 @@
 import unittest
-from unittest import mock
+from unittest import mock, IsolatedAsyncioTestCase
 import pytest
 from unittest.mock import Mock, patch, MagicMock, AsyncMock
 import json
@@ -8,7 +8,7 @@ from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefen
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
-class TestMetaDefenderCloudAPI(unittest.TestCase):
+class TestMetaDefenderCloudAPI(IsolatedAsyncioTestCase):
 
     def setUp(self):
         self.settings = {'scanRule': 'default_rule'}
