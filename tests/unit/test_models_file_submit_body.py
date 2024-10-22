@@ -1,4 +1,9 @@
 import unittest
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.models.file_submit_body import FileSubmitBody
 
 class TestFileSubmitBody(unittest.TestCase):

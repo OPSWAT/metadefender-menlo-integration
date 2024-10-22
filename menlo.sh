@@ -44,11 +44,17 @@ while [[ $# -gt 0 ]]; do
             ;;
         unit)
             echo "Running unit tests..."
-            python -m unittest discover -v ./tests/unit -p 'test*.py'
+            python3 -m unittest discover -v ./tests/unit -p 'test*.py'
             ;;
         integration)
             echo "Running integration tests..."
-            python -m unittest discover -v ./tests/integration -p 'tests*.py'
+            python3 -m unittest discover -v ./tests/integration -p 'tests*.py'
+            ;;
+        coverage)
+            setup
+            echo "Running coverage..."
+            python3 -m pytest --cov=. --cov-report=xml:tests/coverage/coverage.xml
+            python3 -m pytest --cov=. --cov-report=html:tests/coverage/coverage.html
             ;;
         *)
             echo "Unknown parameter: ${1}"

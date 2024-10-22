@@ -2,9 +2,13 @@ import unittest
 from unittest.mock import Mock, patch
 import json
 import logging
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.handlers.health_check import HealthCheckHandler
-
 
 class TestHealthCheckHandler(unittest.TestCase):
     def setUp(self):

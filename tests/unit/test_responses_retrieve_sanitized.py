@@ -1,4 +1,9 @@
 import unittest
+
+import os
+import sys
+import logging
+sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.responses.base_response import BaseResponse
 from metadefender_menlo.api.responses.retrieve_sanitized import RetrieveSanitized  
 
