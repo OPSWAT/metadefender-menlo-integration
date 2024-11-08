@@ -27,7 +27,6 @@ cd ../
 
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
 	--blackduck.api.token=\"${BD_TOKEN}\" \
-	--blackduck.trust.cert=true \
 	--blackduck.url=https://opswat.blackducksoftware.com  \
 	--detect.docker.image="${DOCKER_IMAGE}" \
 	--detect.project.name=\"MD Cloud Menlo\" \

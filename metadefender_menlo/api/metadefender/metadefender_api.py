@@ -31,7 +31,7 @@ class MetaDefenderAPI(ABC):
             "endpoint": "/hash/{hash}"
         }
     }
-    def md_cls(url, key): return None
+    def md_cls(self, url, key): return None
 
     @staticmethod
     def config(settings, url, apikey, metadefender_cls):
