@@ -1,4 +1,6 @@
 
+import ast
+import json
 import logging
 import urllib.parse
 
@@ -19,8 +21,15 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
 
     def _get_submit_file_headers(self, filename, metadata):
+        fileName_str = metadata.get('fileName')
+        if fileName_str:
+            import ast
+            fileName_list = ast.literal_eval(fileName_str)  # Results in [b'test.txt']
+            file_name = fileName_list[0].decode('utf-8') if fileName_list else None
+        else:
+            file_name = None 
         headers = {
-            "filename": urllib.parse.quote(filename),
+            "filename": file_name or urllib.parse.quote(filename),
             "Content-Type": "application/octet-stream",
             "rule": self.settings['scanRule']
         }
