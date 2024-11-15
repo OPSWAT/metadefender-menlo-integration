@@ -21,10 +21,10 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
 
     def _get_submit_file_headers(self, filename, metadata):
-        fileName_str = metadata.get('fileName')
-        if fileName_str:
-            fileName_list = ast.literal_eval(fileName_str)  # Results in [b'test.txt']
-            file_name = fileName_list[0].decode('utf-8') if fileName_list else None
+        filename_str = metadata.get('fileName')
+        if filename_str:
+            filename_list = ast.literal_eval(filename_str) 
+            file_name = filename_list[0].decode('utf-8') if filename_list else None
         else:
             file_name = None 
         headers = {
