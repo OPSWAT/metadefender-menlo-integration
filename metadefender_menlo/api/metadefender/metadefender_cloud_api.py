@@ -28,7 +28,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         else:
             file_name = None 
         headers = {
-            "filename": urllib.parse.quote(file_name) or urllib.parse.quote(filename),
+            "filename": urllib.parse.quote(file_name) if file_name is not None else urllib.parse.quote(filename),
             "Content-Type": "application/octet-stream",
             "rule": self.settings['scanRule']
         }
