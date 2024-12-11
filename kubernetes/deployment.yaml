@@ -12,6 +12,7 @@ spec:
       labels:
         app: metadefender-menlo
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: metadefender-menlo
         resources:

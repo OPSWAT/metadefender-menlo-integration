@@ -15,9 +15,8 @@ PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 
-bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
+bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.timeout=3600\
     --blackduck.api.token=\"${BD_TOKEN}\" \
-    --blackduck.trust.cert=true \
     --blackduck.url=https://opswat.blackducksoftware.com  \
     --detect.blackduck.signature.scanner.upload.source.mode=false \
     --detect.detector.search.exclusion.paths=docker \
