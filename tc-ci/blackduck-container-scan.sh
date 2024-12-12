@@ -17,11 +17,11 @@ cd ./kubernetes
 cd ../
 
 if [[ "$BRANCH" == "master" || "$BRANCH" == "main" ]]; then
-    DETECT_PROJECT_VERSION_NAME="main"
+    DETECT_PROJECT_VERSION_NAME="main-container"
 elif [[ "$BRANCH" == "release" ]]; then
-    DETECT_PROJECT_VERSION_NAME="Release-HEAD"
+    DETECT_PROJECT_VERSION_NAME="Release-HEAD-container"
 else
-    DETECT_PROJECT_VERSION_NAME="MD Cloud Menlo-${PLUGIN_VERSION}"
+    DETECT_PROJECT_VERSION_NAME="MD Cloud Menlo-${PLUGIN_VERSION}-container"
 fi
 
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
