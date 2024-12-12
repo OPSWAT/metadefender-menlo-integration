@@ -7,7 +7,7 @@ PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
-
+echo "${BRANCH}"
 if [[ "$BRANCH" == "master" || "$BRANCH" == "main" ]]; then
     DETECT_PROJECT_VERSION_NAME="main"
 elif [[ "$BRANCH" == "release" ]]; then
@@ -15,6 +15,7 @@ elif [[ "$BRANCH" == "release" ]]; then
 else
     DETECT_PROJECT_VERSION_NAME="MD Cloud Menlo-${PLUGIN_VERSION}"
 fi
+echo "${DETECT_PROJECT_VERSION_NAME}"
 
 
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.timeout=3600\
