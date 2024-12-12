@@ -3,16 +3,17 @@
 CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
 cd $CWD/..
 BRANCH="$(git branch --show-current)"
+PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 
 if [[ "$BRANCH" == "master" || "$BRANCH" == "main" ]]; then
-    DETECT_PROJECT_VERSION_NAME="Community-main-container"
+    DETECT_PROJECT_VERSION_NAME="main"
 elif [[ "$BRANCH" == "release" ]]; then
-    DETECT_PROJECT_VERSION_NAME="Community-Release-HEAD-container"
+    DETECT_PROJECT_VERSION_NAME="Release-HEAD"
 else
-    DETECT_PROJECT_VERSION_NAME="Community-${COMMUNITY_VERSION}-container"
+    DETECT_PROJECT_VERSION_NAME="MD Cloud Menlo-${PLUGIN_VERSION}"
 fi
 
 
