@@ -1,4 +1,0 @@
-
-
-class FileSubmit(BaseAdaptor):
-    pass
