@@ -8,7 +8,8 @@ BD_PARENT_PROJECT="MD Cloud Menlo"
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 echo "BRANCH: ${BRANCH}"
-
+BD_PROJECT_VERSION=""
+BD_VERSION_PHASE=""
 case $BRANCH in
     customer)
         # customer branch / tag
@@ -31,7 +32,7 @@ case $BRANCH in
         BD_VERSION_PHASE="DEVELOPMENT"
     ;;
 esac;
-echo "DETECT_PROJECT_VERSION_NAME: ${DETECT_PROJECT_VERSION_NAME}"
+echo "DETECT_PROJECT_VERSION_NAME: ${BD_PROJECT_VERSION}"
 
 
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.timeout=3600\
