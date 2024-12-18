@@ -13,6 +13,9 @@ PWD=$( pwd )
 
 PROJECT_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
+chmod +x menlo.sh
+./menlo.sh coverage
+
 cat /etc/hosts | grep sonar.opswat.com
 if [ $? != "0" ]; then
 	echo "" >> /etc/hosts
