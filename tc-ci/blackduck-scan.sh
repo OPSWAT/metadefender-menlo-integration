@@ -7,7 +7,7 @@ PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 BD_PARENT_PROJECT="MD Cloud Menlo"
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
-echo "${BRANCH}"
+echo "BRANCH: ${BRANCH}"
 
 case $BRANCH in
     customer)
@@ -31,7 +31,7 @@ case $BRANCH in
         BD_VERSION_PHASE="DEVELOPMENT"
     ;;
 esac;
-echo "${DETECT_PROJECT_VERSION_NAME}"
+echo "DETECT_PROJECT_VERSION_NAME: ${DETECT_PROJECT_VERSION_NAME}"
 
 
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.timeout=3600\
