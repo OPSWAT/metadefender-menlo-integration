@@ -26,7 +26,7 @@ case $BRANCH in
         DETECT_PROJECT_VERSION_NAME="Release-HEAD"
         BD_VERSION_PHASE="PRERELEASE"
     ;;
-    master,main)
+    master|main)
         # master branch
         DETECT_PROJECT_VERSION_NAME="main"
         BD_VERSION_PHASE="DEVELOPMENT"
