@@ -23,17 +23,12 @@ case $BRANCH in
     ;;
     release*)
         # release branch
-        BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-Release-HEAD"
+        BD_PROJECT_VERSION="Release-HEAD"
         BD_VERSION_PHASE="PRERELEASE"
     ;;
-    master)
+    master,main)
         # master branch
-        BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-Develop-HEAD"
-        BD_VERSION_PHASE="DEVELOPMENT"
-    ;;
-    *)
-        # other branches
-        BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-${BRANCH_NAME}"
+        BD_PROJECT_VERSION="main"
         BD_VERSION_PHASE="DEVELOPMENT"
     ;;
 esac
