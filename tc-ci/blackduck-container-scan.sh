@@ -31,6 +31,10 @@ case $BRANCH in
         DETECT_PROJECT_VERSION_NAME="main"
         BD_VERSION_PHASE="DEVELOPMENT"
     ;;
+    feature*)
+        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BD_VERSION_PHASE="DEVELOPMENT"
+    ;;
 esac
 
 bash <(curl -s -L https://detect.blackduck.com/detect9.sh) \
