@@ -31,6 +31,10 @@ case $BRANCH in
         BD_PROJECT_VERSION="main"
         BD_VERSION_PHASE="DEVELOPMENT"
     ;;
+    feature*)
+        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BD_VERSION_PHASE="DEVELOPMENT"
+    ;;
 esac
 
 echo "DETECT_PROJECT_VERSION_NAME: ${BD_PROJECT_VERSION}"
