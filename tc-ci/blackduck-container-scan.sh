@@ -33,7 +33,7 @@ case $BRANCH in
     ;;
 esac
 
-bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
+bash <(curl -s -L https://detect.blackduck.com/detect9.sh) \
 	--blackduck.api.token=\"${BD_TOKEN}\" \
 	--blackduck.url=https://opswat.blackducksoftware.com  \
 	--detect.docker.image="${DOCKER_IMAGE}" \
