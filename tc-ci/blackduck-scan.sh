@@ -44,7 +44,7 @@ echo "BD_PROJECT_VERSION: ${BD_PROJECT_VERSION}"
 echo "BD_VERSION_PHASE: ${BD_VERSION_PHASE}"
 
 
-bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.timeout=3600 \
+bash <(curl -s -L https://detect.blackduck.com/detect9.sh) --detect.timeout=3600 \
     --blackduck.api.token="${BD_TOKEN}" \
     --blackduck.url=https://opswat.blackducksoftware.com  \
     --detect.blackduck.signature.scanner.upload.source.mode=false \
