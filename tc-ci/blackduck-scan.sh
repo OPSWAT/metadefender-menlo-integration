@@ -6,7 +6,6 @@ BRANCH="$(git branch --show-current)"
 PLUGIN_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 BD_PARENT_PROJECT="MD Cloud Menlo"
 VERSION=${PLUGIN_VERSION:-"unknown"}  # Use PLUGIN_VERSION or fallback to "unknown"
-BRANCH_NAME=${BRANCH}  # Ensure BRANCH_NAME is initialized
 
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
@@ -32,8 +31,9 @@ case $BRANCH in
         BD_VERSION_PHASE="DEVELOPMENT"
     ;;
 esac
-
-echo "DETECT_PROJECT_VERSION_NAME: ${BD_PROJECT_VERSION}"
+echo "DEBUG VARS: "
+echo "BD_PROJECT_VERSION: ${BD_PROJECT_VERSION}"
+echo "BD_VERSION_PHASE: ${BD_VERSION_PHASE}"
 
 
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.timeout=3600 \
