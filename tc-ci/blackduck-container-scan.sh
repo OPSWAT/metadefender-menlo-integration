@@ -20,23 +20,23 @@ BD_VERSION_PHASE=""
 
 if [[ -n "$TAG" ]]; then
     # tag
-    BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-${TAG}"
+    BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-${TAG}-container"
     BD_VERSION_PHASE="RELEASED"
 else
     case $BRANCH in
         customer)
             # customer branch
-            BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-${VERSION}"
+            BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-${VERSION}-container"
             BD_VERSION_PHASE="RELEASED"
         ;;
         release*)
             # release branch
-            BD_PROJECT_VERSION="Release-HEAD"
+            BD_PROJECT_VERSION="Release-HEAD-container"
             BD_VERSION_PHASE="PRERELEASE"
         ;;
         master|main|develop)
             # master branch
-            BD_PROJECT_VERSION="main"
+            BD_PROJECT_VERSION="main-container"
             BD_VERSION_PHASE="DEVELOPMENT"
         ;;
     esac
