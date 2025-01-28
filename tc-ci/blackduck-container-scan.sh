@@ -31,9 +31,13 @@ case $BRANCH in
         DETECT_PROJECT_VERSION_NAME="main"
         BD_VERSION_PHASE="DEVELOPMENT"
     ;;
+    feature*)
+        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BD_VERSION_PHASE="DEVELOPMENT"
+    ;;
 esac
 
-bash <(curl -s -L https://detect.synopsys.com/detect9.sh) \
+bash <(curl -s -L https://detect.blackduck.com/detect9.sh) \
 	--blackduck.api.token=\"${BD_TOKEN}\" \
 	--blackduck.url=https://opswat.blackducksoftware.com  \
 	--detect.docker.image="${DOCKER_IMAGE}" \
