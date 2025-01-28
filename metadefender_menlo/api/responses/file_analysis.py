@@ -38,7 +38,7 @@ class FileAnalyis(BaseResponse):
             if sanitized_result == 'unknown':
                 return 'unknown'
             
-        return 'clean' if sanitized_info.get('result') == 'Allowed' else 'infected'
+        return 'clean' if process_info.get('result') == 'Allowed' else 'infected'
        
 
     def check_analysis_complete(self, json_response):
