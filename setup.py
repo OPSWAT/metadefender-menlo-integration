@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 NAME = "metadefender_menlo"
-VERSION = "1.6.1"
+VERSION = "1.6.3"
 
 # To install the library, run the following
 #
@@ -23,7 +23,9 @@ REQUIRES = [
     "sentry-sdk==1.40.5",
     "tornado==6.3.3",
     "typing==3.7.4.3",
-    "urllib3==1.26.18"
+    "urllib3==1.26.18",
+    "pytest==8.3.3",
+    "pytest-cov==5.0.0"
 ]
 
 setup(
