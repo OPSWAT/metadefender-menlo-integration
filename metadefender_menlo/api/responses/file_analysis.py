@@ -86,6 +86,7 @@ class FileAnalyis(BaseResponse):
         model.report_url = MetaDefenderAPI.get_instance().report_url.format(data_id=json_response['data_id'])
         
         model.filename = self._extract_filename(json_response)
+        model.sanitized_file_path = json_response['sanitized']['file_path']
         return model
     
     def _extract_filename(self, json_response):
