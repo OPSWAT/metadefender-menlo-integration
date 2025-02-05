@@ -11,15 +11,16 @@ class FileSubmitHandler(BaseHandler):
         
         apikey = self.request.headers.get('Authorization')
 
-        files = self.validateFile(apikey)
-        field_name = list(files.keys())[0]
-        info = files[field_name][0]
-        filename, content_type, fp = info["filename"], info["content_type"], info["body"]
+        if not self.request.arguments.get('downloadfrom'):
+            files = self.validateFile(apikey)
+            field_name = list(files.keys())[0]
+            info = files[field_name][0]
+            filename, content_type, fp = info["filename"], info["content_type"], info["body"]
 
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-            "method": "POST", "fileName": filename, "endpoint": "/api/v1/file",
-            "content_type": content_type, "dimension": "{0} bytes".format(len(fp))
-        }))
+            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
+                "method": "POST", "fileName": filename, "endpoint": "/api/v1/file",
+                "content_type": content_type, "dimension": "{0} bytes".format(len(fp))
+            }))
 
         metadata = {}
         logging.debug("List of headers:")
@@ -30,7 +31,10 @@ class FileSubmitHandler(BaseHandler):
             metadata[arg] = str(self.request.arguments[arg])
 
         try:
-            json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata, apikey=apikey, ip=self.client_ip)
+            if not self.request.arguments.get('downloadfrom'):
+                json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata, apikey=apikey, ip=self.client_ip)
+            else:
+                json_response, http_status = await self.metaDefenderAPI.submit_file(None, None, metadata=metadata, apikey=apikey, ip=self.client_ip)
             json_response, http_status = FileSubmit().handle_response(http_status, json_response)
             self.json_response(json_response, http_status)
         except Exception as error:

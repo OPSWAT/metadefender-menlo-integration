@@ -20,7 +20,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         self.apikey = apikey
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
 
-    def _get_decoded_parameter(self, metadata, param_str):
+    def _get_decoded_parameter(self, param_str):
         if param_str:
             param_list = ast.literal_eval(param_str) 
             param = param_list[0].decode('utf-8') if param_list else None
@@ -30,17 +30,23 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     def _get_submit_file_headers(self, filename, metadata):
         file_name = metadata.get('fileName')
-        file_name = self._get_decoded_parameter(metadata, file_name)
+        file_name = self._get_decoded_parameter(file_name)
 
         downloadfrom = metadata.get('downloadfrom')
-        downloadfrom = self._get_decoded_parameter(metadata, downloadfrom)
+        downloadfrom = self._get_decoded_parameter(downloadfrom)
 
         headers = {
-            "filename": urllib.parse.quote(file_name) if file_name is not None else urllib.parse.quote(filename),
             "Content-Type": "application/octet-stream",
             "rule": self.settings['scanRule'],
-            "downloadfrom": downloadfrom
         }
+
+        # Conditionally add "filename" if either file_name or filename exists
+        if file_name or filename:
+            headers["filename"] = urllib.parse.quote(file_name if file_name is not None else filename)
+        
+        if downloadfrom:
+            headers["downloadfrom"] = downloadfrom
+
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
         return headers
