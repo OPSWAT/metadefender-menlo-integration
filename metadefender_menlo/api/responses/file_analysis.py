@@ -91,7 +91,13 @@ class FileAnalyis(BaseResponse):
     
     def _extract_filename(self, json_response):
         try:
-            return urllib.parse.unquote(json_response['file_info']['display_name'])
+            display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
+
+            # Check if 'result' exists inside 'sanitized'
+            if json_response.get('sanitized', {}).get('result') == 'Allowed':
+                display_name += "_sanitized"
+
+            return display_name
         except Exception:
             return ""
 
