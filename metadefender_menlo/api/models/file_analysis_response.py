@@ -8,7 +8,7 @@ from metadefender_menlo.api import util
 
 class FileAnalysisResponse(Model):
 
-    def __init__(self, result=None, outcome=None, report_url=None, filename=None, modifications=None):  
+    def __init__(self, result=None, outcome=None, report_url=None, filename=None, modifications=None, sanitized_file_path=None):  
         """FileAnalysisResponse - a model defined in OpenAPI
 
         :param result: The result of this FileAnalysisResponse.  
@@ -27,7 +27,8 @@ class FileAnalysisResponse(Model):
             'outcome': str,
             'report_url': str,
             'filename': str,
-            'modifications': List[str]
+            'modifications': List[str],
+            'sanitized_file_path': str
         }
 
         self.attribute_map = {
@@ -35,7 +36,8 @@ class FileAnalysisResponse(Model):
             'outcome': 'outcome',
             'report_url': 'report_url',
             'filename': 'filename',
-            'modifications': 'modifications'
+            'modifications': 'modifications',
+            'sanitized_file_path': 'sanitized_file_path'
         }
 
         self._result = result
@@ -43,6 +45,7 @@ class FileAnalysisResponse(Model):
         self._report_url = report_url
         self._filename = filename
         self._modifications = modifications
+        self._sanitized_file_path = sanitized_file_path
 
     @classmethod
     def from_dict(cls, dikt) -> 'FileAnalysisResponse':
@@ -183,3 +186,28 @@ class FileAnalysisResponse(Model):
         """
 
         self._modifications = modifications
+
+    @property
+    def sanitized_file_path(self):
+        """Gets the sanitized_file_path of this FileAnalysisResponse.
+
+        A full URL to retrieve the sanitized file  
+
+        :return: The sanitized_file_path of this FileAnalysisResponse.
+        :rtype: str
+        """
+        return self._sanitized_file_path
+
+    @sanitized_file_path.setter
+    def sanitized_file_path(self, sanitized_file_path):
+        """Sets the sanitized_file_path of this FileAnalysisResponse.
+
+        A full URL to retrieve the report  
+
+        :param sanitized_file_path: The sanitized_file_path of this FileAnalysisResponse.
+        :type sanitized_file_path: str
+        """
+        if sanitized_file_path is None:
+            raise ValueError("Invalid value for `sanitized_file_path`, must not be `None`")  
+
+        self._sanitized_file_path = sanitized_file_path

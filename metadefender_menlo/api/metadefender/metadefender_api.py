@@ -1,11 +1,12 @@
 
 from abc import ABC, abstractmethod
+import ast
 import datetime
 import json
 import logging
+import httpx
 from tornado.httpclient import HTTPClientError
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-import httpx
 
 
 class MetaDefenderAPI(ABC):
@@ -57,11 +58,27 @@ class MetaDefenderAPI(ABC):
     def check_analysis_complete(self, json_response):
         pass
 
+    @abstractmethod
+    def get_sanitized_file_path(self, json_response):
+        pass
+
+    def _get_decoded_parameter(self, param_str):
+        if param_str:
+            param_list = ast.literal_eval(param_str) 
+            param = param_list[0].decode('utf-8') if param_list else None
+        else:
+            param = None 
+        return param
+
     async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
 
         headers = self._get_submit_file_headers(filename, metadata)
-        headers = {**headers, **{'apikey': apikey},
-                   'x-forwarded-for': ip, 'x-real-ip': ip}
+        headers = {
+            **headers, 
+            **{'apikey': apikey},
+            'x-forwarded-for': ip, 
+            'x-real-ip': ip
+        }
         json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
 
         return (json_response, http_status)
