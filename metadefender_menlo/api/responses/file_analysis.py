@@ -1,4 +1,5 @@
 
+import re
 import logging
 import urllib.parse
 
@@ -78,24 +79,31 @@ class FileAnalyis(BaseResponse):
     
 
     def _initialize_model(self, json_response):
-        model = FileAnalysisResponse()
+        md_instance = MetaDefenderAPI.get_instance()
         analysis_completed = self.check_analysis_complete(json_response)
-        
+
+        model = FileAnalysisResponse()
         model.result = 'pending' if not analysis_completed else 'completed'
         model.outcome = self.model_outcome(model.result, json_response)
-        model.report_url = MetaDefenderAPI.get_instance().report_url.format(data_id=json_response['data_id'])
-        
+        model.report_url = md_instance.report_url.format(data_id=json_response['data_id'])
         model.filename = self._extract_filename(json_response)
-        model.sanitized_file_path = json_response['sanitized']['file_path']
+        try:
+            model.sanitized_file_path = md_instance.get_sanitized_file_path(json_response)
+        except Exception:
+            pass
+        
         return model
     
     def _extract_filename(self, json_response):
         try:
             display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
 
-            # Check if 'result' exists inside 'sanitized'
-            if json_response.get('sanitized', {}).get('result') == 'Allowed':
-                display_name += "_sanitized"
+            try:
+                # Check if 'result' exists inside 'sanitized'
+                if json_response.get('sanitized', {}).get('result') == 'Allowed' or "Sanitized" in json_response['process_info']['post_processing']['actions_ran']:
+                    display_name = re.sub(r"\.(?=[^.]*$)", "_sanitized.", display_name)
+            except Exception:
+                pass
 
             return display_name
         except Exception:
