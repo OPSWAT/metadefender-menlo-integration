@@ -1,5 +1,5 @@
 
-import ast
+
 import json
 import logging
 import urllib.parse
@@ -21,20 +21,29 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
 
     def _get_submit_file_headers(self, filename, metadata):
-        filename_str = metadata.get('fileName')
-        if filename_str:
-            filename_list = ast.literal_eval(filename_str) 
-            file_name = filename_list[0].decode('utf-8') if filename_list else None
-        else:
-            file_name = None 
         headers = {
-            "filename": urllib.parse.quote(file_name) if file_name is not None else urllib.parse.quote(filename),
             "Content-Type": "application/octet-stream",
             "rule": self.settings['scanRule']
         }
+
+        file_name = self._get_decoded_parameter(metadata.get('fileName'))
+        if file_name or filename:
+            headers["filename"] = urllib.parse.quote(file_name if file_name is not None else filename)
+
+        downloadfrom = self._get_decoded_parameter(metadata.get('downloadfrom'))
+        if downloadfrom:
+            headers["downloadfrom"] = downloadfrom
+
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
+        
         return headers
+    
+    def get_sanitized_file_path(self, json_response):
+        try:
+            return json_response['sanitized']['file_path']
+        except Exception:
+            return ''
 
     def check_analysis_complete(self, json_response):
         if ("sanitized" in json_response and "progress_percentage" in json_response["sanitized"]):
