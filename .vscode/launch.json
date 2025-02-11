@@ -16,23 +16,6 @@
       "envFile": "${workspaceFolder}/.env"
     },
     {
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "name": "Node Project",
-      "program": "${workspaceFolder}/nodejs/index.js",
-      "request": "launch",
-      "restart": true,
-      "runtimeExecutable": "nodemon",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "type": "node",
-      "env": {
-        // "SERVER_HOST": "api-qa.metadefender.com",
-        // "SERVER_PORT": "443",
-      }
-    },
-    {
       "name": "Python: Menlo Tests",
       "type": "python",
       "request": "launch",
@@ -41,10 +24,12 @@
       "envFile": "${workspaceFolder}/.env",
       "args": [
         "discover",
-        "-s", "${workspaceFolder}/tests/unit",  // Specify the folder containing your tests
-        "-p", "*.py"  // The pattern to match your test files
+        "-s",
+        "${workspaceFolder}/tests/unit", // Specify the folder containing your tests
+        "-p",
+        "*.py" // The pattern to match your test files
       ],
-      "console": "integratedTerminal",
-    },
+      "console": "integratedTerminal"
+    }
   ]
 }
