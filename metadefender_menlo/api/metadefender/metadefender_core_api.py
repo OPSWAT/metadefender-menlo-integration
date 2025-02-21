@@ -10,6 +10,7 @@ from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 class MetaDefenderCoreAPI(MetaDefenderAPI):
 
     def __init__(self, settings, url, apikey):
+        self.service_name = SERVICE.MetaDefenderCore
         self.settings = settings
         self.server_url = url
         self.apikey = apikey
@@ -18,10 +19,12 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
             "Content-Type": "application/octet-stream",
-            "rule": self.settings['scanRule'],
             "metadata": json.dumps(metadata) if metadata is not None else "",
             "engines-metadata": self.settings['headers_engines_metadata']
         }
+
+        if self.settings['scanRule']:
+            headers["rule"] = self.settings['scanRule']
         
         file_name = self._get_decoded_parameter(metadata.get('fileName'))
         if file_name or filename:
@@ -52,7 +55,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             return False
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
             "message": f"Retrieve Sanitized file for {data_id}"
         }))
         response, http_status = await self._request_status("sanitized_file", fields={"data_id": data_id}, headers={"apikey": apikey})
