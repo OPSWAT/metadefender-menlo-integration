@@ -19,10 +19,12 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
     def _get_submit_file_headers(self, filename, metadata):
         headers = {
             "Content-Type": "application/octet-stream",
-            "rule": self.settings['scanRule'],
             "metadata": json.dumps(metadata) if metadata is not None else "",
             "engines-metadata": self.settings['headers_engines_metadata']
         }
+
+        if self.settings['scanRule']:
+            headers["rule"] = self.settings['scanRule']
         
         file_name = self._get_decoded_parameter(metadata.get('fileName'))
         if file_name or filename:
