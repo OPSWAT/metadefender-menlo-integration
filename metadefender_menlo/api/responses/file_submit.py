@@ -35,7 +35,7 @@ class FileSubmit(BaseResponse):
             return (translation, 200)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderCloud,
+                SERVICE.MetaDefenderAPI,
                 TYPE.Response,
                 {"error": repr(error), "MdCloudResponse": json_response}
             ), {'apikey': self._apikey})
