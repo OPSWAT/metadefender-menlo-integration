@@ -31,7 +31,7 @@ class CheckExisting(BaseResponse):
             else:
                 return (response, 404)
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderAPI, TYPE.Response, {
                 "error": repr(error), "MdCloudResponse": response
             }), {'apikey': self._apikey})
             return ({}, 500)

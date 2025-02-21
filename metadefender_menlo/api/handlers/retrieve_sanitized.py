@@ -17,7 +17,7 @@ class RetrieveSanitizedHandler(BaseHandler):
             sanitized_file, status = RetrieveSanitized(apikey).handle_response(status_code, file)
             self.stream_response(sanitized_file, status)
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            logging.error("{0} > {1} > {2}".format(self.metaDefenderAPI.service_name, TYPE.Response, {
                 "error": repr(error)
             }), {'apikey': apikey})
             self.json_response({}, 500)

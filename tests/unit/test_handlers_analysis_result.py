@@ -122,7 +122,7 @@ class TestAnalysisResultHandler(unittest.TestCase):
         self.handler.json_response.assert_called_once_with({}, 500)
         logging.error.assert_called_once_with(
             "{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderCloud,
+                SERVICE.MetaDefenderAPI,
                 TYPE.Response,
                 {"error": "Exception('Processing Error')"}
             ),

@@ -10,6 +10,7 @@ from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
 class MetaDefenderAPI(ABC):
+    service_name = SERVICE.MetaDefenderAPI
     settings = None
     apikey = None
     server_url = 'http://localhost:8008'
@@ -84,7 +85,7 @@ class MetaDefenderAPI(ABC):
         return (json_response, http_status)
 
     async def retrieve_result(self, data_id, apikey):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
             "message": f"Retrieve result for {data_id}"
         }))
 
@@ -101,7 +102,7 @@ class MetaDefenderAPI(ABC):
 
     async def hash_lookup(self, sha256, apikey, ip):
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Request, {"message": "Hash Lookup for {0}".format(sha256)}))
+            self.service_name, TYPE.Request, {"message": "Hash Lookup for {0}".format(sha256)}))
         return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
 
     @abstractmethod
@@ -129,7 +130,7 @@ class MetaDefenderAPI(ABC):
             headers["apikey"] = self.apikey
 
         before_submission = datetime.datetime.now()
-        logging.info("{0} > {1} >{2}".format(SERVICE.MetaDefenderCloud, TYPE.Request, {
+        logging.info("{0} > {1} >{2}".format(self.service_name, TYPE.Request, {
             "request_method": request_method,
             "endpoint": metadefender_url,
             "apikey": headers["apikey"]
@@ -147,7 +148,7 @@ class MetaDefenderAPI(ABC):
 
             total_submission_time = datetime.datetime.now() - before_submission
 
-            logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
                 "request_time": total_submission_time.total_seconds(),
                 "http_status": http_status
             }))
@@ -156,13 +157,13 @@ class MetaDefenderAPI(ABC):
             http_status = error.code
             response_body = reponse_body_error(error)
         except OSError as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
                 "OSError: ": repr(error)
             }), {'apikey': self.apikey})
             http_status = 500
             response_body = reponse_body_error(error)
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
                 "Exception: ": repr(error)
             }),  {'apikey': self.apikey})
             http_status = 500
