@@ -15,6 +15,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
     """
 
     def __init__(self, settings, url, apikey):
+        self.service_name = SERVICE.MetaDefenderCloud
         self.settings = settings
         self.server_url = url
         self.apikey = apikey
@@ -78,7 +79,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         return await self._handle_no_sanitized_file(data_id, apikey)
 
     def _log_response(self, response, http_status):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
             "response": f"{response}", "status": f"{http_status}"
         }))
 
@@ -89,7 +90,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         return response, http_status
 
     async def _download_sanitized_file(self, fileurl, apikey):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
             "message": f"Download Sanitized file from {fileurl}"
         }))
 

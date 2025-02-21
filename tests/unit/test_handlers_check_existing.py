@@ -115,7 +115,7 @@ class TestCheckExistingHandler(unittest.TestCase):
 
         logging.error.assert_called_once_with(
             "{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderCloud,
+                SERVICE.MetaDefenderAPI,
                 TYPE.Response,
                 {"error": repr(test_error)}
             ),

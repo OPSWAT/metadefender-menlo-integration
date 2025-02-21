@@ -66,7 +66,7 @@ class FileAnalyis(BaseResponse):
 
             return (model.to_dict(), 200)
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
+            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderAPI, TYPE.Response, {
                 "error": repr(error), "MdCloudResponse": json_response
             }), {'apikey': self._apikey})
             return ({}, 500)
