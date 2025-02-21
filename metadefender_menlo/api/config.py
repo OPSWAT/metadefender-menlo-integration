@@ -22,8 +22,8 @@ class Config(object):
         
         Config._CONFIG['commitHash'] = os.environ.get("MENLO_MD_BITBUCKET_COMMIT_HASH", os.environ.get("BITBUCKET_COMMIT_HASH", "-"))
         
-        Config._CONFIG['scanRule'] = os.environ.get("MENLO_MD_MDCLOUD_RULE", os.environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive"))
-        
+        Config._CONFIG['scanRule'] = os.environ.get("MENLO_MD_MDCLOUD_RULE", os.environ.get("MDCLOUD_RULE", "multiscan, sanitize, unarchives" if Config._CONFIG['api']['type'] == "cloud" else None)) 
+
         if os.environ.get('MENLO_MD_APIKEY'):
             Config._CONFIG['apikey'] = os.environ.get('MENLO_MD_APIKEY')
         else:
