@@ -1,5 +1,6 @@
 
 import logging
+import urllib
 from tornado.web import HTTPError
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
@@ -28,7 +29,12 @@ class FileSubmitHandler(BaseHandler):
             logging.debug("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
                 "headers": "{0} : {1}".format(arg, self.get_argument(arg))
             }))
-            metadata[arg] = str(self.request.arguments[arg])
+            try:
+                metadata[arg] = str(self.request.arguments[arg][0], 'utf-8')
+                if '%' in metadata[arg]:
+                    metadata[arg] = urllib.parse.unquote(metadata[arg])
+            except Exception as error:
+                pass
 
         try:
             if not self.request.arguments.get('downloadfrom'):
