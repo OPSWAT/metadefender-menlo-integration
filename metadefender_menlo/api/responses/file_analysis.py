@@ -101,7 +101,7 @@ class FileAnalyis(BaseResponse):
             try:
                 # Check if 'result' exists inside 'sanitized'
                 if json_response.get('sanitized', {}).get('result') == 'Allowed' or "Sanitized" in json_response['process_info']['post_processing']['actions_ran']:
-                    display_name = re.sub(r"\.(?=[^.]*$)", "_sanitized.", display_name)
+                    display_name = "sanitized_{display_name}".format(display_name=display_name)
             except Exception:
                 pass
 
