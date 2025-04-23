@@ -41,7 +41,7 @@ class FileSubmitHandler(BaseHandler):
                 json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata, apikey=apikey, ip=self.client_ip)
             else:
                 json_response, http_status = await self.metaDefenderAPI.submit_file(None, None, metadata=metadata, apikey=apikey, ip=self.client_ip)
-            json_response, http_status = FileSubmit().handle_response(http_status, json_response)
+            json_response, http_status = await FileSubmit().handle_response(http_status, json_response)
             self.json_response(json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(

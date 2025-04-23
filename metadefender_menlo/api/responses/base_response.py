@@ -12,7 +12,7 @@ class BaseResponse(object):
             status_code = str(code)
             self._http_responses[status_code] = self._default_response
 
-    def handle_response(self, status_code, raw_response):
+    async def handle_response(self, status_code, raw_response):
         int_status_code = int(status_code)
         if int_status_code not in self._allowed_responses:
             raise Exception(
@@ -21,9 +21,12 @@ class BaseResponse(object):
             )
 
         str_status_code = str(status_code)
-        response, new_code = self._http_responses[str_status_code](
-            raw_response, status_code)
-        return (response, new_code)
+        try:
+            response, new_code = await self._http_responses[str_status_code](raw_response, status_code)
+            return (response, new_code)
+        except TypeError:
+            response, new_code = self._http_responses[str_status_code](raw_response, status_code)
+            return (response, new_code)
 
     def _default_response(self, json_response, status_code=200):
         return (json_response, status_code)

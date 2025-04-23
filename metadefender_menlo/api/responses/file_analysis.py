@@ -50,12 +50,12 @@ class FileAnalyis(BaseResponse):
     
         return scan_progress == 100 and sanitized_progress == 100
     
-    def __response200(self, json_response, _status_code):
+    async def __response200(self, json_response, _status_code):
         try:
             if 'data_id' not in json_response: 
                 return (json_response, 404)
 
-            model = self._initialize_model(json_response)
+            model = await self._initialize_model(json_response)
 
             if model.outcome == 'unknown':
                 model.modifications = []
@@ -78,7 +78,7 @@ class FileAnalyis(BaseResponse):
         return ({}, 401)
     
 
-    def _initialize_model(self, json_response):
+    async def _initialize_model(self, json_response):
         md_instance = MetaDefenderAPI.get_instance()
         analysis_completed = self.check_analysis_complete(json_response)
 
@@ -86,7 +86,7 @@ class FileAnalyis(BaseResponse):
         model.result = 'pending' if not analysis_completed else 'completed'
         model.outcome = self.model_outcome(model.result, json_response)
         model.report_url = md_instance.report_url.format(data_id=json_response['data_id'])
-        model.filename = self._extract_filename(json_response)
+        model.filename = await self._extract_filename(json_response)
         try:
             model.sanitized_file_path = md_instance.get_sanitized_file_path(json_response)
         except Exception:
@@ -94,8 +94,32 @@ class FileAnalyis(BaseResponse):
         
         return model
     
-    def _extract_filename(self, json_response):
+    async def _extract_filename_from_headers(self, response_headers):
+        filename = None
         try:
+            content_disposition = response_headers.get("content-disposition", "")
+            if "filename=" in content_disposition:
+                match = re.search(r'filename="([^"]+)"', content_disposition)
+                if match:
+                    filename = match.group(1)
+                    # URL-decode the filename to handle percent-encoded characters
+                    filename = urllib.parse.unquote(filename)
+                else:
+                    # Fallback to the old method if regex doesn't match
+                    filename = content_disposition.split("filename=")[-1].strip('"')
+        except Exception as _error:
+            pass
+            
+        return filename
+    
+    async def _extract_filename(self, json_response):
+        try:
+            md_instance = MetaDefenderAPI.get_instance()
+            haders = await md_instance.get_sanitized_file_headers(json_response['data_id'], self._apikey)
+            filename = await self._extract_filename_from_headers(haders)
+            if filename:
+                return filename
+            
             display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
 
             try:
