@@ -12,9 +12,9 @@ class RetrieveSanitizedHandler(BaseHandler):
         logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
             "method": "GET", "endpoint": "/api/v1/file/%s" % uuid}))
 
-        file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid, apikey, self.client_ip)
+        file, status_code = await self.metaDefenderAPI.retrieve_sanitized_file(uuid, apikey)
         try:
-            sanitized_file, status = RetrieveSanitized(apikey).handle_response(status_code, file)
+            sanitized_file, status = await RetrieveSanitized(apikey).handle_response(status_code, file)
             self.stream_response(sanitized_file, status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(self.metaDefenderAPI.service_name, TYPE.Response, {

@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 NAME = "metadefender_menlo"
-VERSION = "1.6.6"
+VERSION = "1.6.8"
 
 # To install the library, run the following
 #

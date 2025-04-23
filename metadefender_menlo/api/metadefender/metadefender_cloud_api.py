@@ -53,7 +53,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             print(f"Unexpected response from MetaDefender: {json_response}")
             return False
 
-    async def retrieve_sanitized_file(self, data_id, apikey, ip):
+    async def retrieve_sanitized_file(self, data_id, apikey, ip=""):
 
         response, http_status = await self._request_as_json_status(
             "sanitized_file",
