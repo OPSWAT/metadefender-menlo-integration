@@ -170,6 +170,30 @@ class MetaDefenderAPI(ABC):
             response_body = reponse_body_error(error)
 
         return (response_body, http_status)
+    
+    async def get_sanitized_file_headers(self, data_id, apikey):
+        """
+        Get only the headers for a sanitized file without downloading the content
+        """
+        url = self.server_url + self.api_endpoints["sanitized_file"]["endpoint"].format(data_id=data_id)
+        
+        headers = {
+            "apikey": apikey,
+            "User-Agent": "MenloTornadoIntegration",
+            "Range": "bytes=0-0"
+        }
+
+        try:
+            async with httpx.AsyncClient() as client:
+                async with client.stream("GET", url, headers=headers, timeout=3) as response:
+                    headers_received = response.headers
+                    await response.aclose()
+                    return headers_received
+        except Exception as error:
+            logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
+                "Exception: ": repr(error)
+            }),  {'apikey': self.apikey})
+            return None
 
 
 def reponse_body_error(message):

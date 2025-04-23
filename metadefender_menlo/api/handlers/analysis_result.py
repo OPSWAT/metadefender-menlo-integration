@@ -13,8 +13,9 @@ class AnalysisResultHandler(BaseHandler):
             "method": "GET", "endpoint": "/api/v1/result/%s" % uuid}))
 
         json_response, http_status = await self.metaDefenderAPI.check_result(uuid, apikey, self.client_ip)
+
         try:
-            json_response, http_status = FileAnalyis().handle_response(http_status, json_response)
+            json_response, http_status = await FileAnalyis(apikey).handle_response(http_status, json_response)
             self.json_response(json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(self.metaDefenderAPI.service_name, TYPE.Response, {
