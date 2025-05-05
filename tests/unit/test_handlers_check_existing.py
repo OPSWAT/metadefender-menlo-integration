@@ -28,7 +28,7 @@ class TestCheckExistingHandler(unittest.TestCase):
         )
 
         # Mock handler attributes
-        self.handler.metaDefenderAPI = Mock()
+        self.handler.meta_defender_api = Mock()
         self.handler.client_ip = '127.0.0.1'
         self.handler.json_response = Mock()
 
@@ -61,7 +61,7 @@ class TestCheckExistingHandler(unittest.TestCase):
 
         self.handler.request.headers = {'Authorization': test_apikey}
 
-        self.handler.metaDefenderAPI.hash_lookup = AsyncMock(
+        self.handler.meta_defender_api.hash_lookup = AsyncMock(
             return_value=(initial_response, 200)
         )
 
@@ -85,7 +85,7 @@ class TestCheckExistingHandler(unittest.TestCase):
             )
         )
 
-        self.handler.metaDefenderAPI.hash_lookup.assert_called_once_with(
+        self.handler.meta_defender_api.hash_lookup.assert_called_once_with(
             test_sha256, test_apikey, self.handler.client_ip
         )
 
@@ -107,7 +107,7 @@ class TestCheckExistingHandler(unittest.TestCase):
         self.handler.get_query_argument = Mock(return_value=test_sha256)
         self.handler.request.headers = {'Authorization': test_apikey}
 
-        self.handler.metaDefenderAPI.hash_lookup = AsyncMock(
+        self.handler.meta_defender_api.hash_lookup = AsyncMock(
             side_effect=test_error
         )
 
@@ -144,7 +144,7 @@ class TestCheckExistingHandler(unittest.TestCase):
 
         self.handler.get_query_argument = Mock(return_value=test_sha256)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.hash_lookup = AsyncMock(
+        self.handler.meta_defender_api.hash_lookup = AsyncMock(
             return_value=(initial_response, 200)
         )
 
@@ -165,7 +165,7 @@ class TestCheckExistingHandler(unittest.TestCase):
 
         self.handler.get_query_argument = Mock(return_value=test_sha256)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.hash_lookup = AsyncMock(
+        self.handler.meta_defender_api.hash_lookup = AsyncMock(
             return_value=(initial_response, 200)
         )
 
@@ -185,7 +185,7 @@ class TestCheckExistingHandler(unittest.TestCase):
 
         self.handler.get_query_argument = Mock(return_value=test_sha256)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.hash_lookup = AsyncMock(
+        self.handler.meta_defender_api.hash_lookup = AsyncMock(
         return_value=(initial_response, 200)
     )
 

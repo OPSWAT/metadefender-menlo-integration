@@ -1,4 +1,3 @@
-
 import asyncio
 import logging
 import os
@@ -6,19 +5,19 @@ import sys
 from logging.handlers import TimedRotatingFileHandler
 from os import environ
 import json
-from dotenv import load_dotenv
-import tornado.ioloop
-import tornado.web
+import aiohttp
+from aiohttp import web
 import sentry_sdk
-from sentry_sdk.integrations.tornado import TornadoIntegration
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 from metadefender_menlo.api.config import Config
 
-from metadefender_menlo.api.handlers.analysis_result import AnalysisResultHandler
-from metadefender_menlo.api.handlers.check_existing import CheckExistingHandler
-from metadefender_menlo.api.handlers.file_metadata import InboundMetadataHandler
-from metadefender_menlo.api.handlers.file_submit import FileSubmitHandler
-from metadefender_menlo.api.handlers.health_check import HealthCheckHandler
-from metadefender_menlo.api.handlers.retrieve_sanitized import RetrieveSanitizedHandler
+from metadefender_menlo.api.handlers.health_check import health_check_route
+from metadefender_menlo.api.handlers.check_existing import check_existing_route
+from metadefender_menlo.api.handlers.stream_file_submit import stream_file_submit_route
+from metadefender_menlo.api.handlers.analysis_result import analysis_result_route
+from metadefender_menlo.api.handlers.retrieve_sanitized import retrieve_sanitized_route
+# from metadefender_menlo.api.handlers.file_metadata import inbound_metadata_route
+# from metadefender_menlo.api.handlers.file_submit import file_submit_route
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefenderCloudAPI
 from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
@@ -27,19 +26,9 @@ from metadefender_menlo.log_handlers.SNS_log import SNSLogHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.handlers.base_handler import LogRequestFilter
 
-
-SERVER_PORT = 3000
-HOST = "0.0.0.0"
-API_VERSION = "/api/v1"
-
-settings = {}
-
-CONF_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-Config(CONF_FILE_PATH+'/../config.yml')
-
 def traces_sampler(sampling_context):
-    # filter healthcheck endpoint when sending transactions to sentry
-    if '/api/v1/health' in sampling_context["tornado_request"].uri:
+    """Filter healthcheck endpoint when sending transactions to sentry"""
+    if sampling_context.get("aiohttp_request") and '/api/v1/health' in sampling_context["aiohttp_request"].path:
         return 0
     return 1
 
@@ -49,7 +38,7 @@ def init_sentry(env, sentry_dsn):
         sentry_sdk.init(
             dsn=sentry_dsn,
             integrations=[
-                TornadoIntegration(),
+                AioHttpIntegration(),
             ],
             environment=env,
             traces_sampler=traces_sampler,
@@ -62,7 +51,7 @@ def get_kafka_config(kafka_config_path):
         kafka_config = json.load(kafka_config_file)
         kafka_config_file.close()
         return kafka_config
-    except Exception as error:
+    except Exception:
         return None
 
 
@@ -71,9 +60,8 @@ def init_logging(config):
     if "enabled" not in config_logging or not config_logging["enabled"]:
         return
 
-    load_dotenv()
     logger = logging.getLogger()
-    logging.getLogger('tornado.access').disabled = True
+    logging.getLogger('aiohttp.access').disabled = True
     logging.getLogger('kafka.conn').disabled = True
     logging.getLogger('kafka.access').disabled = True
     logger.setLevel(config_logging["level"])
@@ -118,17 +106,11 @@ def initial_config(config_path):
 
     try:
         init_sentry(config['env'], config['sentryDsn'])
-    except Exception as error:
-        logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Internal, {
-            "Exception: ": repr(error)
-        }))
-
-    settings["max_buffer_size"] = config["limits"]["max_buffer_size"]
+    except Exception:
+        logging.warning("Sentry not configured, skipping Sentry integration")
 
     if "logging" in config:
         init_logging(config)
-
-    logging.info("Set API configuration")
 
     url = config['serverUrl']
     md_type = config["api"]["type"]
@@ -136,56 +118,70 @@ def initial_config(config_path):
 
     md_cls = MetaDefenderCoreAPI if md_type == "core" else MetaDefenderCloudAPI
     MetaDefenderAPI.config(config, url, apikey, md_cls)
-    
-    if "https" in config:
-        if "load_local" in config["https"] and config["https"]["load_local"]:
-            settings["ssl_options"] = {
-                "certfile": config["https"]["crt"],
-                "keyfile": config["https"]["key"],
-            }
-
-    if "server" in config:
-        logging.info("Set Server configuration")
-        server_details = config["server"]
-        SERVER_PORT = server_details["port"] if "port" in server_details else SERVER_PORT
-        HOST = server_details["host"] if "host" in server_details else HOST
-        API_VERSION = server_details["api_version"] if "api_version" in server_details else HOST
 
     return config
 
 
-def make_app(config):
+def setup_ssl(config):
+    if "https" in config and "load_local" in config["https"] and config["https"]["load_local"]:
+        ssl_context = web.SSLContext()
+        ssl_context.load_cert_chain(config["https"]["crt"], config["https"]["key"])
+        return ssl_context
+    return None
+
+
+def setup_routes(app, config):
+    # Set static file handler for docs
     web_root = os.path.dirname(__file__) + '/../docs/'
-    endpoints_list = [
-        ('/', HealthCheckHandler, {'newConfig': config}),
-        ("/docs/(.*)", tornado.web.StaticFileHandler, {
-            "path": web_root,
-            "default_filename": "Menlo Sanitization API.html"
-        }),
-        (API_VERSION + '/health', HealthCheckHandler, {'newConfig': config}),
-        (API_VERSION + '/check', CheckExistingHandler),
-        (API_VERSION + '/inbound', InboundMetadataHandler),
-        (API_VERSION + '/submit', FileSubmitHandler),
-        (API_VERSION + '/result', AnalysisResultHandler),
-        (API_VERSION + '/file', RetrieveSanitizedHandler)
-    ]
-    return tornado.web.Application(endpoints_list)
+    app.router.add_static('/docs/', web_root)
+
+    api_version = config['server']['api_version']
+    
+    # Add all route handlers
+    app.router.add_get('/', health_check_route)
+    app.router.add_get(api_version + '/health', health_check_route)
+    app.router.add_post(api_version + '/submit', stream_file_submit_route)
+    app.router.add_get(api_version + '/result', analysis_result_route)
+    app.router.add_get(api_version + '/check', check_existing_route)
+    app.router.add_get(api_version + '/file', retrieve_sanitized_route)
+    # app.router.add_post(api_version + '/inbound', inbound_metadata_route)
+    
+    # Store config in app context
+    app['config'] = config
 
 
-def main():
-    # ugly patch to address https://github.com/tornadoweb/tornado/issues/2608
-    # asyncio won't work on Windows when using python 3.8+
-    if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+async def main():
 
     config = initial_config('./config.yml')
-    logging.info("Start the app: {0}:{1}".format(HOST, SERVER_PORT))
 
-    app = make_app(config)
-    http_server = tornado.httpserver.HTTPServer(app, **settings)
-    http_server.listen(SERVER_PORT, HOST)
-    tornado.ioloop.IOLoop.current().start()
+    SERVER_HOST = config['server']['host']
+    SERVER_PORT = config['server']['port']
+    MAX_FILE_SIZE = config['limits']['max_file_size']
+
+    app = web.Application(client_max_size=1024**2*MAX_FILE_SIZE)
+    
+    setup_routes(app, config)
+
+    ssl_context = setup_ssl(config)
+    
+    # Start the server
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, SERVER_HOST, SERVER_PORT, ssl_context=ssl_context)
+    await site.start()
+    
+    # Keep the server running
+    logging.info(f"Running on http{'s' if ssl_context else ''}://{SERVER_HOST}:{SERVER_PORT}")
+    
+    # Set up shutdown event to gracefully close the server
+    try:
+        while True:
+            await asyncio.sleep(3600)  # Keep alive
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        print("Shutting down...")
+    finally:
+        await runner.cleanup()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

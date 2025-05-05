@@ -29,7 +29,7 @@ class TestHealthCheckHandler(unittest.TestCase):
         self.handler = HealthCheckHandler(
             application=self.application,
             request=self.request,
-            newConfig=self.test_config,
+            new_config=self.test_config,
         )
 
         self.original_logging_debug = logging.debug

@@ -1,26 +1,23 @@
-import logging
-import json
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
-from metadefender_menlo.api.log_types import SERVICE, TYPE
-
 
 class HealthCheckHandler(BaseHandler):
+    def __init__(self, new_config=None):
+        super().__init__()
+        self.config = new_config
 
-    settings = None
-
-    def initialize(self, newConfig):
-        self.settings = newConfig
-        return super().initialize()
-
-    def get(self):
-        logging.debug("{0} > {1} > {2}".format(
-            SERVICE.MenloPlugin, TYPE.Internal, {"message": "GET /health > OK!"}))
-        self.set_status(200)
-        self.set_header("Content-Type", 'application/json')
-        self.write(json.dumps({
+    async def handle_request(self, request):
+        client_ip = await self.prepare_request(request)
+        self.client_ip = client_ip
+        
+        response = {
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
             "version": "1.6.8",
-            "commitHash": self.settings['commitHash'],
-            "rule": self.settings['scanRule']
-        }))
+            "commitHash": self.config['commitHash'],
+            "rule": self.config['scanRule']
+        }
+        return self.json_response(response)
+
+async def health_check_route(request):
+    handler = HealthCheckHandler(request.app['config'])
+    return await handler.handle_request(request)

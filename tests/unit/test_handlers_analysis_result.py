@@ -21,7 +21,7 @@ class TestAnalysisResultHandler(unittest.TestCase):
             request=self.request
         )
 
-        self.handler.metaDefenderAPI = Mock()
+        self.handler.meta_defender_api = Mock()
         self.handler.client_ip = '127.0.0.1'
         self.handler.json_response = Mock()
 
@@ -46,7 +46,7 @@ class TestAnalysisResultHandler(unittest.TestCase):
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {'Authorization': test_apikey}
 
-        self.handler.metaDefenderAPI.check_result = AsyncMock(
+        self.handler.meta_defender_api.check_result = AsyncMock(
             return_value=(test_response, test_status)
         )
 
@@ -62,7 +62,7 @@ class TestAnalysisResultHandler(unittest.TestCase):
         logging.info.assert_called_once_with(
             "MenloPlugin > Request > {'method': 'GET', 'endpoint': '/api/v1/result/test_uuid'}"
         )
-        self.handler.metaDefenderAPI.check_result.assert_called_once_with(
+        self.handler.meta_defender_api.check_result.assert_called_once_with(
             test_uuid,
             test_apikey,
             self.handler.client_ip
@@ -92,7 +92,7 @@ class TestAnalysisResultHandler(unittest.TestCase):
 
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.check_result = AsyncMock(
+        self.handler.meta_defender_api.check_result = AsyncMock(
             side_effect=Exception("API Error")
         )
 
@@ -110,7 +110,7 @@ class TestAnalysisResultHandler(unittest.TestCase):
 
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.check_result = AsyncMock(
+        self.handler.meta_defender_api.check_result = AsyncMock(
             return_value=(test_response, test_status)
         )
 
@@ -137,13 +137,13 @@ class TestAnalysisResultHandler(unittest.TestCase):
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {}  
 
-        self.handler.metaDefenderAPI.check_result = AsyncMock(
+        self.handler.meta_defender_api.check_result = AsyncMock(
             return_value=(test_response, test_status)
         )
 
         await self.handler.get()
 
-        self.handler.metaDefenderAPI.check_result.assert_called_once_with(
+        self.handler.meta_defender_api.check_result.assert_called_once_with(
             test_uuid,
             None,
             self.handler.client_ip

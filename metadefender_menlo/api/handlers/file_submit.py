@@ -1,62 +1,66 @@
-
 import logging
-import urllib
-from tornado.web import HTTPError
+import json
+import os
+from aiohttp import web
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
-from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.responses.file_submit import FileSubmit
+from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 class FileSubmitHandler(BaseHandler):
-    
-    async def post(self):
-        
-        apikey = self.request.headers.get('Authorization')
+    def __init__(self):
+        super().__init__()
 
-        if not self.request.arguments.get('downloadfrom'):
-            files = self.validateFile(apikey)
-            field_name = list(files.keys())[0]
-            info = files[field_name][0]
-            filename, content_type, fp = info["filename"], info["content_type"], info["body"]
+    async def handle_post(self, request):
+        client_ip = await self.prepare_request(request)
+        self.client_ip = client_ip
 
-            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-                "method": "POST", "fileName": filename, "endpoint": "/api/v1/file",
-                "content_type": content_type, "dimension": "{0} bytes".format(len(fp))
-            }))
+        apikey = request.headers.get('Authorization')
+        logging.info("{0} > {1} > {2}".format("MenloPlugin", "Request", {
+            "method": "POST", "endpoint": "/api/v1/submit"}))
 
+        # Check if request is multipart
+        if not request.content_type.startswith('multipart/'):
+            return self.json_response({"error": "Content-Type must be multipart/form-data"}, 400)
+
+        # Process form data
+        reader = await request.multipart()
         metadata = {}
-        logging.debug("List of headers:")
-        for arg in self.request.arguments.keys():
-            logging.debug("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-                "headers": "{0} : {1}".format(arg, self.get_argument(arg))
-            }))
-            try:
-                metadata[arg] = str(self.request.arguments[arg][0], 'utf-8')
-                if '%' in metadata[arg]:
-                    metadata[arg] = urllib.parse.unquote(metadata[arg])
-            except Exception as error:
-                pass
+        file_field = None
+        file_name = None
+        file_content = None
+
+        # Parse form fields
+        field = await reader.next()
+        while field is not None:
+            if field.name != 'file':
+                # Read form field value
+                value = await field.text()
+                metadata[field.name] = value
+            else:
+                # Save file details for later processing
+                file_field = field
+                file_name = field.filename
+                # Read file content into memory
+                file_content = await field.read()
+            
+            field = await reader.next()
+            
+        if not file_field:
+            return self.json_response({"error": "No file uploaded"}, 400)
+
+        # Submit file to API
+        json_response, http_status = await self.meta_defender_api.submit_file(
+            file_name, file_content, apikey, metadata, self.client_ip)
 
         try:
-            if not self.request.arguments.get('downloadfrom'):
-                json_response, http_status = await self.metaDefenderAPI.submit_file(filename, fp, metadata=metadata, apikey=apikey, ip=self.client_ip)
-            else:
-                json_response, http_status = await self.metaDefenderAPI.submit_file(None, None, metadata=metadata, apikey=apikey, ip=self.client_ip)
             json_response, http_status = await FileSubmit().handle_response(http_status, json_response)
-            self.json_response(json_response, http_status)
+            return self.json_response(json_response, http_status)
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(
-                SERVICE.MenloPlugin, TYPE.Internal, {"error": repr(error)}), {'apikey': apikey})
-            self.json_response({}, 500)
+            logging.error("{0} > {1} > {2}".format(self.meta_defender_api.service_name, TYPE.Response, {
+                "error": repr(error)
+            }), {'apikey': apikey})
+            return self.json_response({}, 500)
 
-    def validateFile(self, apikey):
-        if len(self.request.files) < 1:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-                "message": "No file uploaded > is call originating from Menlo?"
-            }), {'apikey': apikey})
-            raise HTTPError(400, 'No file uploaded')
-        if len(self.request.files) > 1:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
-                "message": "Too many files uploaded > is call originating from Menlo?"
-            }), {'apikey': apikey})
-            raise HTTPError(400, 'Too many files uploaded')
-        return self.request.files
+async def file_submit_route(request):
+    handler = FileSubmitHandler()
+    return await handler.handle_post(request)

@@ -38,7 +38,7 @@ class TestBaseHandler(unittest.TestCase):
         # Reserved IP address used for testing/documentation purposes
         self.request_mock.headers = {'X-Real-IP': '192.0.2.1'}
         self.handler.initialize()
-        self.assertEqual(self.handler.metaDefenderAPI, mock_api)
+        self.assertEqual(self.handler.meta_defender_api, mock_api)
         self.assertEqual(self.handler.client_ip, '192.0.2.1')
 
         self.request_mock.headers = {'X-Forwarded-For': '198.51.100.1'}

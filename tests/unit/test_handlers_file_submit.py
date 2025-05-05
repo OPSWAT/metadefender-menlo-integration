@@ -17,7 +17,7 @@ class TestFileSubmitHandler(unittest.TestCase):
     def setUp(self):
         self.mock_app = MockApplication()
         self.handler = FileSubmitHandler(application=self.mock_app, request=MagicMock())
-        self.handler.metaDefenderAPI = MagicMock()
+        self.handler.meta_defender_api = MagicMock()
         self.handler.client_ip = '127.0.0.1'
 
     @patch('metadefender_menlo.api.file_submit_handler.logging.info')
@@ -30,14 +30,14 @@ class TestFileSubmitHandler(unittest.TestCase):
             'file': [{'filename': 'test.txt', 'content_type': 'text/plain', 'body': b'file_content'}]
         }
         mock_validate.return_value = self.handler.request.files
-        self.handler.metaDefenderAPI.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
+        self.handler.meta_defender_api.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
         mock_filesubmit.return_value.handle_response.return_value = ({"response": "ok"}, 200)
         self.handler.json_response = MagicMock()
 
         await self.handler.post()
 
         mock_validate.assert_called_once()
-        self.handler.metaDefenderAPI.submit_file.assert_called_once_with(
+        self.handler.meta_defender_api.submit_file.assert_called_once_with(
             'test.txt', b'file_content', metadata={}, apikey='test_apikey', ip='127.0.0.1'
         )
         self.handler.json_response.assert_called_once_with({"response": "ok"}, 200)
@@ -52,7 +52,7 @@ class TestFileSubmitHandler(unittest.TestCase):
             'file': [{'filename': 'test.txt', 'content_type': 'text/plain', 'body': b'file_content'}]
         }
         mock_validate.return_value = self.handler.request.files
-        self.handler.metaDefenderAPI.submit_file = AsyncMock(side_effect=Exception("Submission error"))
+        self.handler.meta_defender_api.submit_file = AsyncMock(side_effect=Exception("Submission error"))
         self.handler.json_response = MagicMock()
 
         await self.handler.post()
@@ -98,7 +98,7 @@ class TestFileSubmitHandler(unittest.TestCase):
         
         self.handler.validateFile = MagicMock(return_value=self.handler.request.files)
         self.handler.json_response = MagicMock()
-        self.handler.metaDefenderAPI.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
+        self.handler.meta_defender_api.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
         await self.handler.post()
 
         mock_debug.assert_any_call("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
@@ -116,7 +116,7 @@ class TestFileSubmitHandler(unittest.TestCase):
         }
         
         self.handler.validateFile = MagicMock(return_value=self.handler.request.files)
-        self.handler.metaDefenderAPI.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
+        self.handler.meta_defender_api.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
         self.handler.json_response = MagicMock()
         
         await self.handler.post()
