@@ -7,7 +7,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from metadefender_menlo.api.handlers.base_handler import BaseHandler, LogRequestFilter, request_id_var, request_context
+from metadefender_menlo.api.handlers.base_handler import BaseHandler, LogRequestFilter, request_id_context, request_context
 
 class TestBaseHandler(unittest.TestCase):
 
@@ -21,13 +21,13 @@ class TestBaseHandler(unittest.TestCase):
     def test_prepare_with_request_id(self):
         self.request_mock.headers = {'request-id': 'test-id'}
         self.handler.prepare()
-        self.assertEqual(request_id_var.get(), 'test-id')
+        self.assertEqual(request_id_context.get(), 'test-id')
         self.assertEqual(request_context.get(), self.request_mock)
 
     def test_prepare_without_request_id(self):
         self.handler.prepare()
-        self.assertIsNotNone(request_id_var.get())
-        self.assertNotEqual(request_id_var.get(), '')
+        self.assertIsNotNone(request_id_context.get())
+        self.assertNotEqual(request_id_context.get(), '')
         self.assertEqual(request_context.get(), self.request_mock)
 
     @patch.object(MetaDefenderAPI, 'get_instance')
@@ -109,7 +109,7 @@ class TestLogRequestFilter(unittest.TestCase):
 
     def test_filter(self):
         record = MagicMock()
-        request_id_var.set('test-id')
+        request_id_context.set('test-id')
         request_context.set('test-context')
 
         result = self.filter.filter(record)

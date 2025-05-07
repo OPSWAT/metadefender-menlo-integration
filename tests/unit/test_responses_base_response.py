@@ -25,7 +25,7 @@ class TestBaseResponse(unittest.TestCase):
         base_response = BaseResponse(allowed_responses=allowed_responses)
         
         mock_response = {'key': 'value'}
-        result, status_code = base_response.handle_response(200, mock_response)
+        result, status_code = base_response.handle_response(mock_response, 200)
         
         self.assertEqual(result, mock_response)
         self.assertEqual(status_code, 200)
@@ -35,7 +35,7 @@ class TestBaseResponse(unittest.TestCase):
         base_response = BaseResponse(allowed_responses=allowed_responses)
         
         with self.assertRaises(Exception) as context:
-            base_response.handle_response(404, {})
+            base_response.handle_response({}, 404)
         
         self.assertIn('404 response code not allowed', str(context.exception))
 
@@ -46,7 +46,7 @@ class TestBaseResponse(unittest.TestCase):
         custom_handler = Mock(return_value=({'custom': 'response'}, 201))
         base_response._http_responses['200'] = custom_handler
         
-        result, status_code = base_response.handle_response(200, {})
+        result, status_code = base_response.handle_response({}, 200)
         
         self.assertEqual(result, {'custom': 'response'})
         self.assertEqual(status_code, 201)

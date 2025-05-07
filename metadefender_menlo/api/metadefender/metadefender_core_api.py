@@ -22,23 +22,38 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             "sanitized_file": {"method": "GET", "endpoint": "/file/converted/{data_id}"}
         }
 
-    def _get_submit_file_headers(self, filename, metadata):
+    async def check_hash(self, sha256, apikey, client_ip):
+        json_response, http_status = await super().check_hash(sha256, apikey, client_ip)
+        if any(value == "Not Found" for value in json_response.values()):
+            return {"sha256": sha256}, 404
+        return json_response, http_status
+
+    def _get_submit_file_headers(self, metadata, apikey, client_ip):
+
+        content_length = str(metadata.get('content-length', 0))
+        if 'content-length' in metadata:
+            del metadata['content-length']
+
         headers = {
             "Content-Type": "application/octet-stream",
+            "Content-Length": content_length,
             "metadata": json.dumps(metadata) if metadata is not None else "",
-            "engines-metadata": self.settings['headers_engines_metadata']
+            "engines-metadata": self.settings['headers_engines_metadata'],
+            "apikey": apikey,
         }
+
+        if client_ip:
+            headers['x-forwarded-for'] = client_ip
+            headers['x-real-ip'] = client_ip
 
         if self.settings['scanRule']:
             headers["rule"] = self.settings['scanRule']
         
-        file_name = self._get_decoded_parameter(metadata.get('fileName'))
-        if file_name or filename:
-            headers["filename"] = urllib.parse.quote(file_name if file_name is not None else filename)
+        file_name = self._get_decoded_parameter(metadata.get('filename'))
+        if file_name:
+            headers["filename"] = urllib.parse.quote(file_name)
 
-        downloadfrom = self._get_decoded_parameter(metadata.get('downloadfrom'))
-        if downloadfrom:
-            headers["downloadfrom"] = downloadfrom
+        headers = {k: v for k, v in headers.items() if v is not None}
 
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))

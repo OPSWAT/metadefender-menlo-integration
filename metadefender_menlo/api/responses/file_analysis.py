@@ -11,10 +11,8 @@ from metadefender_menlo.api.responses.base_response import BaseResponse
 
 class FileAnalyis(BaseResponse):
 
-    def __init__(self, apikey='', allowedResponses=None):
-        
-        allowedResponses = [200, 400, 401, 404, 500]
-        super().__init__(apikey, allowedResponses)
+    def __init__(self, apikey=''):
+        super().__init__(apikey, [200, 400, 401, 404, 500])
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
@@ -71,10 +69,10 @@ class FileAnalyis(BaseResponse):
             }), {'apikey': self._apikey})
             return ({}, 500)
 
-    def __response400(self, _json_response, status_code):
+    async def __response400(self, _json_response, status_code):
         return ({}, status_code)
 
-    def __response401(self, response, status_code):
+    async def __response401(self, response, status_code):
         return ({}, 401)
     
 

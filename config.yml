@@ -1,11 +1,8 @@
 service: metadefender
-limits:
-  max_buffer_size: 209715200
-  max_file_size: 2000 # 2GB
 api: 
   type: cloud
   params:
-    apikey: mdcltest6088de03dd01415de300d0f8
+    apikey: null
   url: 
     core: https://1.2.3.4:8008
     cloud: https://api.metadefender.com/v4

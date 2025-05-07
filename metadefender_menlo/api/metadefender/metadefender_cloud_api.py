@@ -1,8 +1,7 @@
 import json
 import logging
 import urllib.parse
-
-import aiohttp
+from httpx import AsyncClient
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
@@ -20,22 +19,26 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         self.apikey = apikey
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
 
-    def _get_submit_file_headers(self, filename, metadata):
+    def _get_submit_file_headers(self, metadata, apikey, client_ip):
+        
         headers = {
+            **metadata,
             "Content-Type": "application/octet-stream",
-            "rule": self.settings['scanRule']
+            "rule": self.settings['scanRule'],
+            "apikey": apikey,
         }
 
-        file_name = self._get_decoded_parameter(metadata.get('fileName'))
-        if file_name or filename:
-            headers["filename"] = urllib.parse.quote(file_name if file_name is not None else filename)
+        if client_ip:
+            headers['x-forwarded-for'] = client_ip
+            headers['x-real-ip'] = client_ip
 
-        downloadfrom = self._get_decoded_parameter(metadata.get('downloadfrom'))
-        if downloadfrom:
-            headers["downloadfrom"] = downloadfrom
+        file_name = self._get_decoded_parameter(metadata['filename'])
+        headers["filename"] = urllib.parse.quote(file_name)
 
-        logging.debug("{0} > {1} > {2} Add headers: {0}".format(
-            SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
+        headers = {k: v for k, v in headers.items() if v is not None}
+        
+        logging.debug("{0} > {1} > Add headers: {2}".format(
+            SERVICE.MenloPlugin, TYPE.Internal, headers))
         
         return headers
     
@@ -93,25 +96,24 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         }))
 
         try:
-            async with aiohttp.ClientSession() as session:
+            async with AsyncClient() as client:
                 headers = {"User-Agent": "MenloTornadoIntegration"}
-                response = await session.get(fileurl, headers=headers)
-                content = await response.read()
-                return content, response.status
+                response = await client.get(fileurl, headers=headers)
+                content = response.content
+                return content, response.status_code
         except Exception as error:
             return self._handle_error(error, apikey)
 
     async def _handle_no_sanitized_file(self, data_id, apikey):
         try:
-            async with aiohttp.ClientSession() as session:
-                response = await session.get(
+            async with AsyncClient() as client:
+                response = await client.get(
                     self.server_url + f'/file/{data_id}', 
                     headers={'apikey': apikey}
                 )
-                response_content = await response.read()
-                response_data = json.loads(response_content)
-            
-                sanitized_data = response_data.get("sanitized", {})
+
+                response_content = response.json()
+                sanitized_data = response_content.get("sanitized", {})
                 failure_reasons = sanitized_data.get("failure_reasons") or sanitized_data.get("reason", "")
                 
                 return self._log_sanitization_result(failure_reasons)

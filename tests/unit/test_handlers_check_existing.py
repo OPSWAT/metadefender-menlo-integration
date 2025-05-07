@@ -7,7 +7,7 @@ import sys
 import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-from metadefender_menlo.api.handlers.check_existing import CheckExistingHandler
+from metadefender_menlo.api.handlers.check_handler import CheckHandler
 
 class TestCheckExistingHandler(unittest.TestCase):
     def setUp(self):
@@ -22,7 +22,7 @@ class TestCheckExistingHandler(unittest.TestCase):
         self.request.connection.context = {}
 
         # Create handler instance
-        self.handler = CheckExistingHandler(
+        self.handler = CheckHandler(
             application=self.application,
             request=self.request
         )

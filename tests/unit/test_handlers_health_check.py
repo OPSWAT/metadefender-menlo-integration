@@ -8,7 +8,7 @@ import sys
 import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-from metadefender_menlo.api.handlers.health_check import HealthCheckHandler
+from metadefender_menlo.api.handlers.health_handler import HealthHandler
 
 class TestHealthCheckHandler(unittest.TestCase):
     def setUp(self):
@@ -26,10 +26,10 @@ class TestHealthCheckHandler(unittest.TestCase):
             'scanRule': 'test-rule'
         }
 
-        self.handler = HealthCheckHandler(
+        self.handler = HealthHandler(
             application=self.application,
             request=self.request,
-            new_config=self.test_config,
+            config=self.test_config,
         )
 
         self.original_logging_debug = logging.debug

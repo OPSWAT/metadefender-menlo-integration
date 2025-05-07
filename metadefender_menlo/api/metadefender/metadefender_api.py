@@ -1,18 +1,32 @@
 
 from abc import ABC, abstractmethod
+import asyncio
 import ast
-import json
-import urllib.parse
 import logging
-import aiohttp
-
+from httpx import AsyncClient, AsyncByteStream
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
+
+async def stream_file(file_obj):
+    loop = asyncio.get_running_loop()
+    while True:
+        chunk = await loop.run_in_executor(None, file_obj.read, 8192)
+        if not chunk:
+            break
+        yield chunk
+
+class AsyncFileStream(AsyncByteStream):
+    def __init__(self, file_obj):
+        super().__init__()
+        self.file_obj = file_obj
+
+    async def __aiter__(self):
+        async for chunk in stream_file(self.file_obj):
+            yield chunk
 
 class MetaDefenderAPI(ABC):
 
     _instance = None
-
     
     def __init__(self, settings, server_url, apikey):
         self.service_name = SERVICE.MetaDefenderAPI
@@ -54,9 +68,9 @@ class MetaDefenderAPI(ABC):
         }
         
         try:
-            async with aiohttp.ClientSession() as session:
+            async with AsyncClient() as client:
                 # Use GET with Range header instead of HEAD
-                response = await session.get(url, headers=headers)
+                response = await client.get(url, headers=headers)
                 return response.headers
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
@@ -64,30 +78,47 @@ class MetaDefenderAPI(ABC):
             }),  {'apikey': self.apikey})
             return {}  # Return empty dict instead of None
 
-    async def submit_file(self, filename, file_bytes, apikey, metadata, ip=""):
+    async def submit(self, file_bytes, metadata, apikey='', client_ip=None):
         """Submit a file for scanning
+
+        MDEndpoint:
+            /api/v1/submit
 
         Args:
             filename: Original filename
             file_bytes: Bytes content of the file
-            apikey: API key for authentication
             metadata: Additional metadata to send with the file
+            apikey: API key for authentication
             ip: IP address of the client
 
         Returns:
             API response and status code
+
         """
-        headers = self._get_submit_file_headers(filename, metadata)
-        headers["apikey"] = apikey
-        headers["x-forwarded-for"] = ip
-        headers["x-real-ip"] = ip
-        
-        response, status = await self._request_as_json("submit_file", data=file_bytes, headers=headers)
-        
-        return response, status
+        headers = self._get_submit_file_headers(metadata, apikey, client_ip)
+
+        url = self.server_url + self.api_endpoints["file_submit"]["endpoint"]
+
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Request, {
+            "message": "Submit file", "url": url, "headers": headers
+        }))
+
+        stream = AsyncFileStream(file_bytes)
+
+        async with AsyncClient() as client:
+            response = await client.post(
+                url,
+                content=stream,
+                headers=headers
+            )
+
+            return response.json(), response.status_code
 
     async def check_result(self, data_id, apikey, ip=""):
         """Check analysis result for a data_id
+
+        MDEndpoint:
+            /api/v1/result/{data_id}
 
         Args:
             data_id: Data ID to check
@@ -118,6 +149,9 @@ class MetaDefenderAPI(ABC):
     async def check_hash(self, hash_value, apikey, ip=""):
         """Check if a file hash exists
 
+        MDEndpoint:
+            /api/v1/check?sha256=%s
+
         Args:
             hash_value: Hash value to check
             apikey: API key for authentication
@@ -141,6 +175,8 @@ class MetaDefenderAPI(ABC):
         logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
             "status": status, "response": response
         }))
+
+        response['sha256'] = hash_value
         
         return response, status
     
@@ -178,18 +214,19 @@ class MetaDefenderAPI(ABC):
         """
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
-        
-        async with aiohttp.ClientSession() as session:
+
+        async with AsyncClient() as client:
             if method == "GET":
-                response = await session.get(url, headers=headers)
+                response = await client.get(url, headers=headers)
             elif method == "POST":
-                response = await session.post(url, data=data, headers=headers)
+                response = await client.post(url, headers=headers, data=data)
             
-            status_code = response.status
+            # response.json(), response.status_code
+            status_code = response.status_code
             content_type = response.headers.get('Content-Type', '')
             
             if 'application/json' in content_type:
-                json_response = await response.json()
+                json_response = response.json()
                 return json_response, status_code
             else:
                 text_response = await response.text()
@@ -209,9 +246,9 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
         
-        async with aiohttp.ClientSession() as session:
+        async with AsyncClient() as client:
             if method == "GET":
-                response = await session.get(url, headers=headers)
+                response = await client.get(url, headers=headers)
             
             status_code = response.status
             content = await response.read()
@@ -232,14 +269,14 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
         
-        async with aiohttp.ClientSession() as session:
+        async with AsyncClient() as client:
             if method == "GET":
-                response = await session.get(url, headers=headers)
+                response = await client.get(url, headers=headers)
             elif method == "POST":
-                response = await session.post(url, data=data, headers=headers)
+                response = await client.post(url, headers=headers, data=data)
             
-            status_code = response.status
-            content = await response.read()
+            status_code = response.status_code
+            content = response.read()
             return content, status_code
 
     async def _request_as_json_status(self, api_type, fields={}, data=None, headers={}):
@@ -271,17 +308,19 @@ class MetaDefenderAPI(ABC):
         
         try:
             param_list = ast.literal_eval(param) 
-            return param_list[0].decode('utf-8') if param_list else None # return urllib.parse.unquote(param)
+            return param_list[0].decode('utf-8') if param_list else None
         except Exception:
             return param
 
     @abstractmethod
-    def _get_submit_file_headers(self, filename, metadata):
+    def _get_submit_file_headers(self, metadata, apikey, ip):
         """Get headers for file submission
 
         Args:
             filename: Original filename
-            metadata: Additional metadata
+            metadata: Additional metadata,
+            apikey: API key for authentication
+            ip: IP address of the client
 
         Returns:
             Dictionary of headers
@@ -300,6 +339,7 @@ class MetaDefenderAPI(ABC):
         """
         pass
 
+    
     @abstractmethod
     async def retrieve_sanitized_file(self, data_id, apikey, ip=""):
         """Retrieve sanitized file content
@@ -311,6 +351,9 @@ class MetaDefenderAPI(ABC):
 
         Returns:
             File content and status code
+
+        MDEndpoint:
+            /api/v1/file?uuid=%s
         """
         pass
 

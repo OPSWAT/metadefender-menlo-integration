@@ -6,17 +6,15 @@ from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 class CheckExisting(BaseResponse):
 
-    def __init__(self, apikey='', allowedResponses=None):
-
-        allowedResponses = [200, 400, 401, 404, 500]
-        super().__init__(apikey, allowedResponses)
+    def __init__(self, apikey=''):
+        super().__init__(apikey, [200, 400, 401, 404, 500])
 
         self._http_responses["200"] = self.__response200
         self._http_responses["400"] = self.__response400
         self._http_responses["401"] = self.__response401
         self._http_responses["404"] = self.__response400
 
-    def __response200(self, response, status_code):
+    async def __response200(self, response, status_code):
         translation = {
             'uuid': '{0}',
             'result': '{0}'
@@ -36,11 +34,11 @@ class CheckExisting(BaseResponse):
             }), {'apikey': self._apikey})
             return ({}, 500)
 
-    def __response400(self, response, status_code):
+    async def __response400(self, response, status_code):
         return ({
             'uuid': response['sha256'],
             'result': '404'
         }, 200)
 
-    def __response401(self, response, status_code):
+    async def __response401(self, response, status_code):
         return ({}, 401)

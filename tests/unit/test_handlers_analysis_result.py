@@ -5,7 +5,7 @@ import os
 import sys
 import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
-from metadefender_menlo.api.handlers.analysis_result import AnalysisResultHandler
+from metadefender_menlo.api.handlers.result_handler import ResultHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
@@ -16,7 +16,7 @@ class TestAnalysisResultHandler(unittest.TestCase):
         self.application.ui_modules = {}
         self.request = Mock()
 
-        self.handler = AnalysisResultHandler(
+        self.handler = ResultHandler(
             application=self.application,
             request=self.request
         )
