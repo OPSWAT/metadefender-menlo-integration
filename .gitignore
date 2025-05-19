@@ -7,3 +7,6 @@ app.log*
 .sonar
 gitleaks.json
 .python-version
+
+node_modules
+mockserver

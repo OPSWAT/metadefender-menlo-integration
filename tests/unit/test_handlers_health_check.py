@@ -8,7 +8,7 @@ import sys
 import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-from metadefender_menlo.api.handlers.health_check import HealthCheckHandler
+from metadefender_menlo.api.handlers.health_handler import HealthHandler
 
 class TestHealthCheckHandler(unittest.TestCase):
     def setUp(self):
@@ -26,10 +26,10 @@ class TestHealthCheckHandler(unittest.TestCase):
             'scanRule': 'test-rule'
         }
 
-        self.handler = HealthCheckHandler(
+        self.handler = HealthHandler(
             application=self.application,
             request=self.request,
-            newConfig=self.test_config,
+            config=self.test_config,
         )
 
         self.original_logging_debug = logging.debug
@@ -58,7 +58,7 @@ class TestHealthCheckHandler(unittest.TestCase):
         expected_response = {
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
-            "version": "1.6.8",
+            "version": "2.0.0",
             "commitHash": self.test_config['commitHash'],
             "rule": self.test_config['scanRule']
         }
@@ -103,7 +103,7 @@ class TestHealthCheckHandler(unittest.TestCase):
 
         self.assertEqual(response_dict['status'], 'Ready')
         self.assertEqual(response_dict['name'], 'MetaDefender - Menlo integration')
-        self.assertEqual(response_dict['version'], '1.6.8')
+        self.assertEqual(response_dict['version'], '2.0.0')
         self.assertEqual(response_dict['commitHash'], self.test_config['commitHash'])
         self.assertEqual(response_dict['rule'], self.test_config['scanRule'])
 

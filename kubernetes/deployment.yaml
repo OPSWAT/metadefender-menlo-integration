@@ -22,7 +22,7 @@ spec:
           requests:
             cpu: 250m
             memory: 1024Mi
-        image: ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-${VERSION}
+        image: ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-${VERSION}
         env:
           - name: ENVIRONMENT
             value: '${ENVIRONMENT}'
