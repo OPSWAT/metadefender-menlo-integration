@@ -5,13 +5,13 @@ import os
 import sys
 import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
-from metadefender_menlo.api.responses.file_submit import FileSubmit
+from metadefender_menlo.api.responses.submit_response import SubmitResponse
 from metadefender_menlo.api.responses.base_response import BaseResponse
 
 class TestFileSubmit(unittest.TestCase):
 
     def setUp(self):
-        self.file_submit = FileSubmit()
+        self.file_submit = SubmitResponse()
 
     def test_init(self):
         self.assertIsInstance(self.file_submit, BaseResponse)

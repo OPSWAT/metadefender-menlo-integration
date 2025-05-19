@@ -52,7 +52,7 @@ function change_used_account () {
 }
 
 function generate_docker_image_name() {
-    echo "${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-m_${BUILD_VCS_NUMBER:0:7}"
+    echo "${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-m_${BUILD_VCS_NUMBER:0:7}"
 }
 
 # INFO : Main Start

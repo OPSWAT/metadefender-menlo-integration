@@ -1,42 +1,44 @@
-
-
 import json
 import logging
 import urllib.parse
-
-import httpx
+from httpx import AsyncClient
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
-    """MetaDefenderCloudAPI
+    """MetaDefenderCloudAPI implementation for aiohttp
     """
 
     def __init__(self, settings, url, apikey):
+        super().__init__(settings, url, apikey)
         self.service_name = SERVICE.MetaDefenderCloud
         self.settings = settings
         self.server_url = url
         self.apikey = apikey
         self.report_url = "https://metadefender.opswat.com/results/file/{data_id}/regular/overview"
 
-    def _get_submit_file_headers(self, filename, metadata):
+    def _get_submit_file_headers(self, metadata, apikey, client_ip):
+        
         headers = {
+            **metadata,
             "Content-Type": "application/octet-stream",
-            "rule": self.settings['scanRule']
+            "rule": self.settings['scanRule'],
+            "apikey": apikey,
         }
 
-        file_name = self._get_decoded_parameter(metadata.get('fileName'))
-        if file_name or filename:
-            headers["filename"] = urllib.parse.quote(file_name if file_name is not None else filename)
+        if client_ip:
+            headers['x-forwarded-for'] = client_ip
+            headers['x-real-ip'] = client_ip
 
-        downloadfrom = self._get_decoded_parameter(metadata.get('downloadfrom'))
-        if downloadfrom:
-            headers["downloadfrom"] = downloadfrom
+        file_name = self._get_decoded_parameter(metadata['filename'])
+        headers["filename"] = urllib.parse.quote(file_name)
 
-        logging.debug("{0} > {1} > {2} Add headers: {0}".format(
-            SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
+        headers = {k: v for k, v in headers.items() if v is not None}
+        
+        logging.debug("{0} > {1} > Add headers: {2}".format(
+            SERVICE.MenloPlugin, TYPE.Internal, headers))
         
         return headers
     
@@ -54,7 +56,6 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             return False
 
     async def retrieve_sanitized_file(self, data_id, apikey, ip=""):
-
         response, http_status = await self._request_as_json_status(
             "sanitized_file",
             fields={
@@ -95,31 +96,29 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         }))
 
         try:
-            async with httpx.AsyncClient() as client:
+            async with AsyncClient() as client:
                 headers = {"User-Agent": "MenloTornadoIntegration"}
-                response = await client.get(fileurl, headers=headers, timeout=300)
-                return response.content, response.status_code
+                response = await client.get(fileurl, headers=headers)
+                content = response.content
+                return content, response.status_code
         except Exception as error:
             return self._handle_error(error, apikey)
 
     async def _handle_no_sanitized_file(self, data_id, apikey):
         try:
-            async with httpx.AsyncClient() as client:
-                response = await client.get(self.server_url + f'/file/{data_id}', headers={'apikey': apikey}, timeout=300)
-            
-            sanitized_data = self._parse_sanitized_data(response)
-            failure_reasons = self._get_failure_reasons(sanitized_data)
-            
-            return self._log_sanitization_result(failure_reasons)
+            async with AsyncClient() as client:
+                response = await client.get(
+                    self.server_url + f'/file/{data_id}', 
+                    headers={'apikey': apikey}
+                )
+
+                response_content = response.json()
+                sanitized_data = response_content.get("sanitized", {})
+                failure_reasons = sanitized_data.get("failure_reasons") or sanitized_data.get("reason", "")
+                
+                return self._log_sanitization_result(failure_reasons)
         except Exception as error:
             return self._handle_error(error, apikey)
-
-    def _parse_sanitized_data(self, response):
-        response_data = json.loads(response.content.decode('utf-8'))
-        return response_data.get("sanitized", {})
-
-    def _get_failure_reasons(self, sanitized_data):
-        return sanitized_data.get("failure_reasons") or sanitized_data.get("reason", "")
 
     def _log_sanitization_result(self, failure_reasons):
         http_status = 204

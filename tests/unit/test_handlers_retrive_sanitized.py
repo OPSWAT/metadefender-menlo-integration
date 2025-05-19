@@ -6,7 +6,7 @@ import os
 import sys
 import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
-from metadefender_menlo.api.handlers.retrieve_sanitized import RetrieveSanitizedHandler
+from metadefender_menlo.api.handlers.sanitized_file_handler import SanitizedFileHandler
 
 class TestRetrieveSanitizedHandler(unittest.TestCase):
     def setUp(self):
@@ -14,12 +14,12 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
         mock_application = Mock()
         mock_application.ui_methods = {'method_name': Mock()}
 
-        self.handler = RetrieveSanitizedHandler(
+        self.handler = SanitizedFileHandler(
             application=mock_application,
             request=Mock(),
         )
         
-        self.handler.metaDefenderAPI = Mock()
+        self.handler.meta_defender_api = Mock()
         self.handler.client_ip = '127.0.0.1'
         
         self.original_logging_info = logging.info
@@ -35,7 +35,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
 
     def test_init(self):
         """Test handler initialization."""
-        self.assertIsInstance(self.handler, RetrieveSanitizedHandler)
+        self.assertIsInstance(self.handler, SanitizedFileHandler)
 
     @patch('metadefender_menlo.api.responses.retrieve_sanitized.RetrieveSanitized')
     async def test_get_success(self, mock_retrieve_sanitized):
@@ -47,7 +47,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
         
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.retrieve_sanitized_file = AsyncMock(
+        self.handler.meta_defender_api.retrieve_sanitized_file = AsyncMock(
             return_value=(test_file, test_status_code)
         )
         
@@ -59,7 +59,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
         await self.handler.get()
 
         self.handler.get_argument.assert_called_once_with('uuid')
-        self.handler.metaDefenderAPI.retrieve_sanitized_file.assert_called_once_with(
+        self.handler.meta_defender_api.retrieve_sanitized_file.assert_called_once_with(
             uuid=test_uuid,
             apikey=test_apikey,
             client_ip=self.handler.client_ip
@@ -106,7 +106,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
         
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.retrieve_sanitized_file = AsyncMock(
+        self.handler.meta_defender_api.retrieve_sanitized_file = AsyncMock(
             return_value=(test_file, test_status_code)
         )
         
@@ -144,7 +144,7 @@ class TestRetrieveSanitizedHandler(unittest.TestCase):
         
         self.handler.get_argument = Mock(return_value=test_uuid)
         self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.metaDefenderAPI.retrieve_sanitized_file = AsyncMock(
+        self.handler.meta_defender_api.retrieve_sanitized_file = AsyncMock(
             side_effect=Exception('API error')
         )
         

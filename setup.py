@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 NAME = "metadefender_menlo"
-VERSION = "1.6.8"
+VERSION = "2.0.0"
 
 # To install the library, run the following
 #
@@ -25,7 +25,10 @@ REQUIRES = [
     "typing==3.7.4.3",
     "urllib3==1.26.18",
     "pytest==8.3.3",
-    "pytest-cov==5.0.0"
+    "pytest-cov==5.0.0",
+    "uvicorn==0.34.2",
+    "fastapi==0.115.12",
+    "python-multipart==0.0.6",
 ]
 
 setup(

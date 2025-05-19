@@ -18,7 +18,7 @@ class TestHelloApp(AsyncHTTPTestCase):
         __main__.MetaDefenderAPI._request_as_json_status = AsyncMock(
             return_value="")
 
-        __main__.initial_config(
+        __main__.setup_config(
             './config.yml', './metadefender_menlo/conf/sns-config.json')
 
         __main__.SNSLogHandler.publishMessage = self.logMethod

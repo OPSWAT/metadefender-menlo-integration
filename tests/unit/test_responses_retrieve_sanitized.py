@@ -5,12 +5,12 @@ import sys
 import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.responses.base_response import BaseResponse
-from metadefender_menlo.api.responses.retrieve_sanitized import RetrieveSanitized  
+from metadefender_menlo.api.responses.sanitized_file import SanitizedFile  
 
 class TestRetrieveSanitized(unittest.TestCase):
 
     def setUp(self):
-        self.retrieve_sanitized = RetrieveSanitized()
+        self.retrieve_sanitized = SanitizedFile()
 
     def test_init(self):
         self.assertIsInstance(self.retrieve_sanitized, BaseResponse)

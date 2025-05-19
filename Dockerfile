@@ -1,13 +1,13 @@
-FROM python:3.8-alpine
+FROM python:3.10-alpine
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY ./requirements.txt /usr/src/app/
 
-RUN pip3 install --no-cache-dir -r requirements.txt
-
-RUN apk add --upgrade libexpat
+RUN pip3 install --no-cache-dir -r requirements.txt && \
+    apk add --upgrade libexpat && \
+    rm -rf /var/cache/apk/*
 
 COPY . /usr/src/app
 RUN mkdir /var/log/metadefender-menlo
