@@ -27,7 +27,7 @@ class ResultHandler(BaseHandler):
 
         try:
             json_response, http_status = await self.meta_defender_api.check_result(uuid, self.apikey, self.client_ip)
-            json_response, http_status = await FileAnalyis().handle_response(json_response, http_status)
+            json_response, http_status = await FileAnalyis(self.apikey).handle_response(json_response, http_status)
             return self.json_response(response, json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
