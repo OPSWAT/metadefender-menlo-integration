@@ -58,7 +58,7 @@ class TestHealthCheckHandler(unittest.TestCase):
         expected_response = {
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "commitHash": self.test_config['commitHash'],
             "rule": self.test_config['scanRule']
         }
@@ -103,7 +103,7 @@ class TestHealthCheckHandler(unittest.TestCase):
 
         self.assertEqual(response_dict['status'], 'Ready')
         self.assertEqual(response_dict['name'], 'MetaDefender - Menlo integration')
-        self.assertEqual(response_dict['version'], '2.0.0')
+        self.assertEqual(response_dict['version'], '2.0.1')
         self.assertEqual(response_dict['commitHash'], self.test_config['commitHash'])
         self.assertEqual(response_dict['rule'], self.test_config['scanRule'])
 
