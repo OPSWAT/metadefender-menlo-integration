@@ -2,6 +2,7 @@ import json
 import logging
 import urllib.parse
 
+from httpx import AsyncClient
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 
@@ -76,22 +77,29 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             logging.error(f"Unexpected response from MetaDefender: {json_response}")
             return False
 
-    async def retrieve_sanitized_file(self, data_id, apikey, ip=""):
+    async def sanitized_file(self, data_id, apikey, ip=""):
         logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
             "message": f"Retrieve Sanitized file for {data_id}"
         }))
         
-        response, http_status = await self._request_status(
-            "sanitized_file", 
-            fields={"data_id": data_id}, 
-            headers={"apikey": apikey}
-        )
+        upstream_url = self._get_url("sanitized_file", {"data_id": data_id})
 
+        headers = {
+            'apikey': apikey,
+            'x-forwarded-for': ip,
+            'x-real-ip': ip,
+            'User-Agent': 'MenloTornadoIntegration'
+        }
+
+        client = AsyncClient()
+        req = client.build_request("GET", upstream_url, headers=headers)
+        resp = await client.send(req, stream=True)
+
+        http_status = resp.status_code
         if http_status == 404 and self.settings['fallbackToOriginal']:
             http_status = 204
-            response = b""
 
-        return (response, http_status)
+        return (resp, http_status, client)
 
     async def _extract_filename_from_headers(self, response_headers):
         filename = None
