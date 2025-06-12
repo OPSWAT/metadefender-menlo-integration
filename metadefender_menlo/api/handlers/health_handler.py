@@ -13,7 +13,7 @@ class HealthHandler(BaseHandler):
         return {
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "commitHash": self.config['commitHash'],
             "rule": self.config['scanRule']
         }
