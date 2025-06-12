@@ -1,7 +1,6 @@
 import logging
 from fastapi import Request, Response
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
-from metadefender_menlo.api.responses.sanitized_file import SanitizedFile
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 class SanitizedFileHandler(BaseHandler):
@@ -25,11 +24,18 @@ class SanitizedFileHandler(BaseHandler):
         await self.prepare_request(request)
 
         try:
-            data, status_code = await self.meta_defender_api.retrieve_sanitized_file(uuid, self.apikey, self.client_ip)
-            if status_code == 200:
-                return self.stream_response(data, status_code)
-            data, status_code = await SanitizedFile().handle_response(data, status_code)
-            return self.json_response(response, data, status_code)
+            resp, http_status, client = await self.meta_defender_api.sanitized_file(uuid, self.apikey, self.client_ip)
+            
+            if http_status == 200:
+                return self.stream_response(resp, client, http_status)
+            
+            logging.info("{0} > {1} > {2}".format(
+                SERVICE.MenloPlugin, 
+                TYPE.Request, 
+                {"method": "GET", "endpoint": "/api/v1/file?uuid=%s" % uuid, "http_status": http_status}
+            ))
+
+            return self.json_response(response, {}, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
