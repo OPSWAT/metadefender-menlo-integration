@@ -1,7 +1,8 @@
 import uuid
 import logging
 import contextvars
-from fastapi import Response
+from fastapi.responses import StreamingResponse
+from starlette.background import BackgroundTask
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
@@ -14,8 +15,16 @@ class BaseHandler:
         self.meta_defender_api = MetaDefenderAPI.get_instance()
         self.client_ip = None
         self.apikey = None
-
+    
     async def prepare_request(self, request):
+        """ 
+        Prepare the request context and extract necessary headers.
+        This method sets the request context and extracts the client IP and API key from the request headers.
+        It also sets a unique request ID if not provided in the headers.
+
+        :param request: The incoming request object.
+        :return: None
+        """
         request_context.set(request)
         request_id_context.set(request.headers.get("request-id") or str(uuid.uuid4()))
 
@@ -27,8 +36,17 @@ class BaseHandler:
         self.apikey = request.headers.get('Authorization')
 
     def json_response(self, response, json_response, status_code=200):
+        """
+        Prepare a JSON response with the given status code and response data.
+
+        :param response: The response object to set the JSON response on.
+        :param json_response: The JSON data to return in the response.
+        :param status_code: The HTTP status code for the response.
+        :return: The JSON response data.
+        """
         logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-            "status": status_code, "response": json_response}))
+            "type": "json", "status": status_code, "response": json_response
+        }))
         
         response.status_code = status_code
         
@@ -37,12 +55,30 @@ class BaseHandler:
         
         return json_response
 
-    def stream_response(self, data, status_code=200):
-        if status_code == 204:
-            return Response(status_code=status_code)
+    def stream_response(self, resp, client, status_code=200):
+        """
+        Prepare a streaming response from the given response object.
         
-        return Response(
-            content=data, 
-            status_code=status_code,
-            headers={"Content-Type": "application/octet-stream"}
+        :param resp: The response object containing the stream data.
+        :param client: The client object used for cleanup after streaming.
+        :param status_code: The HTTP status code for the response.
+        :return: A StreamingResponse object that streams the response data.
+        """
+        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+            "type": "stream", "status": status_code
+        }))
+        
+        async def cleanup():
+                await resp.aclose()
+                await client.aclose()
+
+        return StreamingResponse(
+            resp.aiter_raw(),
+            media_type=resp.headers.get("Content-Type", "application/octet-stream"),
+            headers={
+                "Content-Disposition": resp.headers.get(
+                    "Content-Disposition", 'attachment; filename="downloaded.bin"'
+                )
+            },
+            background=BackgroundTask(cleanup)
         )

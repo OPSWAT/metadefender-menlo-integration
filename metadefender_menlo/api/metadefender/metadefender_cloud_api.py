@@ -55,7 +55,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             print(f"Unexpected response from MetaDefender: {json_response}")
             return False
 
-    async def retrieve_sanitized_file(self, data_id, apikey, ip=""):
+    async def sanitized_file(self, data_id, apikey, ip=""):
         response, http_status = await self._request_as_json_status(
             "sanitized_file",
             fields={
@@ -68,27 +68,22 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             }
         )
 
-        self._log_response(response, http_status)
-
         if http_status == 401:
-            return self._handle_unauthorized(response, http_status)
+            return response, http_status, None
 
-        fileurl = response.get("sanitizedFilePath", "")
-        if fileurl:
-            return await self._download_sanitized_file(fileurl, apikey)
+        upstream_url = response.get("sanitizedFilePath", "")
+        if upstream_url:
+            client = AsyncClient()
+            req = client.build_request("GET", upstream_url)
+            resp = await client.send(req, stream=True)
+
+            http_status = resp.status_code
+            if http_status == 404 and self.settings['fallbackToOriginal']:
+                http_status = 204
+
+            return resp, http_status, client
         
         return await self._handle_no_sanitized_file(data_id, apikey)
-
-    def _log_response(self, response, http_status):
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
-            "response": f"{response}", "status": f"{http_status}"
-        }))
-
-    def _handle_unauthorized(self, response, http_status):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
-            "message": "Unauthorized request", "status": http_status
-        }))
-        return response, http_status
 
     async def _download_sanitized_file(self, fileurl, apikey):
         logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
@@ -132,7 +127,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
                 "message": "Sanitized file not available!", "status": http_status
             }))
-        return "", http_status
+        return None, http_status, None
 
     def _handle_error(self, error, apikey):
         logging.error("{0} > {1} > {2}".format(
