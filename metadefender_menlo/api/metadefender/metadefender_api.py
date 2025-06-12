@@ -341,7 +341,7 @@ class MetaDefenderAPI(ABC):
 
     
     @abstractmethod
-    async def retrieve_sanitized_file(self, data_id, apikey, ip=""):
+    async def sanitized_file(self, data_id, apikey, ip=""):
         """Retrieve sanitized file content
 
         Args:
