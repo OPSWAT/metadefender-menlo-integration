@@ -12,27 +12,35 @@ pip install -r requirements.txt
 BD_PROJECT_VERSION=""
 BD_VERSION_PHASE=""
 
-
-
 if [[ -n "$TAG" ]]; then
-    # tag
     BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-${TAG}"
     BD_VERSION_PHASE="RELEASED"
 else
+    if [[ $BRANCH =~ ^[[:digit:]] ]]; then
+        VERSION=$BRANCH
+        BRANCH="customer"
+    fi
+
+    if [[ $BRANCH =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        VERSION=$(echo "$BRANCH" | sed -E 's|^release/([0-9]+\.[0-9]+\.[0-9]+)$|\1|')
+        BRANCH="release"
+    fi
+    
     case $BRANCH in
         customer)
-            # customer branch
-            BD_PROJECT_VERSION="${BD_PARENT_PROJECT}-${VERSION}"
+            BD_PROJECT_VERSION="Customer-${VERSION}"
             BD_VERSION_PHASE="RELEASED"
         ;;
-        release*)
-            # release branch
-            BD_PROJECT_VERSION="Release-HEAD"
+        release)
+            BD_PROJECT_VERSION="Pre-Release-${VERSION}"
             BD_VERSION_PHASE="PRERELEASE"
         ;;
         master|main|develop)
-            # master branch
             BD_PROJECT_VERSION="main"
+            BD_VERSION_PHASE="DEVELOPMENT"
+        ;;
+        feature*)
+            BD_PROJECT_VERSION="${BRANCH}"
             BD_VERSION_PHASE="DEVELOPMENT"
         ;;
     esac
@@ -43,6 +51,7 @@ echo "BRANCH: ${BRANCH}"
 echo "BD_PROJECT_VERSION: ${BD_PROJECT_VERSION}"
 echo "BD_VERSION_PHASE: ${BD_VERSION_PHASE}"
 
+echo "##teamcity[blockOpened name='BlackDuck Container Scan']"
 
 bash <(curl -s -L https://detect.blackduck.com/detect9.sh) --detect.timeout=3600 \
     --blackduck.api.token="${BD_TOKEN}" \
@@ -58,3 +67,5 @@ bash <(curl -s -L https://detect.blackduck.com/detect9.sh) --detect.timeout=3600
     --detect.python.path=/usr/bin/python3 \
     --detect.tools.excluded=SIGNATURE_SCAN \
     --logging.level.com.synopsys.integration=DEBUG
+
+echo "##teamcity[blockClosed name='BlackDuck Container Scan']"
