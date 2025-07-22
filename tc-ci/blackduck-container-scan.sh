@@ -7,7 +7,7 @@ export VERSION=m_"$(git rev-parse --short HEAD)"
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
 BRANCH="$(git branch --show-current)"
 TAG="$(git describe --tags --exact-match 2>/dev/null)"
-BD_PARENT_PROJECT="MD Cloud Menlo"
+BD_PARENT_PROJECT="MD Cloud Menlo Container"
 echo "Attempting to scan image $DOCKER_IMAGE"
 
 cd ./kubernetes
