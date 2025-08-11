@@ -10,8 +10,7 @@ class TestMetaDefenderCoreAPI(unittest.TestCase):
     def setUp(self):
         self.settings = {
             'headers_engines_metadata': 'some_metadata',
-            'fallbackToOriginal': True,
-            'scanWith': 'mdaas'
+            'fallbackToOriginal': True
         }
         self.url = "https://test-server.com"
         self.apikey = "test_api_key"
@@ -27,8 +26,7 @@ class TestMetaDefenderCoreAPI(unittest.TestCase):
             "Content-Type": "application/octet-stream",
             "filename": "test_file.txt",
             "metadata": '{"key": "value"}',
-            "engines-metadata": self.settings['headers_engines_metadata'],
-            "scanWith": "mdaas"
+            "engines-metadata": self.settings['headers_engines_metadata']
         }
         self.assertEqual(headers, expected_headers)
 
