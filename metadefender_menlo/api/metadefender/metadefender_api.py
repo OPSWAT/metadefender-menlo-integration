@@ -325,7 +325,16 @@ class MetaDefenderAPI(ABC):
             Modified headers dictionary
         """
         if hasattr(self, 'settings') and self.settings and 'scanWith' in self.settings:
-            headers['scanWith'] = self.settings['scanWith']
+            scan_with_config = self.settings['scanWith']
+            
+            # Handle both old format (string) and new format (dict)
+            if isinstance(scan_with_config, dict):
+                if scan_with_config.get('enabled', False):
+                    headers['scanWith'] = scan_with_config.get('value', 'mdaas')
+            elif isinstance(scan_with_config, str):
+                # Backward compatibility with old format
+                headers['scanWith'] = scan_with_config
+                
         return headers
 
     @abstractmethod

@@ -9,7 +9,7 @@ from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefen
 class TestMetaDefenderCloudAPI(IsolatedAsyncioTestCase):
 
     def setUp(self):
-        self.settings = {'scanRule': 'default_rule', 'scanWith': 'mdaas'}
+        self.settings = {'scanRule': 'default_rule', 'scanWith': {'enabled': True, 'value': 'mdaas'}}
         self.apikey = "test_api_key"
         self.api = MetaDefenderCloudAPI(settings=self.settings, url='http://example.com', apikey='test_api_key')
 
@@ -32,6 +32,24 @@ class TestMetaDefenderCloudAPI(IsolatedAsyncioTestCase):
         self.assertEqual(headers["Content-Type"], "application/octet-stream")
         self.assertEqual(headers["rule"], "default_rule")
         self.assertNotIn("scanWith", headers)
+
+    def test_get_submit_file_headers_scan_with_disabled(self):
+        # Test with scanWith disabled
+        api_disabled_scan = MetaDefenderCloudAPI(settings={'scanRule': 'default_rule', 'scanWith': {'enabled': False, 'value': 'mdaas'}}, url='http://example.com', apikey='test_api_key')
+        headers = api_disabled_scan._get_submit_file_headers('testfile.txt', {})
+        self.assertEqual(headers["filename"], "testfile.txt")
+        self.assertEqual(headers["Content-Type"], "application/octet-stream")
+        self.assertEqual(headers["rule"], "default_rule")
+        self.assertNotIn("scanWith", headers)
+
+    def test_get_submit_file_headers_backward_compatibility(self):
+        # Test backward compatibility with old string format
+        api_legacy = MetaDefenderCloudAPI(settings={'scanRule': 'default_rule', 'scanWith': 'legacy-value'}, url='http://example.com', apikey='test_api_key')
+        headers = api_legacy._get_submit_file_headers('testfile.txt', {})
+        self.assertEqual(headers["filename"], "testfile.txt")
+        self.assertEqual(headers["Content-Type"], "application/octet-stream")
+        self.assertEqual(headers["rule"], "default_rule")
+        self.assertEqual(headers["scanWith"], "legacy-value")
 
     def test_check_analysis_complete(self):
         json_response_complete = {"sanitized": {"progress_percentage": 100}}

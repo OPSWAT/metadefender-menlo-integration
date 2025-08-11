@@ -99,6 +99,9 @@ logging:
   logfile: /var/log/md-menlo/app.log # absolute path to the logfile. If path doesn't exist will be created (make sure the user has the right permissions)
   interval: 24 # the interval (in hours) for log rotation
   backup_count: 30 # for how many intervals should the logs be kept (e.g. 30 logs for 24h each -> 30 days logs)
+scanWith:
+  enabled: true # enable/disable scanWith header in all MetaDefender API requests
+  value: mdaas # value for scanWith header when enabled
 ```
 
 Menlo requires all communication to be done over https, so either deploy an reverse proxy (nginx) in front of it to handle SSL or use the configuration `https` in the `config.yml`.
@@ -257,9 +260,19 @@ MENLO_MD_FALLBACK_TO_ORIGINAL
   Description: Send 204 to Menlo when the sanitized version is not available
   Values: true | false
 
+MENLO_MD_SCAN_WITH_ENABLED
+  Overwrites: config.yml:scanWith.enabled
+  Description: Enable/disable scanWith header in all MetaDefender API requests
+  Values: true | false
+
+MENLO_MD_SCAN_WITH_VALUE
+  Overwrites: config.yml:scanWith.value
+  Description: Value for scanWith header when enabled
+  Values: any string (e.g., mdaas)
+
 MENLO_MD_SCAN_WITH
-  Overwrites: config.yml:scanWith
-  Description: Add scanWith header to all MetaDefender API requests
+  Overwrites: config.yml:scanWith (legacy format)
+  Description: Legacy format - sets both enabled=true and value
   Values: any string (e.g., mdaas)
 ```
 

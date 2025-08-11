@@ -34,4 +34,6 @@ logging:
 
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
-scanWith: mdaas
+scanWith:
+  enabled: true
+  value: mdaas

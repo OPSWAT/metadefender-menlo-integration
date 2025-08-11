@@ -57,8 +57,36 @@ class Config(object):
         if os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
             Config._CONFIG['fallbackToOriginal'] = os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"
 
+        # Handle scanWith configuration
+        if os.environ.get("MENLO_MD_SCAN_WITH_ENABLED"):
+            # Initialize scanWith as dict if it doesn't exist
+            if 'scanWith' not in Config._CONFIG:
+                Config._CONFIG['scanWith'] = {}
+            elif isinstance(Config._CONFIG['scanWith'], str):
+                # Convert old string format to new dict format
+                Config._CONFIG['scanWith'] = {'enabled': True, 'value': Config._CONFIG['scanWith']}
+            
+            Config._CONFIG['scanWith']['enabled'] = os.environ.get("MENLO_MD_SCAN_WITH_ENABLED") == "true"
+        
+        if os.environ.get("MENLO_MD_SCAN_WITH_VALUE"):
+            # Initialize scanWith as dict if it doesn't exist
+            if 'scanWith' not in Config._CONFIG:
+                Config._CONFIG['scanWith'] = {}
+            elif isinstance(Config._CONFIG['scanWith'], str):
+                # Convert old string format to new dict format
+                Config._CONFIG['scanWith'] = {'enabled': True, 'value': Config._CONFIG['scanWith']}
+            
+            Config._CONFIG['scanWith']['value'] = os.environ.get("MENLO_MD_SCAN_WITH_VALUE")
+        
+        # Backward compatibility: if MENLO_MD_SCAN_WITH is set, use it as value and enable
         if os.environ.get("MENLO_MD_SCAN_WITH"):
-            Config._CONFIG['scanWith'] = os.environ.get("MENLO_MD_SCAN_WITH")
+            if 'scanWith' not in Config._CONFIG:
+                Config._CONFIG['scanWith'] = {}
+            elif isinstance(Config._CONFIG['scanWith'], str):
+                Config._CONFIG['scanWith'] = {'enabled': True, 'value': Config._CONFIG['scanWith']}
+            
+            Config._CONFIG['scanWith']['enabled'] = True
+            Config._CONFIG['scanWith']['value'] = os.environ.get("MENLO_MD_SCAN_WITH")
 
         
 

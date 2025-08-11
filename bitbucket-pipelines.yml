@@ -16,6 +16,8 @@ definitions:
           - |
             export VERSION=m_${BITBUCKET_COMMIT:0:7}
             export MENLO_MD_ENV=${BITBUCKET_DEPLOYMENT_ENVIRONMENT}
+            export MENLO_MD_SCAN_WITH_ENABLED=${MENLO_MD_SCAN_WITH_ENABLED:-true}
+            export MENLO_MD_SCAN_WITH_VALUE=${MENLO_MD_SCAN_WITH_VALUE:-mdaas}
             if [[ $MENLO_MD_ENV == "dev" ]]; then
               export MDCLOUD_URL=${MDCLOUD_URL}
             fi
