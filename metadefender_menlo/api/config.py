@@ -57,6 +57,9 @@ class Config(object):
         if os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
             Config._CONFIG['fallbackToOriginal'] = os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"
 
+        if os.environ.get("MENLO_MD_SCAN_WITH"):
+            Config._CONFIG['scanWith'] = os.environ.get("MENLO_MD_SCAN_WITH")
+
         
 
     @staticmethod

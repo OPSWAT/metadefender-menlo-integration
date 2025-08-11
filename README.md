@@ -256,6 +256,11 @@ MENLO_MD_FALLBACK_TO_ORIGINAL
   Overwrites: config.yml:fallbackToOriginal
   Description: Send 204 to Menlo when the sanitized version is not available
   Values: true | false
+
+MENLO_MD_SCAN_WITH
+  Overwrites: config.yml:scanWith
+  Description: Add scanWith header to all MetaDefender API requests
+  Values: any string (e.g., mdaas)
 ```
 
 ##### Step 3: Configure Menlo Integration

@@ -36,6 +36,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         headers["filename"] = urllib.parse.quote(file_name)
 
         headers = {k: v for k, v in headers.items() if v is not None}
+        headers = self._add_scan_with_header(headers)
         
         logging.debug("{0} > {1} > Add headers: {2}".format(
             SERVICE.MenloPlugin, TYPE.Internal, headers))
@@ -56,16 +57,19 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             return False
 
     async def sanitized_file(self, data_id, apikey, ip=""):
+        headers = {
+            'apikey': apikey,
+            'x-forwarded-for': ip,
+            'x-real-ip': ip
+        }
+        headers = self._add_scan_with_header(headers)
+        
         response, http_status = await self._request_as_json_status(
             "sanitized_file",
             fields={
                 "data_id": data_id
             },
-            headers={
-                'apikey': apikey,
-                'x-forwarded-for': ip,
-                'x-real-ip': ip
-            }
+            headers=headers
         )
 
         if http_status == 401:
@@ -102,9 +106,11 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
     async def _handle_no_sanitized_file(self, data_id, apikey):
         try:
             async with AsyncClient() as client:
+                headers = {'apikey': apikey}
+                headers = self._add_scan_with_header(headers)
                 response = await client.get(
                     self.server_url + f'/file/{data_id}', 
-                    headers={'apikey': apikey}
+                    headers=headers
                 )
 
                 response_content = response.json()

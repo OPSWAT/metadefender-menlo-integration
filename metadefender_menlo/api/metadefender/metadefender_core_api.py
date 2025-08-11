@@ -55,6 +55,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             headers["filename"] = urllib.parse.quote(file_name)
 
         headers = {k: v for k, v in headers.items() if v is not None}
+        headers = self._add_scan_with_header(headers)
 
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
             SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
@@ -90,6 +91,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             'x-real-ip': ip,
             'User-Agent': 'MenloTornadoIntegration'
         }
+        headers = self._add_scan_with_header(headers)
 
         client = AsyncClient()
         req = client.build_request("GET", upstream_url, headers=headers)
