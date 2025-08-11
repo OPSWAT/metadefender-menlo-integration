@@ -9,7 +9,7 @@ from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefen
 class TestMetaDefenderCloudAPI(IsolatedAsyncioTestCase):
 
     def setUp(self):
-        self.settings = {'scanRule': 'default_rule', 'scanWith': {'enabled': True, 'value': 'mdaas'}}
+        self.settings = {'scanRule': 'default_rule', 'scanWith': {'enabled': True}}
         self.apikey = "test_api_key"
         self.api = MetaDefenderCloudAPI(settings=self.settings, url='http://example.com', apikey='test_api_key')
 
@@ -35,8 +35,17 @@ class TestMetaDefenderCloudAPI(IsolatedAsyncioTestCase):
 
     def test_get_submit_file_headers_scan_with_disabled(self):
         # Test with scanWith disabled
-        api_disabled_scan = MetaDefenderCloudAPI(settings={'scanRule': 'default_rule', 'scanWith': {'enabled': False, 'value': 'mdaas'}}, url='http://example.com', apikey='test_api_key')
+        api_disabled_scan = MetaDefenderCloudAPI(settings={'scanRule': 'default_rule', 'scanWith': {'enabled': False}}, url='http://example.com', apikey='test_api_key')
         headers = api_disabled_scan._get_submit_file_headers('testfile.txt', {})
+        self.assertEqual(headers["filename"], "testfile.txt")
+        self.assertEqual(headers["Content-Type"], "application/octet-stream")
+        self.assertEqual(headers["rule"], "default_rule")
+        self.assertNotIn("scanWith", headers)
+
+    def test_get_submit_file_headers_scan_with_not_configured(self):
+        # Test when scanWith is not configured at all (should behave like disabled)
+        api_no_scan = MetaDefenderCloudAPI(settings={'scanRule': 'default_rule'}, url='http://example.com', apikey='test_api_key')
+        headers = api_no_scan._get_submit_file_headers('testfile.txt', {})
         self.assertEqual(headers["filename"], "testfile.txt")
         self.assertEqual(headers["Content-Type"], "application/octet-stream")
         self.assertEqual(headers["rule"], "default_rule")

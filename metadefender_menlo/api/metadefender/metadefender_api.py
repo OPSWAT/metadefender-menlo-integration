@@ -316,7 +316,8 @@ class MetaDefenderAPI(ABC):
             return param
 
     def _add_scan_with_header(self, headers):
-        """Add scanWith header to all requests if configured
+        """Add scanWith header to Cloud API requests if configured and enabled
+        Note: This header is only used for MetaDefender Cloud, not Core
 
         Args:
             headers: Dictionary of headers to modify
@@ -324,16 +325,23 @@ class MetaDefenderAPI(ABC):
         Returns:
             Modified headers dictionary
         """
-        if hasattr(self, 'settings') and self.settings and 'scanWith' in self.settings:
-            scan_with_config = self.settings['scanWith']
-            
-            # Handle both old format (string) and new format (dict)
-            if isinstance(scan_with_config, dict):
-                if scan_with_config.get('enabled', False):
-                    headers['scanWith'] = scan_with_config.get('value', 'mdaas')
-            elif isinstance(scan_with_config, str):
-                # Backward compatibility with old format
-                headers['scanWith'] = scan_with_config
+        # Only add scanWith header for Cloud API, not Core API
+        if self.service_name == SERVICE.MetaDefenderCloud:
+            try:
+                if hasattr(self, 'settings') and self.settings and 'scanWith' in self.settings:
+                    scan_with_config = self.settings['scanWith']
+                    
+                    # Handle both old format (string) and new format (dict)
+                    if isinstance(scan_with_config, dict):
+                        # Only add header if explicitly enabled
+                        if scan_with_config.get('enabled', False):
+                            headers['scanWith'] = 'mdaas'
+                    elif isinstance(scan_with_config, str):
+                        # Backward compatibility with old format - always add header
+                        headers['scanWith'] = scan_with_config
+            except Exception as e:
+                logging.warning(f"Error adding scanWith header: {e}")
+                # Continue without the header if there's an error
                 
         return headers
 

@@ -58,8 +58,6 @@ spec:
             value: '${MENLO_MD_URL}'
           - name: MENLO_MD_SCAN_WITH_ENABLED
             value: '${MENLO_MD_SCAN_WITH_ENABLED}'
-          - name: MENLO_MD_SCAN_WITH_VALUE
-            value: '${MENLO_MD_SCAN_WITH_VALUE}'
           - name: MENLO_MD_SCAN_WITH
             value: '${MENLO_MD_SCAN_WITH}'
         imagePullPolicy: Always

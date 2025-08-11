@@ -89,7 +89,7 @@ class SubmitHandler(BaseHandler):
                 TYPE.Internal, 
                 {"error": repr(error)}
             ))
-            self.json_response(response, {}, 500)
+            return self.json_response(response, {}, 500)
 
 async def submit_handler(request: Request, response: Response):
     return await SubmitHandler().handle_post(request, response)
