@@ -90,7 +90,6 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             'x-real-ip': ip,
             'User-Agent': 'MenloTornadoIntegration'
         }
-        headers = self._add_scan_with_header(headers)
 
         client = AsyncClient()
         req = client.build_request("GET", upstream_url, headers=headers)
