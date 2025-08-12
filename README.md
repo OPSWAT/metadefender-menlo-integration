@@ -262,11 +262,6 @@ MENLO_MD_HEADERS_SCAN_WITH
   Overwrites: config.yml:headers_scan_with
   Description: scanWith header value for MetaDefender Cloud API requests (ignored for Core API)
   Values: "mdaas" | "mdcore" | "" (empty string = no header)
-
-MENLO_MD_SCAN_WITH
-  Overwrites: config.yml:headers_scan_with (legacy format)
-  Description: Legacy format - scanWith header value
-  Values: any string (e.g., "mdaas")
 ```
 
 ##### Step 3: Configure Menlo Integration

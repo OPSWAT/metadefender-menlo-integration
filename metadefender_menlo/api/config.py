@@ -61,10 +61,6 @@ class Config(object):
         try:
             if os.environ.get("MENLO_MD_HEADERS_SCAN_WITH"):
                 Config._CONFIG['headers_scan_with'] = os.environ.get("MENLO_MD_HEADERS_SCAN_WITH")
-            
-            # Backward compatibility: if MENLO_MD_SCAN_WITH is set, use it
-            elif os.environ.get("MENLO_MD_SCAN_WITH"):
-                Config._CONFIG['headers_scan_with'] = os.environ.get("MENLO_MD_SCAN_WITH")
         except Exception as e:
             logging.warning(f"Error configuring headers_scan_with: {e}")
             # Ensure headers_scan_with has a default value if configuration fails
