@@ -316,7 +316,7 @@ class MetaDefenderAPI(ABC):
             return param
 
     def _add_scan_with_header(self, headers):
-        """Add scanWith header to Cloud API requests if configured and enabled
+        """Add scanWith header to Cloud API requests if configured
         Note: This header is only used for MetaDefender Cloud, not Core
 
         Args:
@@ -328,17 +328,13 @@ class MetaDefenderAPI(ABC):
         # Only add scanWith header for Cloud API, not Core API
         if self.service_name == SERVICE.MetaDefenderCloud:
             try:
-                if hasattr(self, 'settings') and self.settings and 'scanWith' in self.settings:
-                    scan_with_config = self.settings['scanWith']
+                if hasattr(self, 'settings') and self.settings and 'headers_scan_with' in self.settings:
+                    scan_with_value = self.settings['headers_scan_with']
                     
-                    # Handle both old format (string) and new format (dict)
-                    if isinstance(scan_with_config, dict):
-                        # Only add header if explicitly enabled
-                        if scan_with_config.get('enabled', False):
-                            headers['scanWith'] = 'mdaas'
-                    elif isinstance(scan_with_config, str):
-                        # Backward compatibility with old format - always add header
-                        headers['scanWith'] = scan_with_config
+                    # Add header if value is not empty
+                    if scan_with_value and scan_with_value.strip():
+                        headers['scanWith'] = scan_with_value
+                        
             except Exception as e:
                 logging.warning(f"Error adding scanWith header: {e}")
                 # Continue without the header if there's an error

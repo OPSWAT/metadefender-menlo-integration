@@ -57,31 +57,19 @@ class Config(object):
         if os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
             Config._CONFIG['fallbackToOriginal'] = os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"
 
-        # Handle scanWith configuration
+        # Handle headers_scan_with configuration
         try:
-            if os.environ.get("MENLO_MD_SCAN_WITH_ENABLED"):
-                # Initialize scanWith as dict if it doesn't exist
-                if 'scanWith' not in Config._CONFIG:
-                    Config._CONFIG['scanWith'] = {}
-                elif isinstance(Config._CONFIG['scanWith'], str):
-                    # Convert old string format to new dict format
-                    Config._CONFIG['scanWith'] = {'enabled': True}
-                
-                Config._CONFIG['scanWith']['enabled'] = os.environ.get("MENLO_MD_SCAN_WITH_ENABLED") == "true"
+            if os.environ.get("MENLO_MD_HEADERS_SCAN_WITH"):
+                Config._CONFIG['headers_scan_with'] = os.environ.get("MENLO_MD_HEADERS_SCAN_WITH")
             
-            # Backward compatibility: if MENLO_MD_SCAN_WITH is set, enable it
-            if os.environ.get("MENLO_MD_SCAN_WITH"):
-                if 'scanWith' not in Config._CONFIG:
-                    Config._CONFIG['scanWith'] = {}
-                elif isinstance(Config._CONFIG['scanWith'], str):
-                    Config._CONFIG['scanWith'] = {'enabled': True}
-                
-                Config._CONFIG['scanWith']['enabled'] = True
+            # Backward compatibility: if MENLO_MD_SCAN_WITH is set, use it
+            elif os.environ.get("MENLO_MD_SCAN_WITH"):
+                Config._CONFIG['headers_scan_with'] = os.environ.get("MENLO_MD_SCAN_WITH")
         except Exception as e:
-            logging.warning(f"Error configuring scanWith: {e}")
-            # Ensure scanWith has a default value if configuration fails
-            if 'scanWith' not in Config._CONFIG:
-                Config._CONFIG['scanWith'] = {'enabled': False}
+            logging.warning(f"Error configuring headers_scan_with: {e}")
+            # Ensure headers_scan_with has a default value if configuration fails
+            if 'headers_scan_with' not in Config._CONFIG:
+                Config._CONFIG['headers_scan_with'] = ""
 
         
 
