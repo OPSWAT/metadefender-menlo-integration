@@ -66,6 +66,7 @@ class MetaDefenderAPI(ABC):
             "User-Agent": "MenloTornadoIntegration",
             "Range": "bytes=0-0"  # Request only first byte to minimize data transfer
         }
+        headers = self._add_scan_with_header(headers)
         
         try:
             async with AsyncClient() as client:
@@ -137,6 +138,7 @@ class MetaDefenderAPI(ABC):
             'x-forwarded-for': ip,
             'x-real-ip': ip
         }
+        headers = self._add_scan_with_header(headers)
         
         response, status = await self._request_as_json("check_result", fields={"data_id": data_id}, headers=headers)
         
@@ -169,6 +171,7 @@ class MetaDefenderAPI(ABC):
             'x-forwarded-for': ip,
             'x-real-ip': ip
         }
+        headers = self._add_scan_with_header(headers)
         
         response, status = await self._request_as_json("hash_lookup", fields={"hash": hash_value}, headers=headers)
         
@@ -311,6 +314,32 @@ class MetaDefenderAPI(ABC):
             return param_list[0].decode('utf-8') if param_list else None
         except Exception:
             return param
+
+    def _add_scan_with_header(self, headers):
+        """Add scanWith header to Cloud API requests if configured
+        Note: This header is only used for MetaDefender Cloud, not Core
+
+        Args:
+            headers: Dictionary of headers to modify
+
+        Returns:
+            Modified headers dictionary
+        """
+        # Only add scanWith header for Cloud API, not Core API
+        if self.service_name == SERVICE.MetaDefenderCloud:
+            try:
+                if hasattr(self, 'settings') and self.settings and 'headers_scan_with' in self.settings:
+                    scan_with_value = self.settings['headers_scan_with']
+                    
+                    # Add header if value is not empty
+                    if scan_with_value and scan_with_value.strip():
+                        headers['scanWith'] = scan_with_value
+                        
+            except Exception as e:
+                logging.warning(f"Error adding scanWith header: {e}")
+                # Continue without the header if there's an error
+                
+        return headers
 
     @abstractmethod
     def _get_submit_file_headers(self, metadata, apikey, ip):

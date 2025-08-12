@@ -99,6 +99,7 @@ logging:
   logfile: /var/log/md-menlo/app.log # absolute path to the logfile. If path doesn't exist will be created (make sure the user has the right permissions)
   interval: 24 # the interval (in hours) for log rotation
   backup_count: 30 # for how many intervals should the logs be kept (e.g. 30 logs for 24h each -> 30 days logs)
+headers_scan_with: "" # scanWith header value for MetaDefender Cloud API requests (ignored for Core API)
 ```
 
 Menlo requires all communication to be done over https, so either deploy an reverse proxy (nginx) in front of it to handle SSL or use the configuration `https` in the `config.yml`.
@@ -256,6 +257,11 @@ MENLO_MD_FALLBACK_TO_ORIGINAL
   Overwrites: config.yml:fallbackToOriginal
   Description: Send 204 to Menlo when the sanitized version is not available
   Values: true | false
+
+MENLO_MD_HEADERS_SCAN_WITH
+  Overwrites: config.yml:headers_scan_with
+  Description: scanWith header value for MetaDefender Cloud API requests (ignored for Core API)
+  Values: "mdaas" | "mdcore" | "" (empty string = no header)
 ```
 
 ##### Step 3: Configure Menlo Integration

@@ -57,6 +57,16 @@ class Config(object):
         if os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
             Config._CONFIG['fallbackToOriginal'] = os.environ.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"
 
+        # Handle headers_scan_with configuration
+        try:
+            if os.environ.get("MENLO_MD_HEADERS_SCAN_WITH"):
+                Config._CONFIG['headers_scan_with'] = os.environ.get("MENLO_MD_HEADERS_SCAN_WITH")
+        except Exception as e:
+            logging.warning(f"Error configuring headers_scan_with: {e}")
+            # Ensure headers_scan_with has a default value if configuration fails
+            if 'headers_scan_with' not in Config._CONFIG:
+                Config._CONFIG['headers_scan_with'] = ""
+
         
 
     @staticmethod
