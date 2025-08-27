@@ -10,12 +10,31 @@ request_id_context = contextvars.ContextVar("request_id")
 request_context = contextvars.ContextVar("request")
 
 class BaseHandler:
+    _srcuri_cache = {}
+    _filename_cache = {}
 
     def __init__(self):
         self.meta_defender_api = MetaDefenderAPI.get_instance()
         self.client_ip = None
         self.apikey = None
     
+    @classmethod
+    def store_metadata(cls, uuid, srcuri, filename):
+        """Store metadata for a given UUID"""
+        if srcuri:
+            cls._srcuri_cache[uuid] = srcuri
+        if filename:
+            cls._filename_cache[uuid] = filename
+        logging.info(f"Stored metadata for UUID {uuid}: srcuri={srcuri}, filename={filename}")
+
+    @classmethod
+    def get_metadata(cls, uuid):
+        """Get metadata for a given UUID"""
+        srcuri = cls._srcuri_cache.get(uuid)
+        filename = cls._filename_cache.get(uuid)
+        logging.info(f"Retrieved metadata for UUID {uuid}: srcuri={srcuri}, filename={filename}")
+        return srcuri, filename
+
     async def prepare_request(self, request):
         """ 
         Prepare the request context and extract necessary headers.

@@ -82,6 +82,10 @@ class SubmitHandler(BaseHandler):
         try:
             json_response, http_status = await self.meta_defender_api.submit(upload.file, metadata, self.apikey, self.client_ip)
             json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
+
+            if http_status == 200 and 'uuid' in json_response:
+                self.store_metadata(json_response['uuid'], metadata.get('srcuri'), metadata.get('filename'))
+            
             return self.json_response(response, json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
