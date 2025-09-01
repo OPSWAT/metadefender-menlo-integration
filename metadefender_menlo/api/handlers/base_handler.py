@@ -3,15 +3,22 @@ import logging
 import contextvars
 from fastapi.responses import StreamingResponse
 from starlette.background import BackgroundTask
+import boto3
+from metadefender_menlo import api
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 request_id_context = contextvars.ContextVar("request_id")
 request_context = contextvars.ContextVar("request")
-
+dynamodb = boto3.resource(
+    'dynamodb',
+    endpoint_url='http://localhost:8000',
+    region_name='us-east-1',
+    aws_access_key_id='test',
+    aws_secret_access_key='test'
+)
 class BaseHandler:
-    _srcuri_cache = {}
-    _filename_cache = {}
+    _domains_cache = {}
 
     def __init__(self):
         self.meta_defender_api = MetaDefenderAPI.get_instance()
@@ -19,21 +26,12 @@ class BaseHandler:
         self.apikey = None
     
     @classmethod
-    def store_metadata(cls, uuid, srcuri, filename):
-        """Store metadata for a given UUID"""
-        if srcuri:
-            cls._srcuri_cache[uuid] = srcuri
-        if filename:
-            cls._filename_cache[uuid] = filename
-        logging.info(f"Stored metadata for UUID {uuid}: srcuri={srcuri}, filename={filename}")
-
-    @classmethod
-    def get_metadata(cls, uuid):
-        """Get metadata for a given UUID"""
-        srcuri = cls._srcuri_cache.get(uuid)
-        filename = cls._filename_cache.get(uuid)
-        logging.info(f"Retrieved metadata for UUID {uuid}: srcuri={srcuri}, filename={filename}")
-        return srcuri, filename
+    def get_cached_domains(cls, api_key: str) -> list:
+        """Get cached domains for an API key"""
+        if api_key not in cls._domains_cache:
+            api_key_response = dynamodb.Table('menlo').get_item(Key={'id': f'APIKEY#{api_key}'})
+            cls._domains_cache[api_key] = api_key_response.get('Item', {}).get('domains', [])
+        return cls._domains_cache.get(api_key, [])
 
     async def prepare_request(self, request):
         """ 

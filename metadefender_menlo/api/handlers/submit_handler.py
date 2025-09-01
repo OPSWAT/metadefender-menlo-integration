@@ -1,11 +1,13 @@
 import asyncio
 import os
 import logging
-import urllib
+from urllib.parse import urlparse
+import boto3
 from fastapi import Request, Response
 from httpx import AsyncByteStream
 from starlette.datastructures import FormData, UploadFile
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
+from metadefender_menlo.api.handlers.result_handler import ResultHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.responses.submit_response import SubmitResponse
 
@@ -31,8 +33,32 @@ class SubmitHandler(BaseHandler):
     """
     Handler for submitting files to MetaDefender.
     """
+    dynamodb = boto3.resource(
+        'dynamodb',
+        endpoint_url='http://localhost:8000',
+        region_name='us-east-1',
+        aws_access_key_id='test',
+        aws_secret_access_key='test'
+    )
+
     def __init__(self):
         super().__init__()
+
+
+    # def db_connect():
+    #     dynamodb = boto3.resource(
+    #         'dynamodb',
+    #         endpoint_url='http://localhost:8000',
+    #         region_name='us-east-1',
+    #         aws_access_key_id='test',
+    #         aws_secret_access_key='test'
+    #     )
+    #     return dynamodb
+
+    def extract_domain(self, u: str ) -> str:
+        hostname = urlparse(u).hostname or u
+        parts = hostname.split('.')
+        return ".".join(parts[-2:])
 
     async def handle_post(self, request: Request, response: Response):
         if not request.headers.get("content-type").startswith('multipart/'):
@@ -84,7 +110,35 @@ class SubmitHandler(BaseHandler):
             json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
 
             if http_status == 200 and 'uuid' in json_response:
-                self.store_metadata(json_response['uuid'], metadata.get('srcuri'), metadata.get('filename'))
+                table = self.dynamodb.Table('menlo')
+                
+                # #########################################################
+                # TODO: remove this
+                item = {
+                    'id': 'APIKEY#123abc123',
+                    'name': 'allowlist',
+                    'domains': [
+                        'https://link.testfile.org/',
+                        'https://wetransfer.com'
+                    ]
+                }
+                table.put_item(Item=item)
+                # #########################################################
+                
+                domains = self.get_cached_domains('123abc123')  # TODO: Use self.apikey
+                if domains:
+                    print(f'\nFound matching API key! Item: \n{domains}')
+                    domain = self.extract_domain(metadata.get('srcuri', ''))
+                    normalized_domains = {self.extract_domain(d) for d in domains}
+
+                    if domain in normalized_domains:
+                        metadata_item = {
+                            'id': json_response["uuid"], # f'ALLOW#{json_response["uuid"]}'
+                            'filename': metadata.get('filename', '')
+                        }
+                        table.put_item(Item=metadata_item)
+                else:
+                    print('No matching API key found in table')
             
             return self.json_response(response, json_response, http_status)
         except Exception as error:
