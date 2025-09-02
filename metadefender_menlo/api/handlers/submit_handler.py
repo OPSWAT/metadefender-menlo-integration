@@ -7,7 +7,6 @@ from fastapi import Request, Response
 from httpx import AsyncByteStream
 from starlette.datastructures import FormData, UploadFile
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
-from metadefender_menlo.api.handlers.result_handler import ResultHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.responses.submit_response import SubmitResponse
 
