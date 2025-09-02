@@ -10,13 +10,8 @@ from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 request_id_context = contextvars.ContextVar("request_id")
 request_context = contextvars.ContextVar("request")
-dynamodb = boto3.resource(
-    'dynamodb',
-    endpoint_url='http://localhost:8000',
-    region_name='us-east-1',
-    aws_access_key_id='test',
-    aws_secret_access_key='test'
-)
+dynamodb = boto3.resource('dynamodb')
+
 class BaseHandler:
     _domains_cache = {}
 
@@ -29,7 +24,7 @@ class BaseHandler:
     def get_cached_domains(cls, api_key: str) -> list:
         """Get cached domains for an API key"""
         if api_key not in cls._domains_cache:
-            api_key_response = dynamodb.Table('menlo').get_item(Key={'id': f'APIKEY#{api_key}'})
+            api_key_response = dynamodb.Table('dynamodb_menlo').get_item(Key={'id': f'APIKEY#{api_key}'})
             cls._domains_cache[api_key] = api_key_response.get('Item', {}).get('domains', [])
         return cls._domains_cache.get(api_key, [])
 

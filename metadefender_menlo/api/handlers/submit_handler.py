@@ -33,27 +33,11 @@ class SubmitHandler(BaseHandler):
     """
     Handler for submitting files to MetaDefender.
     """
-    dynamodb = boto3.resource(
-        'dynamodb',
-        endpoint_url='http://localhost:8000',
-        region_name='us-east-1',
-        aws_access_key_id='test',
-        aws_secret_access_key='test'
-    )
+    dynamodb = boto3.resource('dynamodb')
 
     def __init__(self):
         super().__init__()
 
-
-    # def db_connect():
-    #     dynamodb = boto3.resource(
-    #         'dynamodb',
-    #         endpoint_url='http://localhost:8000',
-    #         region_name='us-east-1',
-    #         aws_access_key_id='test',
-    #         aws_secret_access_key='test'
-    #     )
-    #     return dynamodb
 
     def extract_domain(self, u: str ) -> str:
         hostname = urlparse(u).hostname or u
@@ -110,30 +94,16 @@ class SubmitHandler(BaseHandler):
             json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
 
             if http_status == 200 and 'uuid' in json_response:
-                table = self.dynamodb.Table('menlo')
+                table = self.dynamodb.Table('dynamodb_menlo')
                 
-                # #########################################################
-                # TODO: remove this
-                item = {
-                    'id': 'APIKEY#123abc123',
-                    'name': 'allowlist',
-                    'domains': [
-                        'https://link.testfile.org/',
-                        'https://wetransfer.com'
-                    ]
-                }
-                table.put_item(Item=item)
-                # #########################################################
-                
-                domains = self.get_cached_domains('123abc123')  # TODO: Use self.apikey
+                domains = self.get_cached_domains(self.apikey)
                 if domains:
-                    print(f'\nFound matching API key! Item: \n{domains}')
                     domain = self.extract_domain(metadata.get('srcuri', ''))
                     normalized_domains = {self.extract_domain(d) for d in domains}
 
                     if domain in normalized_domains:
                         metadata_item = {
-                            'id': json_response["uuid"], # f'ALLOW#{json_response["uuid"]}'
+                            'id': f'ALLOW#{json_response["uuid"]}',
                             'filename': metadata.get('filename', '')
                         }
                         table.put_item(Item=metadata_item)

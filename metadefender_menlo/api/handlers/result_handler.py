@@ -5,56 +5,26 @@ from metadefender_menlo.api.responses.file_analysis import FileAnalyis
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
+dynamodb = boto3.resource('dynamodb')
+
 class ResultHandler(BaseHandler):
     """
     Handler for retrieving the result of a file analysis using its UUID.
     """
     def __init__(self):
         super().__init__()
-        self.domains_whitelist = set()
-
-
-
-    def check_whitelisted_domain(self, src_uri: str, filename: str, response: Response) -> tuple[dict, int] | None:
-        try:
-            domain = self.extract_domain(src_uri)
-            print(f'domain: {domain}')
-            normalized_whitelist = {self.extract_domain(d) for d in self.domains_whitelist}
-            print(f'is domain in normalized_whitelist: {domain in normalized_whitelist}')
-
-            if domain in normalized_whitelist:
-                logging.info(f"Domain {domain} is whitelisted")
-                return self.json_response(response, {
-                    'result': 'completed',
-                    'outcome': 'clean',
-                    'report_url': '',
-                    'filename': filename or '',
-                    'modifications': ['Domain whitelisted']
-                }, 200)
-            return None
-        except Exception as e:
-            logging.error(f"Error processing srcuri: {str(e)}")
-            return None
 
     async def handle_get(self, request: Request, response: Response):
 
         uuid = request.query_params.get('uuid')
         if not uuid:
             return self.json_response(response, {'error': 'UUID parameter is required'}, 400)
-
-        dynamodb = boto3.resource(
-            'dynamodb',
-            endpoint_url='http://localhost:8000',
-            region_name='us-east-1',
-            aws_access_key_id='test',
-            aws_secret_access_key='test'
-        )
         
-        table = dynamodb.Table('menlo')
+        table = dynamodb.Table('dynamodb_menlo')
         
-        item = table.get_item(Key={'id': uuid}).get('Item')
+        item = table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')
         if item:
-            table.delete_item(Key={'id': uuid})
+            table.delete_item(Key={'id': f'ALLOW#{uuid}'})
             
             return self.json_response(response, {
                 'result': 'completed',
@@ -75,10 +45,7 @@ class ResultHandler(BaseHandler):
         try:
             json_response, http_status = await self.meta_defender_api.check_result(uuid, self.apikey, self.client_ip)
             json_response, http_status = await FileAnalyis(self.apikey).handle_response(json_response, http_status)
-            
-            # Delete the metadata item after getting the result
-            table.delete_item(Key={'id': uuid})
-            
+
             return self.json_response(response, json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
