@@ -1,11 +1,8 @@
 import logging
-import boto3
 from fastapi import Request, Response
 from metadefender_menlo.api.responses.file_analysis import FileAnalyis
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-
-dynamodb = boto3.resource('dynamodb')
 
 class ResultHandler(BaseHandler):
     """
@@ -15,24 +12,23 @@ class ResultHandler(BaseHandler):
         super().__init__()
 
     async def handle_get(self, request: Request, response: Response):
-
         uuid = request.query_params.get('uuid')
         if not uuid:
             return self.json_response(response, {'error': 'UUID parameter is required'}, 400)
         
-        table = dynamodb.Table('dynamodb_menlo')
-        
-        item = table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')
-        if item:
-            table.delete_item(Key={'id': f'ALLOW#{uuid}'})
-            
-            return self.json_response(response, {
-                'result': 'completed',
-                'outcome': 'clean',
-                'report_url': '',
-                'filename': item.get('filename', ''),
-                'modifications': ['Domain whitelisted']
-            }, 200)
+        if self.dynamodb:
+            table = self.dynamodb.Table(self.config['allowlist']['db_table_name'])
+            item = table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')
+            if item:
+                table.delete_item(Key={'id': f'ALLOW#{uuid}'})
+                
+                return self.json_response(response, {
+                    'result': 'completed',
+                    'outcome': 'clean',
+                    'report_url': '',
+                    'filename': item.get('filename', ''),
+                    'modifications': ['Domain whitelisted']
+                }, 200)
 
         logging.info("{0} > {1} > {2}".format(
             SERVICE.MenloPlugin, 

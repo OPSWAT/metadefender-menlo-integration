@@ -2,7 +2,6 @@ import asyncio
 import os
 import logging
 from urllib.parse import urlparse
-import boto3
 from fastapi import Request, Response
 from httpx import AsyncByteStream
 from starlette.datastructures import FormData, UploadFile
@@ -32,8 +31,6 @@ class SubmitHandler(BaseHandler):
     """
     Handler for submitting files to MetaDefender.
     """
-    dynamodb = boto3.resource('dynamodb')
-
     def __init__(self):
         super().__init__()
 
@@ -42,6 +39,22 @@ class SubmitHandler(BaseHandler):
         hostname = urlparse(u).hostname or u
         parts = hostname.split('.')
         return ".".join(parts[-2:])
+
+    def add_to_allowlist(self, http_status: int, uuid: str, srcuri: str, filename: str):
+        if http_status == 200 and uuid:
+                table = self.dynamodb.Table(self.config['allowlist']['db_table_name'])
+                
+                domains = self.get_cached_domains(self.apikey)
+                if domains:
+                    domain = self.extract_domain(srcuri)
+                    normalized_domains = {self.extract_domain(d) for d in domains}
+
+                    if domain in normalized_domains:
+                        metadata_item = {
+                            'id': f'ALLOW#{uuid}',
+                            'filename': filename
+                        }
+                        table.put_item(Item=metadata_item)
 
     async def handle_post(self, request: Request, response: Response):
         if not request.headers.get("content-type").startswith('multipart/'):
@@ -92,22 +105,9 @@ class SubmitHandler(BaseHandler):
             json_response, http_status = await self.meta_defender_api.submit(upload.file, metadata, self.apikey, self.client_ip)
             json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
 
-            if http_status == 200 and 'uuid' in json_response:
-                table = self.dynamodb.Table('dynamodb_menlo')
-                
-                domains = self.get_cached_domains(self.apikey)
-                if domains:
-                    domain = self.extract_domain(metadata.get('srcuri', ''))
-                    normalized_domains = {self.extract_domain(d) for d in domains}
-
-                    if domain in normalized_domains:
-                        metadata_item = {
-                            'id': f'ALLOW#{json_response["uuid"]}',
-                            'filename': metadata.get('filename', '')
-                        }
-                        table.put_item(Item=metadata_item)
-                else:
-                    print('No matching API key found in table')
+            uuid = json_response.get('uuid')
+            if self.dynamodb:
+                self.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''))
             
             return self.json_response(response, json_response, http_status)
         except Exception as error:
