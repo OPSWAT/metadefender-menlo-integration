@@ -17,10 +17,9 @@ class ResultHandler(BaseHandler):
             return self.json_response(response, {'error': 'UUID parameter is required'}, 400)
         
         if self.dynamodb:
-            table = self.dynamodb.Table(self.config['allowlist']['db_table_name'])
-            item = table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')
+            item = self.table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')
             if item:
-                table.delete_item(Key={'id': f'ALLOW#{uuid}'})
+                self.table.delete_item(Key={'id': f'ALLOW#{uuid}'})
                 
                 return self.json_response(response, {
                     'result': 'completed',

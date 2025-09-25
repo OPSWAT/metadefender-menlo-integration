@@ -42,7 +42,6 @@ class SubmitHandler(BaseHandler):
 
     def add_to_allowlist(self, http_status: int, uuid: str, srcuri: str, filename: str):
         if http_status == 200 and uuid:
-                table = self.dynamodb.Table(self.config['allowlist']['db_table_name'])
                 
                 domains = self.get_cached_domains(self.apikey)
                 if domains:
@@ -54,7 +53,7 @@ class SubmitHandler(BaseHandler):
                             'id': f'ALLOW#{uuid}',
                             'filename': filename
                         }
-                        table.put_item(Item=metadata_item)
+                        self.table.put_item(Item=metadata_item)
 
     async def handle_post(self, request: Request, response: Response):
         if not request.headers.get("content-type").startswith('multipart/'):
