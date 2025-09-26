@@ -48,7 +48,7 @@ class BaseHandler:
             return []
             
         if api_key not in self.domains_cache:
-            api_key_response = self.dynamodb.Table(self.config['allowlist']['db_table_name']).get_item(Key={'id': f'APIKEY#{api_key}'})
+            api_key_response = self.table.get_item(Key={'id': f'APIKEY#{api_key}'})
             self.domains_cache[api_key] = api_key_response.get('Item', {}).get('domains', [])
         return self.domains_cache.get(api_key, [])
 
