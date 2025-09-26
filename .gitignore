@@ -10,3 +10,5 @@ gitleaks.json
 
 node_modules
 mockserver
+
+aws

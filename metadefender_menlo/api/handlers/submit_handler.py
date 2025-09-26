@@ -1,7 +1,7 @@
 import asyncio
 import os
 import logging
-import urllib
+from urllib.parse import urlparse
 from fastapi import Request, Response
 from httpx import AsyncByteStream
 from starlette.datastructures import FormData, UploadFile
@@ -33,6 +33,27 @@ class SubmitHandler(BaseHandler):
     """
     def __init__(self):
         super().__init__()
+
+
+    def extract_domain(self, u: str ) -> str:
+        hostname = urlparse(u).hostname or u
+        parts = hostname.split('.')
+        return ".".join(parts[-2:])
+
+    def add_to_allowlist(self, http_status: int, uuid: str, srcuri: str, filename: str):
+        if http_status == 200 and uuid:
+                
+                domains = self.get_cached_domains(self.apikey)
+                if domains:
+                    domain = self.extract_domain(srcuri)
+                    normalized_domains = {self.extract_domain(d) for d in domains}
+
+                    if domain in normalized_domains:
+                        metadata_item = {
+                            'id': f'ALLOW#{uuid}',
+                            'filename': filename
+                        }
+                        self.table.put_item(Item=metadata_item)
 
     async def handle_post(self, request: Request, response: Response):
         if not request.headers.get("content-type").startswith('multipart/'):
@@ -82,6 +103,11 @@ class SubmitHandler(BaseHandler):
         try:
             json_response, http_status = await self.meta_defender_api.submit(upload.file, metadata, self.apikey, self.client_ip)
             json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
+
+            uuid = json_response.get('uuid')
+            if self.dynamodb:
+                self.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''))
+            
             return self.json_response(response, json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(

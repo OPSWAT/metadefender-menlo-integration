@@ -12,10 +12,22 @@ class ResultHandler(BaseHandler):
         super().__init__()
 
     async def handle_get(self, request: Request, response: Response):
-
         uuid = request.query_params.get('uuid')
         if not uuid:
             return self.json_response(response, {'error': 'UUID parameter is required'}, 400)
+        
+        if self.dynamodb:
+            item = self.table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')
+            if item:
+                self.table.delete_item(Key={'id': f'ALLOW#{uuid}'})
+                
+                return self.json_response(response, {
+                    'result': 'completed',
+                    'outcome': 'clean',
+                    'report_url': '',
+                    'filename': item.get('filename', ''),
+                    'modifications': ['Domain whitelisted']
+                }, 200)
 
         logging.info("{0} > {1} > {2}".format(
             SERVICE.MenloPlugin, 
@@ -28,6 +40,7 @@ class ResultHandler(BaseHandler):
         try:
             json_response, http_status = await self.meta_defender_api.check_result(uuid, self.apikey, self.client_ip)
             json_response, http_status = await FileAnalyis(self.apikey).handle_response(json_response, http_status)
+
             return self.json_response(response, json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
