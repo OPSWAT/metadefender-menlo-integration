@@ -23,6 +23,10 @@ class SanitizedFileHandler(BaseHandler):
 
         await self.prepare_request(request)
 
+        resp = None
+        client = None
+        http_status = None
+
         try:
             resp, http_status, client = await self.meta_defender_api.sanitized_file(uuid, self.apikey, self.client_ip)
             
@@ -43,6 +47,12 @@ class SanitizedFileHandler(BaseHandler):
                 {"error": repr(error)}
             ))
             return self.json_response(response, {}, 500)
+        finally:
+            if http_status != 200:
+                if hasattr(resp, "aclose"):
+                    await resp.aclose()
+                if hasattr(client, "aclose"):
+                    await client.aclose()
 
 async def file_handler(request: Request, response: Response):
     return await SanitizedFileHandler().handle_get(request, response)
