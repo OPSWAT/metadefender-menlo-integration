@@ -31,7 +31,16 @@ logging:
     enabled: false
     arn: ''
     region: ''
-
+timeout:
+  submit:
+    enabled: false
+    value: null
+  sanitized:
+    enabled: false
+    value: null
+  result:
+    enabled: true
+    value: 0.01
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
 headers_scan_with: ""
