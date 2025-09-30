@@ -31,6 +31,10 @@ logging:
     enabled: false
     arn: ''
     region: ''
+allowlist:
+  enabled: false
+  db_table_name: 'dynamodb_menlo'
+  aws_profile: 'default'
 timeout:
   submit:
     enabled: false
