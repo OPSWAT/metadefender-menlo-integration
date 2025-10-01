@@ -19,9 +19,15 @@ class ResultHandler(BaseHandler):
     Handler for retrieving the result of a file analysis using its UUID.
     """
     timeout = timeout
-    print('### timeout: ', timeout)
+
     def __init__(self):
         super().__init__()
+
+    async def _get_and_process_result(self, uuid: str):
+        """Get result from MetaDefender and process the response"""
+        json_response, http_status = await self.meta_defender_api.check_result(uuid, self.apikey, self.client_ip)
+        json_response, http_status = await FileAnalyis(self.apikey).handle_response(json_response, http_status)
+        return json_response, http_status
 
     async def handle_get(self, request: Request, response: Response):
         uuid = request.query_params.get('uuid')
@@ -47,7 +53,7 @@ class ResultHandler(BaseHandler):
             {"method": "GET", "endpoint": "/api/v1/result/%s" % uuid}
         ))
         
-        await self.prepare_request(request) # TODO: also do the timeout here for request (to MDCL)
+        await self.prepare_request(request)
 
         try:
             timeout_value = None
@@ -59,13 +65,11 @@ class ResultHandler(BaseHandler):
 
             if timeout_value is not None:
                 json_response, http_status = await asyncio.wait_for(
-                    self.meta_defender_api.check_result(uuid, self.apikey, self.client_ip),
+                    self._get_and_process_result(uuid),
                     timeout=timeout_value
                 )
             else:
-                json_response, http_status = await self.meta_defender_api.check_result(uuid, self.apikey, self.client_ip)
-
-            json_response, http_status = await FileAnalyis(self.apikey).handle_response(json_response, http_status)
+                json_response, http_status = await self._get_and_process_result(uuid)
 
             return self.json_response(response, json_response, http_status)
         except asyncio.TimeoutError:
@@ -74,8 +78,13 @@ class ResultHandler(BaseHandler):
                 TYPE.Response, 
                 {"error": f"Timeout while retrieving result for {uuid}"}
             ))
-            print('### timeouting...')
-            return self.json_response(response, {}, 500)
+            return self.json_response(response, {
+                'result': 'completed',
+                'outcome': 'error',
+                'report_url': '',
+                'filename': '',
+                'modifications': [f'Timeout while retrieving result for {uuid}']
+            }, 200)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
