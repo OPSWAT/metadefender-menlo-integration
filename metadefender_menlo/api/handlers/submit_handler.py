@@ -116,6 +116,8 @@ class SubmitHandler(BaseHandler):
                 {"error": repr(error)}
             ))
             return self.json_response(response, {}, 500)
+        finally:
+            await upload.close()
 
 async def submit_handler(request: Request, response: Response):
     return await SubmitHandler().handle_post(request, response)
