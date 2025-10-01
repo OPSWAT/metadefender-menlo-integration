@@ -95,7 +95,7 @@ class SubmitHandler(BaseHandler):
         # form data
         metadata = {}
         metadata['userid'] = form.get("userid")
-        metadata['srcuri'] = form.get("srcuri")
+        metadata['srcuri'] = urlparse(form.get("srcuri")).hostname
         metadata['filename'] = form.get("filename") or upload.filename
         metadata['content-length'] = content_length
         metadata = {k: v for k, v in metadata.items() if v is not None}
