@@ -24,8 +24,8 @@ class ResultHandler(BaseHandler):
         try:
             timeout_value = None
             try:
-                if self.timeout is not None:
-                    timeout_value = float(self.timeout)
+                if self.result_endpoint_timeout is not None:
+                    timeout_value = float(self.result_endpoint_timeout)
             except Exception:
                 timeout_value = None
 
@@ -44,7 +44,6 @@ class ResultHandler(BaseHandler):
                 TYPE.Response, 
                 {"error": f"Timeout while retrieving result for {uuid}"}
             ))
-            print('### timeouting...')
             return self.json_response(response, {
                 'result': 'completed',
                 'outcome': 'error',

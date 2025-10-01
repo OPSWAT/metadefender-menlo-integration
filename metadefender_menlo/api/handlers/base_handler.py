@@ -15,7 +15,8 @@ domains_cache = {}
 dynamodb = None
 table = None
 config = None
-timeout = None
+submit_endpoint_timeout = None
+result_endpoint_timeout = None
 
 with open('config.yml', 'r') as file:
     config = yaml.safe_load(file)
@@ -31,9 +32,14 @@ if config['allowlist'].get('enabled'):
 
 
 if config['timeout']['result']['enabled']:
-    timeout = config['timeout']['result']['value']
+    result_endpoint_timeout = config['timeout']['result']['value']
 else:
-    timeout = None 
+    result_endpoint_timeout = None 
+
+if config['timeout']['submit']['enabled']:
+    submit_endpoint_timeout = config['timeout']['submit']['value']
+else:
+    submit_endpoint_timeout = None 
 
 class BaseHandler:
     """
@@ -43,8 +49,9 @@ class BaseHandler:
     domains_cache = domains_cache
     dynamodb = dynamodb
     table = table
-    timeout = timeout
-
+    result_endpoint_timeout = result_endpoint_timeout
+    submit_endpoint_timeout = submit_endpoint_timeout
+    
     def __init__(self):
         self.meta_defender_api = MetaDefenderAPI.get_instance()
         self.client_ip = None

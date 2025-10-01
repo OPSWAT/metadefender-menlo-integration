@@ -34,6 +34,47 @@ class SubmitHandler(BaseHandler):
     def __init__(self):
         super().__init__()
 
+    async def _get_and_process_result(self, upload: UploadFile, metadata: dict):
+        json_response, http_status = await self.meta_defender_api.submit(upload.file, metadata, self.apikey, self.client_ip)
+        json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
+        return json_response, http_status
+
+    async def get_uuid_and_add_to_allowlist(self, json_response: dict, http_status: int, metadata: dict):
+        uuid = json_response.get('uuid')
+        if self.dynamodb:
+            self.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''))
+
+    async def get_timeout(self, upload: UploadFile, metadata: dict, response: Response):
+        try:
+            timeout_value = None
+            try:
+                if self.submit_endpoint_timeout is not None:
+                    timeout_value = float(self.submit_endpoint_timeout)
+            except Exception:
+                timeout_value = None
+
+            if timeout_value is not None:
+                json_response, http_status = await asyncio.wait_for(
+                    self._get_and_process_result(upload, metadata),
+                    timeout=timeout_value
+                )
+            else:
+                json_response, http_status = await self._get_and_process_result(upload, metadata)
+
+            await self.get_uuid_and_add_to_allowlist(json_response, http_status, metadata)
+            
+            return self.json_response(response, json_response, http_status)
+    
+        except asyncio.TimeoutError:
+            logging.error("{0} > {1} > {2}".format(
+                self.meta_defender_api.service_name, 
+                TYPE.Response, 
+                {"error": "Timeout while submitting file"}
+            ))
+            return self.json_response(response, {
+                'result': 'skip',
+                'uuid': ''
+            }, 500)
 
     def extract_domain(self, u: str ) -> str:
         hostname = urlparse(u).hostname or u
@@ -101,14 +142,7 @@ class SubmitHandler(BaseHandler):
         metadata = {k: v for k, v in metadata.items() if v is not None}
         
         try:
-            json_response, http_status = await self.meta_defender_api.submit(upload.file, metadata, self.apikey, self.client_ip)
-            json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
-
-            uuid = json_response.get('uuid')
-            if self.dynamodb:
-                self.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''))
-            
-            return self.json_response(response, json_response, http_status)
+            return await self.get_timeout(upload, metadata, response)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
