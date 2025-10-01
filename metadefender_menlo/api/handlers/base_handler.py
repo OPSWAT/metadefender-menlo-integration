@@ -11,12 +11,14 @@ from metadefender_menlo.api.log_types import SERVICE, TYPE
 request_id_context = contextvars.ContextVar("request_id")
 request_context = contextvars.ContextVar("request")
 
-with open('config.yml', 'r') as file:
-    config = yaml.safe_load(file)
-    
 domains_cache = {}
 dynamodb = None
 table = None
+config = None
+timeout = None
+
+with open('config.yml', 'r') as file:
+    config = yaml.safe_load(file)
 
 if config['allowlist'].get('enabled'):
     try:
@@ -27,6 +29,12 @@ if config['allowlist'].get('enabled'):
         dynamodb = None
         table = None
 
+
+if config['timeout']['result']['enabled']:
+    timeout = config['timeout']['result']['value']
+else:
+    timeout = None 
+
 class BaseHandler:
     """
     Base handler class that provides common functionality for all handlers.
@@ -35,6 +43,7 @@ class BaseHandler:
     domains_cache = domains_cache
     dynamodb = dynamodb
     table = table
+    timeout = timeout
 
     def __init__(self):
         self.meta_defender_api = MetaDefenderAPI.get_instance()
