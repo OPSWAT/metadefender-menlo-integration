@@ -1,16 +1,12 @@
 import logging
 import asyncio
-import yaml
 from fastapi import Request, Response
 from metadefender_menlo.api.responses.file_analysis import FileAnalyis
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
-with open('config.yml', 'r') as file:
-    config = yaml.safe_load(file)
-
-if config['timeout']['result']['enabled']:
-    timeout = config['timeout']['result']['value']
+if BaseHandler.config['timeout']['result']['enabled']:
+    timeout = BaseHandler.config['timeout']['result']['value']
 else:
     timeout = None 
 
@@ -78,6 +74,7 @@ class ResultHandler(BaseHandler):
                 TYPE.Response, 
                 {"error": f"Timeout while retrieving result for {uuid}"}
             ))
+            print('### timeouting...')
             return self.json_response(response, {
                 'result': 'completed',
                 'outcome': 'error',
