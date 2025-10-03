@@ -18,6 +18,7 @@ config = None
 submit_endpoint_timeout = None
 result_endpoint_timeout = None
 sanitized_file_endpoint_timeout = None
+check_endpoint_timeout = None
 
 with open('config.yml', 'r') as file:
     config = yaml.safe_load(file)
@@ -47,6 +48,11 @@ if config['timeout']['sanitized']['enabled']:
 else:
     sanitized_file_endpoint_timeout = None 
 
+if config['timeout']['check']['enabled']:
+    check_endpoint_timeout = config['timeout']['check']['value']
+else:
+    check_endpoint_timeout = None
+
 class BaseHandler:
     """
     Base handler class that provides common functionality for all handlers.
@@ -58,7 +64,8 @@ class BaseHandler:
     result_endpoint_timeout = result_endpoint_timeout
     submit_endpoint_timeout = submit_endpoint_timeout
     sanitized_file_endpoint_timeout = sanitized_file_endpoint_timeout
-    
+    check_endpoint_timeout = check_endpoint_timeout
+
     def __init__(self):
         self.meta_defender_api = MetaDefenderAPI.get_instance()
         self.client_ip = None

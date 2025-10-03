@@ -45,6 +45,9 @@ timeout:
   result:
     enabled: false
     value: null
+  check:
+    enabled: false
+    value: null
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
 headers_scan_with: ""

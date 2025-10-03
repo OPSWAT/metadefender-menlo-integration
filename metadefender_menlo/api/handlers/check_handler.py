@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from fastapi import Request, Response
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 from metadefender_menlo.api.responses.check_existing import CheckExisting
@@ -10,6 +11,37 @@ class CheckHandler(BaseHandler):
     """
     def __init__(self):
         super().__init__()
+
+    async def _get_and_process_result(self, sha256: str, response: Response):
+        json_response, http_status = await self.meta_defender_api.check_hash(sha256, self.apikey, self.client_ip)
+        json_response, http_status = await CheckExisting(self.apikey).handle_response(json_response, http_status)
+        return response, json_response, http_status
+    
+    async def get_timeout(self, sha256: str, response: Response):
+        try:
+            timeout_value = None
+            try:
+                if self.check_endpoint_timeout is not None:
+                    timeout_value = float(self.check_endpoint_timeout)
+            except Exception: 
+                timeout_value = None
+            
+            if timeout_value is not None:
+                json_response, http_status = await asyncio.wait_for(
+                    self._get_and_process_result(sha256, response),
+                    timeout=timeout_value
+                )
+            else:
+                response, json_response, http_status = await self._get_and_process_result(sha256, response)
+
+            return self.json_response(response, json_response, http_status)
+        except asyncio.TimeoutError:
+            logging.error("{0} > {1} > {2}".format(
+                self.meta_defender_api.service_name, 
+                TYPE.Response, 
+                {"error": f"Timeout while retrieving check for existing report for sha256:{sha256}"}
+            ))
+            return self.json_response(response, {}, 500)
 
     async def handle_get(self, request: Request, response: Response):
         sha256 = request.query_params.get('sha256')
@@ -25,9 +57,7 @@ class CheckHandler(BaseHandler):
         ))
         
         try:
-            json_response, http_status = await self.meta_defender_api.check_hash(sha256, self.apikey, self.client_ip)
-            json_response, http_status = await CheckExisting(self.apikey).handle_response(json_response, http_status)
-            return self.json_response(response, json_response, http_status)
+            return await self.get_timeout(sha256, response)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
