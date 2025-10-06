@@ -35,6 +35,10 @@ allowlist:
   enabled: false
   db_table_name: 'dynamodb_menlo'
   aws_profile: 'default'
+resource:
+  enabled: false
+  softlimit: null
+  hardlimit: null
 
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
