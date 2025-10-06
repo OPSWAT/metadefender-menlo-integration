@@ -1,12 +1,21 @@
 import os
 import yaml
 import typing
+import boto3
+import logging
 
 class Config(object):
     """Config
     """
 
     _CONFIG: typing.Optional[dict] = None
+    _domains_cache: dict = {}
+    _dynamodb = None
+    _table = None
+    _submit_endpoint_timeout = None
+    _result_endpoint_timeout = None
+    _sanitized_file_endpoint_timeout = None
+    _check_endpoint_timeout = None
 
     def __init__(self, config_file = None):
         if config_file is None:
@@ -29,7 +38,7 @@ class Config(object):
         else:
             try:
                 Config._CONFIG['apikey'] = Config._CONFIG['api']["params"]["apikey"]
-            except Exception as error:
+            except Exception:
                 Config._CONFIG['apikey'] = None
         
         if os.environ.get("MDCLOUD_URL", os.environ.get("MENLO_MD_URL")):
@@ -38,7 +47,7 @@ class Config(object):
             try:
                 api_type = Config._CONFIG["api"]["type"]
                 Config._CONFIG['serverUrl'] = Config._CONFIG["api"]["url"][api_type]
-            except Exception as error:
+            except Exception:
                 Config._CONFIG['serverUrl'] = "http://localhost:8008"
         
         if os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN")):
@@ -67,7 +76,32 @@ class Config(object):
             if 'headers_scan_with' not in Config._CONFIG:
                 Config._CONFIG['headers_scan_with'] = ""
 
-        
+        self._init_aws_resources()
+        self._init_timeouts()
+
+    
+    def _init_aws_resources(self):
+        if Config._CONFIG['allowlist'].get('enabled'):
+            try:
+                session = boto3.Session(profile_name=Config._CONFIG['allowlist'].get('aws_profile', 'default'))
+                Config._dynamodb = session.resource('dynamodb')
+                Config._table = Config._dynamodb.Table(Config._CONFIG['allowlist']['db_table_name'])
+            except Exception:
+                Config._dynamodb = None
+                Config._table = None
+    
+    def _init_timeouts(self):
+        if Config._CONFIG['timeout']['result']['enabled']:
+            Config._result_endpoint_timeout = Config._CONFIG['timeout']['result']['value']
+
+        if Config._CONFIG['timeout']['submit']['enabled']:
+            Config._submit_endpoint_timeout = Config._CONFIG['timeout']['submit']['value']
+
+        if Config._CONFIG['timeout']['sanitized']['enabled']:
+            Config._sanitized_file_endpoint_timeout = Config._CONFIG['timeout']['sanitized']['value']
+
+        if Config._CONFIG['timeout']['check']['enabled']:
+            Config._check_endpoint_timeout = Config._CONFIG['timeout']['check']['value']
 
     @staticmethod
     def get_all():
@@ -76,4 +110,42 @@ class Config(object):
     @staticmethod
     def get(path):
         return Config._CONFIG[path] if path in Config._CONFIG else None
+    
+    @staticmethod
+    def get_domains_cache():
+        return Config._domains_cache
+    
+    @staticmethod
+    def get_dynamodb():
+        return Config._dynamodb
+    
+    @staticmethod
+    def get_table():
+        return Config._table
+    
+    @staticmethod
+    def get_submit_endpoint_timeout():
+        return Config._submit_endpoint_timeout
+    
+    @staticmethod
+    def get_result_endpoint_timeout():
+        return Config._result_endpoint_timeout
+    
+    @staticmethod
+    def get_sanitized_file_endpoint_timeout():
+        return Config._sanitized_file_endpoint_timeout
+    
+    @staticmethod
+    def get_check_endpoint_timeout():
+        return Config._check_endpoint_timeout
+    
+    @staticmethod
+    def get_cached_domains(api_key: str) -> list:
+        if not Config._dynamodb:
+            return []
+            
+        if api_key not in Config._domains_cache:
+            api_key_response = Config._table.get_item(Key={'id': f'APIKEY#{api_key}'})
+            Config._domains_cache[api_key] = api_key_response.get('Item', {}).get('domains', [])
+        return Config._domains_cache.get(api_key, [])
         

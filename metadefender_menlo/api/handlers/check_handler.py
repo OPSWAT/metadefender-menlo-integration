@@ -17,7 +17,7 @@ class CheckHandler(BaseHandler):
         json_response, http_status = await CheckExisting(self.apikey).handle_response(json_response, http_status)
         return response, json_response, http_status
     
-    async def get_timeout(self, sha256: str, response: Response):
+    async def handle_api_request_with_timeout(self, sha256: str, response: Response):
         try:
             timeout_value = None
             try:
@@ -57,7 +57,7 @@ class CheckHandler(BaseHandler):
         ))
         
         try:
-            return await self.get_timeout(sha256, response)
+            return await self.handle_api_request_with_timeout(sha256, response)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 

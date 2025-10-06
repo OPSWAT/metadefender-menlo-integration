@@ -20,7 +20,7 @@ class ResultHandler(BaseHandler):
         json_response, http_status = await FileAnalyis(self.apikey).handle_response(json_response, http_status)
         return json_response, http_status
         
-    async def get_timeout(self, uuid: str, response: Response):
+    async def handle_api_request_with_timeout(self, uuid: str, response: Response):
         try:
             timeout_value = None
             try:
@@ -79,7 +79,7 @@ class ResultHandler(BaseHandler):
         await self.prepare_request(request)
 
         try:
-            return await self.get_timeout(uuid, response)
+            return await self.handle_api_request_with_timeout(uuid, response)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 

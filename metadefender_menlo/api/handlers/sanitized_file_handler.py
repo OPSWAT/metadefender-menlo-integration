@@ -20,7 +20,7 @@ class SanitizedFileHandler(BaseHandler):
         
         return resp, http_status, client
 
-    async def get_timeout(self, uuid: str, response: Response):
+    async def handle_api_request_with_timeout(self, uuid: str, response: Response):
         try:
             timeout_value = None
             try:
@@ -69,7 +69,7 @@ class SanitizedFileHandler(BaseHandler):
         await self.prepare_request(request)
 
         try:
-            return await self.get_timeout(uuid, response)
+            return await self.handle_api_request_with_timeout(uuid, response)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 

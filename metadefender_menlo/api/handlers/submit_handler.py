@@ -44,7 +44,7 @@ class SubmitHandler(BaseHandler):
         if self.dynamodb:
             self.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''))
 
-    async def get_timeout(self, upload: UploadFile, metadata: dict, response: Response):
+    async def handle_api_request_with_timeout(self, upload: UploadFile, metadata: dict, response: Response):
         try:
             timeout_value = None
             try:
@@ -142,7 +142,7 @@ class SubmitHandler(BaseHandler):
         metadata = {k: v for k, v in metadata.items() if v is not None}
         
         try:
-            return await self.get_timeout(upload, metadata, response)
+            return await self.handle_api_request_with_timeout(upload, metadata, response)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
