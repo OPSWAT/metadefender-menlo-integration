@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 import logging
 import contextvars
@@ -5,7 +6,6 @@ from fastapi.responses import StreamingResponse
 from starlette.background import BackgroundTask
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-from metadefender_menlo.api.config import Config
 
 request_id_context = contextvars.ContextVar("request_id")
 request_context = contextvars.ContextVar("request")
@@ -19,45 +19,9 @@ class BaseHandler:
         self.meta_defender_api = MetaDefenderAPI.get_instance()
         self.client_ip = None
         self.apikey = None
+        self.handler_timeout = None
     
-    @property
-    def config(self):
-        return Config.get_all()
-    
-    @property
-    def domains_cache(self):
-        return Config.get_domains_cache()
-    
-    @property
-    def dynamodb(self):
-        return Config.get_dynamodb()
-    
-    @property
-    def table(self):
-        return Config.get_table()
-    
-    @property
-    def result_endpoint_timeout(self):
-        return Config.get_result_endpoint_timeout()
-    
-    @property
-    def submit_endpoint_timeout(self):
-        return Config.get_submit_endpoint_timeout()
-    
-    @property
-    def sanitized_file_endpoint_timeout(self):
-        return Config.get_sanitized_file_endpoint_timeout()
-    
-    @property
-    def check_endpoint_timeout(self):
-        return Config.get_check_endpoint_timeout()
-    
-    @classmethod
-    def get_cached_domains(cls, api_key: str) -> list:
-        """Get cached domains for an API key"""
-        return Config.get_cached_domains(api_key)
-
-    async def prepare_request(self, request):
+    def prepare_request(self, request):
         """ 
         Prepare the request context and extract necessary headers.
         This method sets the request context and extracts the client IP and API key from the request headers.
@@ -123,3 +87,17 @@ class BaseHandler:
             },
             background=BackgroundTask(cleanup)
         )
+    
+    async def process_result_with_timeout(self, *args):
+        """Process the result with an optional timeout. Subclasses should implement process_result."""
+        if self.handler_timeout is not None:
+            return await asyncio.wait_for(
+                self.process_result(*args),
+                timeout=self.handler_timeout
+            )
+        else:
+            return await self.process_result(*args)
+        
+    async def process_result(self):
+        """Process the result. This method should be implemented by subclasses."""
+        raise NotImplementedError("_get_and_process_result must be implemented by subclasses")

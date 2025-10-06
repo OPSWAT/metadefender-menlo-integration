@@ -1,5 +1,4 @@
 import logging
-import asyncio
 from fastapi import Request, Response
 from metadefender_menlo.api.handlers.base_handler import BaseHandler
 from metadefender_menlo.api.responses.check_existing import CheckExisting
@@ -9,46 +8,22 @@ class CheckHandler(BaseHandler):
     """
     Handler for checking the status of a file using its SHA256 hash.
     """
-    def __init__(self):
+    def __init__(self, config=None):
         super().__init__()
+        if config['timeout']['check']['enabled']:
+            self.handler_timeout = config['timeout']['check']['value']
 
-    async def _get_and_process_result(self, sha256: str, response: Response):
+    async def process_result(self, sha256: str):
         json_response, http_status = await self.meta_defender_api.check_hash(sha256, self.apikey, self.client_ip)
         json_response, http_status = await CheckExisting(self.apikey).handle_response(json_response, http_status)
-        return response, json_response, http_status
+        return json_response, http_status
     
-    async def handle_api_request_with_timeout(self, sha256: str, response: Response):
-        try:
-            timeout_value = None
-            try:
-                if self.check_endpoint_timeout is not None:
-                    timeout_value = float(self.check_endpoint_timeout)
-            except Exception: 
-                timeout_value = None
-            
-            if timeout_value is not None:
-                json_response, http_status = await asyncio.wait_for(
-                    self._get_and_process_result(sha256, response),
-                    timeout=timeout_value
-                )
-            else:
-                response, json_response, http_status = await self._get_and_process_result(sha256, response)
-
-            return self.json_response(response, json_response, http_status)
-        except asyncio.TimeoutError:
-            logging.error("{0} > {1} > {2}".format(
-                self.meta_defender_api.service_name, 
-                TYPE.Response, 
-                {"error": f"Timeout while retrieving check for existing report for sha256:{sha256}"}
-            ))
-            return self.json_response(response, {}, 500)
-
     async def handle_get(self, request: Request, response: Response):
         sha256 = request.query_params.get('sha256')
         if not sha256:
             return self.json_response(response, {'error': 'SHA256 parameter is required'}, 400)
 
-        await self.prepare_request(request)
+        self.prepare_request(request)
         
         logging.info("{0} > {1} > {2}".format(
             SERVICE.MenloPlugin, 
@@ -57,7 +32,8 @@ class CheckHandler(BaseHandler):
         ))
         
         try:
-            return await self.handle_api_request_with_timeout(sha256, response)
+            json_response, http_status = await self.process_result_with_timeout(sha256)
+            return self.json_response(response, json_response, http_status)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
@@ -67,4 +43,4 @@ class CheckHandler(BaseHandler):
             return self.json_response(response, {}, 500)
 
 async def check_handler(request: Request, response: Response):
-    return await CheckHandler().handle_get(request, response)
+    return await CheckHandler(request.app.state.config).handle_get(request, response)

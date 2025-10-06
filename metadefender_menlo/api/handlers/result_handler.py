@@ -13,44 +13,14 @@ class ResultHandler(BaseHandler):
 
     def __init__(self):
         super().__init__()
+        if self.config['timeout']['result']['enabled']:
+            self.handler_timeout = self.config['timeout']['result']['value']
 
-    async def _get_and_process_result(self, uuid: str):
+    async def process_result(self, uuid: str):
         """Get result from MetaDefender and process the response"""
         json_response, http_status = await self.meta_defender_api.check_result(uuid, self.apikey, self.client_ip)
         json_response, http_status = await FileAnalyis(self.apikey).handle_response(json_response, http_status)
         return json_response, http_status
-        
-    async def handle_api_request_with_timeout(self, uuid: str, response: Response):
-        try:
-            timeout_value = None
-            try:
-                if self.result_endpoint_timeout is not None:
-                    timeout_value = float(self.result_endpoint_timeout)
-            except Exception:
-                timeout_value = None
-
-            if timeout_value is not None:
-                json_response, http_status = await asyncio.wait_for(
-                    self._get_and_process_result(uuid),
-                    timeout=timeout_value
-                )
-            else:
-                json_response, http_status = await self._get_and_process_result(uuid)
-
-            return self.json_response(response, json_response, http_status)
-        except asyncio.TimeoutError:
-            logging.error("{0} > {1} > {2}".format(
-                self.meta_defender_api.service_name, 
-                TYPE.Response, 
-                {"error": f"Timeout while retrieving result for {uuid}"}
-            ))
-            return self.json_response(response, {
-                'result': 'completed',
-                'outcome': 'error',
-                'report_url': '',
-                'filename': '',
-                'modifications': [f'Timeout while retrieving result for {uuid}']
-            }, 200)
 
     async def handle_get(self, request: Request, response: Response):
         uuid = request.query_params.get('uuid')
@@ -79,7 +49,21 @@ class ResultHandler(BaseHandler):
         await self.prepare_request(request)
 
         try:
-            return await self.handle_api_request_with_timeout(uuid, response)
+            json_response, http_status = await self.process_result_with_timeout(uuid, response=response)
+            return self.json_response(response, json_response, http_status)
+        except asyncio.TimeoutError:
+            logging.error("{0} > {1} > {2}".format(
+                self.meta_defender_api.service_name, 
+                TYPE.Response, 
+                {"error": f"Timeout while retrieving result for {uuid}"}
+            ))
+            return self.json_response(response, {
+                'result': 'completed',
+                'outcome': 'error',
+                'report_url': '',
+                'filename': '',
+                'modifications': [f'Timeout while retrieving result for {uuid}']
+            }, 200)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
@@ -89,4 +73,4 @@ class ResultHandler(BaseHandler):
             return self.json_response(response, {}, 500)
 
 async def result_handler(request: Request, response: Response):
-    return await ResultHandler().handle_get(request, response)
+    return await ResultHandler(request.app.state.config).handle_get(request, response)
