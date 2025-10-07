@@ -10,7 +10,7 @@ class CheckHandler(BaseHandler):
     """
     def __init__(self, config=None):
         super().__init__(config)
-        if config['timeout']['check']['enabled']:
+        if config and config['timeout']['check']['enabled']:
             self.handler_timeout = config['timeout']['check']['value']
 
     async def process_result(self, sha256: str):

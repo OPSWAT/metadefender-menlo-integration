@@ -2,6 +2,7 @@ import asyncio
 import uuid
 import logging
 import contextvars
+from metadefender_menlo.api.utils.domain_allowlist import DomainAllowlistUtils
 from fastapi.responses import StreamingResponse
 from starlette.background import BackgroundTask
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
@@ -20,7 +21,8 @@ class BaseHandler:
         self.client_ip = None
         self.apikey = None
         self.handler_timeout = None
-        self.coming = config
+        self.config = config
+        self.allowlist_handler = DomainAllowlistUtils(config)
     
     def prepare_request(self, request):
         """ 

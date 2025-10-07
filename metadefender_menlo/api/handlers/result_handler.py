@@ -11,9 +11,9 @@ class ResultHandler(BaseHandler):
     Handler for retrieving the result of a file analysis using its UUID.
     """
 
-    def __init__(self):
-        super().__init__()
-        if self.config['timeout']['result']['enabled']:
+    def __init__(self, config=None):
+        super().__init__(config)
+        if self.config and self.config['timeout']['result']['enabled']:
             self.handler_timeout = self.config['timeout']['result']['value']
 
     async def process_result(self, uuid: str):
@@ -27,29 +27,20 @@ class ResultHandler(BaseHandler):
         if not uuid:
             return self.json_response(response, {'error': 'UUID parameter is required'}, 400)
         
-        if self.dynamodb:
-            item = self.table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')
-            if item:
-                self.table.delete_item(Key={'id': f'ALLOW#{uuid}'})
-                
-                return self.json_response(response, {
-                    'result': 'completed',
-                    'outcome': 'clean',
-                    'report_url': '',
-                    'filename': item.get('filename', ''),
-                    'modifications': ['Domain whitelisted']
-                }, 200)
-
+        if self.allowlist_handler.is_allowlist_enabled(uuid):
+            allowlist_response, status_code = self.allowlist_handler.is_in_allowlist(uuid)
+            if allowlist_response is not None:
+                return self.json_response(response, allowlist_response, status_code)
         logging.info("{0} > {1} > {2}".format(
             SERVICE.MenloPlugin, 
             TYPE.Request, 
             {"method": "GET", "endpoint": "/api/v1/result/%s" % uuid}
         ))
         
-        await self.prepare_request(request)
+        self.prepare_request(request)
 
         try:
-            json_response, http_status = await self.process_result_with_timeout(uuid, response=response)
+            json_response, http_status = await self.process_result_with_timeout(uuid)
             return self.json_response(response, json_response, http_status)
         except asyncio.TimeoutError:
             logging.error("{0} > {1} > {2}".format(
