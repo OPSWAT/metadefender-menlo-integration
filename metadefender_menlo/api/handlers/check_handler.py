@@ -9,7 +9,7 @@ class CheckHandler(BaseHandler):
     Handler for checking the status of a file using its SHA256 hash.
     """
     def __init__(self, config=None):
-        super().__init__()
+        super().__init__(config)
         if config['timeout']['check']['enabled']:
             self.handler_timeout = config['timeout']['check']['value']
 

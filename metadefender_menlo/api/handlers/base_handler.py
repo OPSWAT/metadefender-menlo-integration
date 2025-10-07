@@ -15,11 +15,12 @@ class BaseHandler:
     Base handler class that provides common functionality for all handlers.
     """
 
-    def __init__(self):
+    def __init__(self, config = None):
         self.meta_defender_api = MetaDefenderAPI.get_instance()
         self.client_ip = None
         self.apikey = None
         self.handler_timeout = None
+        self.coming = config
     
     def prepare_request(self, request):
         """ 
