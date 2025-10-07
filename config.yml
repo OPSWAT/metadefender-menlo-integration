@@ -32,7 +32,7 @@ logging:
     arn: ''
     region: ''
 allowlist:
-  enabled: true
+  enabled: false
   db_table_name: 'dynamodb_menlo'
   aws_profile: 'default'
 timeout:
