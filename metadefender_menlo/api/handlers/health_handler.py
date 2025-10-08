@@ -6,8 +6,7 @@ class HealthHandler(BaseHandler):
     Handler for checking the health of the Menlo integration.
     """
     def __init__(self, config=None):
-        super().__init__()
-        self.config = config
+        super().__init__(config)
 
     async def handle_request(self, request: Request, response: Response):
         return {
