@@ -23,12 +23,10 @@ app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None)
 def setup_resource_limits(config):
     """Set resource limits based on configuration."""
     try:
-        if (config.get("resource", {}).get("enabled") and
-            config.get("resource", {}).get("softlimit") is not None and 
-            config.get("resource", {}).get("hardlimit") is not None):
-            
-            softlimit = config["resource"]["softlimit"]
-            hardlimit = config["resource"]["hardlimit"]
+        resource_cfg = config.get("resource", {})
+        softlimit = resource_cfg.get("softlimit")
+        hardlimit = resource_cfg.get("hardlimit")
+        if resource_cfg.get("enabled") and softlimit and hardlimit:
             resource.setrlimit(resource.RLIMIT_NOFILE, (softlimit, hardlimit))
             logging.info(f"Applied file descriptor limits: soft={softlimit}, hard={hardlimit}")
     except Exception as e:
