@@ -27,7 +27,7 @@ class ResultHandler(BaseHandler):
         if not uuid:
             return self.json_response(response, {'error': 'UUID parameter is required'}, 400)
         
-        if self.allowlist_handler.is_allowlist_enabled(uuid):
+        if self.allowlist_handler.is_allowlist_enabled():
             allowlist_response, status_code = self.allowlist_handler.is_in_allowlist(uuid)
             if allowlist_response is not None:
                 return self.json_response(response, allowlist_response, status_code)

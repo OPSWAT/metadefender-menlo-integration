@@ -30,20 +30,17 @@ class DomainAllowlistUtils:
 
         def add_to_allowlist(self, http_status: int, uuid: str, srcuri: str, filename: str, apikey: str):
             if http_status == 200 and uuid:
-
-                    domains = self.get_cached_domains(apikey)
-                    if domains:
-                        domain = self.extract_domain(srcuri)
-                        normalized_domains = {self.extract_domain(d) for d in domains}
-
-                        if domain in normalized_domains:
-                            metadata_item = {
-                                'id': f'ALLOW#{uuid}',
-                                'filename': filename
-                            }
-                            self.table.put_item(Item=metadata_item)
+                domains = self.get_cached_domains(apikey)
+                if domains:
+                    domain = self.extract_domain(srcuri)
+                    if domain in domains:
+                        metadata_item = {
+                            'id': f'ALLOW#{uuid}',
+                            'filename': filename
+                        }
+                        self.table.put_item(Item=metadata_item)
         
-        def is_allowlist_enabled(self, uuid: str):
+        def is_allowlist_enabled(self):
             return self.enabled and self.dynamodb
 
         def get_cached_domains(self, api_key: str) -> list:
@@ -53,8 +50,11 @@ class DomainAllowlistUtils:
                 
             if api_key not in self.domains_cache:
                 api_key_response = self.table.get_item(Key={'id': f'APIKEY#{api_key}'})
-                self.domains_cache[api_key] = api_key_response.get('Item', {}).get('domains', [])
+                raw_domains = api_key_response.get('Item', {}).get('domains', [])
+                normalized_domains = {self.extract_domain(d) for d in raw_domains}
+                self.domains_cache[api_key] = list(normalized_domains)
             return self.domains_cache.get(api_key, [])
+
 
         def is_in_allowlist(self, uuid: str):
             item = self.table.get_item(Key={'id': f'ALLOW#{uuid}'}).get('Item')

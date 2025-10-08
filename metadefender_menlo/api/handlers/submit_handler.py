@@ -42,7 +42,7 @@ class SubmitHandler(BaseHandler):
 
     async def get_uuid_and_add_to_allowlist(self, json_response: dict, http_status: int, metadata: dict):
         uuid = json_response.get('uuid')
-        if self.allowlist_handler.is_allowlist_enabled(uuid):
+        if self.allowlist_handler.is_allowlist_enabled():
             self.allowlist_handler.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''), self.apikey)
 
 
