@@ -48,6 +48,10 @@ timeout:
   check:
     enabled: false
     value: null
+resource:
+  enabled: false
+  softlimit: null
+  hardlimit: null
 httpx_limits:
   enabled: false
   max_connections: null
