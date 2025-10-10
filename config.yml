@@ -48,6 +48,11 @@ timeout:
   check:
     enabled: false
     value: null
+resource:
+  enabled: false
+  softlimit: null
+  hardlimit: null
+
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
 headers_scan_with: ""
