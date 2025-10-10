@@ -3,6 +3,8 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
+from metadefender_menlo.api.utils.http_client_manager import HttpClientManager
 
 from metadefender_menlo.logging import init_logging
 from metadefender_menlo.api.config import Config
@@ -17,7 +19,14 @@ from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefen
 from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
 from metadefender_menlo.log_handlers.sentry_log import init_sentry
 
-app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None)
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    try:
+        yield
+    finally:
+        await HttpClientManager.close_client()
+
+app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None, lifespan=lifespan)
 
 def setup_config(config_path):
     Config(config_path)
