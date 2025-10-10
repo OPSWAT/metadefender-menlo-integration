@@ -9,7 +9,6 @@ from metadefender_menlo.api.handlers.base_handler import BaseHandler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.responses.submit_response import SubmitResponse
 
-
 async def stream_file(file_obj):
     loop = asyncio.get_running_loop()
     while True:
@@ -31,29 +30,21 @@ class SubmitHandler(BaseHandler):
     """
     Handler for submitting files to MetaDefender.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, config=None):
+        super().__init__(config)
+        if self.config and self.config['timeout']['submit']['enabled']:
+            self.handler_timeout = self.config['timeout']['submit']['value']
 
+    async def process_result(self, upload: UploadFile, metadata: dict):
+        json_response, http_status = await self.meta_defender_api.submit(upload.file, metadata, self.apikey, self.client_ip)
+        json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
+        return json_response, http_status
 
-    def extract_domain(self, u: str ) -> str:
-        hostname = urlparse(u).hostname or u
-        parts = hostname.split('.')
-        return ".".join(parts[-2:])
+    async def get_uuid_and_add_to_allowlist(self, json_response: dict, http_status: int, metadata: dict):
+        uuid = json_response.get('uuid')
+        if self.allowlist_handler.is_allowlist_enabled():
+            self.allowlist_handler.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''), self.apikey)
 
-    def add_to_allowlist(self, http_status: int, uuid: str, srcuri: str, filename: str):
-        if http_status == 200 and uuid:
-                
-                domains = self.get_cached_domains(self.apikey)
-                if domains:
-                    domain = self.extract_domain(srcuri)
-                    normalized_domains = {self.extract_domain(d) for d in domains}
-
-                    if domain in normalized_domains:
-                        metadata_item = {
-                            'id': f'ALLOW#{uuid}',
-                            'filename': filename
-                        }
-                        self.table.put_item(Item=metadata_item)
 
     async def handle_post(self, request: Request, response: Response):
         if not request.headers.get("content-type").startswith('multipart/'):
@@ -65,7 +56,7 @@ class SubmitHandler(BaseHandler):
             {"method": "POST", "endpoint": "/api/v1/submit"}
         ))
 
-        await self.prepare_request(request)
+        self.prepare_request(request)
 
         try:
             form: FormData = await request.form()
@@ -101,14 +92,19 @@ class SubmitHandler(BaseHandler):
         metadata = {k: v for k, v in metadata.items() if v is not None}
         
         try:
-            json_response, http_status = await self.meta_defender_api.submit(upload.file, metadata, self.apikey, self.client_ip)
-            json_response, http_status = await SubmitResponse().handle_response(json_response, http_status)
-
-            uuid = json_response.get('uuid')
-            if self.dynamodb:
-                self.add_to_allowlist(http_status, uuid, metadata.get('srcuri', ''), metadata.get('filename', ''))
-            
+            json_response, http_status = await self.process_result_with_timeout(upload, metadata)
+            await self.get_uuid_and_add_to_allowlist(json_response, http_status, metadata)
             return self.json_response(response, json_response, http_status)
+        except asyncio.TimeoutError:
+            logging.error("{0} > {1} > {2}".format(
+                self.meta_defender_api.service_name, 
+                TYPE.Response, 
+                {"error": "Timeout while submitting file"}
+            ))
+            return self.json_response(response, {
+                'result': 'skip',
+                'uuid': ''
+            }, 500)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
@@ -120,4 +116,4 @@ class SubmitHandler(BaseHandler):
             await upload.close()
 
 async def submit_handler(request: Request, response: Response):
-    return await SubmitHandler().handle_post(request, response)
+    return await SubmitHandler(request.app.state.config).handle_post(request, response)
