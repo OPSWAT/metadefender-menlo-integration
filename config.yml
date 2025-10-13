@@ -52,7 +52,9 @@ resource:
   enabled: false
   softlimit: null
   hardlimit: null
-
+httpx_limits:
+  enabled: false
+  max_connections: null
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
 headers_scan_with: ""

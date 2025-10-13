@@ -1,11 +1,10 @@
-import json
 import logging
 import urllib.parse
 from httpx import AsyncClient
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-
+from metadefender_menlo.api.utils.http_client_manager import HttpClientManager
 
 class MetaDefenderCloudAPI(MetaDefenderAPI):
     """MetaDefenderCloudAPI implementation for aiohttp
@@ -77,7 +76,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
         upstream_url = response.get("sanitizedFilePath", "")
         if upstream_url:
-            client = AsyncClient()
+            client: AsyncClient = HttpClientManager.get_client()
             req = client.build_request("GET", upstream_url)
             resp = await client.send(req, stream=True)
 
@@ -95,29 +94,29 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         }))
 
         try:
-            async with AsyncClient() as client:
-                headers = {"User-Agent": "MenloTornadoIntegration"}
-                response = await client.get(fileurl, headers=headers)
-                content = response.content
-                return content, response.status_code
+            client: AsyncClient = HttpClientManager.get_client()
+            headers = {"User-Agent": "MenloTornadoIntegration"}
+            response = await client.get(fileurl, headers=headers)
+            content = response.content
+            return content, response.status_code
         except Exception as error:
             return self._handle_error(error, apikey)
 
     async def _handle_no_sanitized_file(self, data_id, apikey):
         try:
-            async with AsyncClient() as client:
-                headers = {'apikey': apikey}
-                headers = self._add_scan_with_header(headers)
-                response = await client.get(
-                    self.server_url + f'/file/{data_id}', 
-                    headers=headers
-                )
+            client: AsyncClient = HttpClientManager.get_client()
+            headers = {'apikey': apikey}
+            headers = self._add_scan_with_header(headers)
+            response = await client.get(
+                self.server_url + f'/file/{data_id}', 
+                headers=headers
+            )
 
-                response_content = response.json()
-                sanitized_data = response_content.get("sanitized", {})
-                failure_reasons = sanitized_data.get("failure_reasons") or sanitized_data.get("reason", "")
-                
-                return self._log_sanitization_result(failure_reasons)
+            response_content = response.json()
+            sanitized_data = response_content.get("sanitized", {})
+            failure_reasons = sanitized_data.get("failure_reasons") or sanitized_data.get("reason", "")
+            
+            return self._log_sanitization_result(failure_reasons)
         except Exception as error:
             return self._handle_error(error, apikey)
 
