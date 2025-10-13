@@ -1,5 +1,6 @@
 import logging
 import os
+import resource
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -19,6 +20,18 @@ from metadefender_menlo.log_handlers.sentry_log import init_sentry
 
 app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None)
 
+def setup_resource_limits(config):
+    """Set resource limits based on configuration."""
+    try:
+        resource_cfg = config.get("resource", {})
+        softlimit = resource_cfg.get("softlimit")
+        hardlimit = resource_cfg.get("hardlimit")
+        if resource_cfg.get("enabled") and softlimit and hardlimit:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (softlimit, hardlimit))
+            logging.info(f"Applied file descriptor limits: soft={softlimit}, hard={hardlimit}")
+    except Exception as e:
+        logging.warning(f"Failed to set resource limits: {e}")
+
 def setup_config(config_path):
     Config(config_path)
 
@@ -35,6 +48,8 @@ def setup_config(config_path):
             init_logging(config)
     except Exception:
         logging.warning("Logging not configured, skipping logger configuration")
+
+    setup_resource_limits(config)
 
     url = config['serverUrl']
     md_type = config["api"]["type"]
