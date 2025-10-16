@@ -2,6 +2,7 @@
 CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
 cd $CWD/..
 
+BLACKDUCK_URL="https://opswat.blackducksoftware.com/"
 export VERSION=m_"$(git rev-parse --short HEAD)"
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
 BRANCH="$(git branch --show-current)"
