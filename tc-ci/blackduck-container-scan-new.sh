@@ -1,33 +1,21 @@
 #!/bin/bash
-set -x  # Enable debug mode to see each command as it's executed
+CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
+cd $CWD/..
 
-# Ensure bash and curl are available
-which bash
-which curl
-
-# Variables
 export VERSION=m_"$(git rev-parse --short HEAD)"
-BLACKDUCK_URL="https://opswat.blackducksoftware.com/"
-BLACKDUCK_API_TOKEN="${BD_TOKEN:-${BLACK_DUCK_KEY}}"
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
-BRANCH_NAME="$(git branch --show-current)"
-GIT_TAG="$(git describe --tags --exact-match 2>/dev/null)"
-
-echo "Attempting to scan image $DOCKER_IMAGE"
-echo "BlackDuck Project: $BLACKDUCK_PROJECT_NAME"
-echo "Branch: $BRANCH_NAME"
-echo "Git Tag: $GIT_TAG"
-
+BRANCH="$(git branch --show-current)"
+TAG="$(git describe --tags --exact-match 2>/dev/null)"
+BD_PARENT_PROJECT="MD Cloud Menlo Container"
 echo "Attempting to scan image $DOCKER_IMAGE"
 
 cd ./kubernetes
-
 ./deploy.aws.sh ecr_login
-
 cd ../
-# This project uses: develop → main
-# develop = development branch
-# main = deployment branch
+BD_PROJECT_VERSION=""
+BD_VERSION_PHASE=""
+
+
 echo "Project branching: develop (development) → main (deployment)"
 
 # Determine version based on branch
@@ -122,8 +110,8 @@ chmod +x detect10.sh
 # Run Synopsys Detect
 ./detect10.sh \
     --blackduck.url="$BLACKDUCK_URL" \
-    --blackduck.api.token="$BLACKDUCK_API_TOKEN" \
-    --detect.project.name="$BLACKDUCK_PROJECT_NAME" \
+    --blackduck.api.token="$BD_TOKEN" \
+    --detect.project.name="$BD_PARENT_PROJECT" \
     --detect.project.version.name="$BD_PROJECT_VERSION" \
     --detect.project.version.phase="$BLACKDUCK_VERSION_PHASE" \
     --detect.container.scan.file.path="$IMAGE_TAR_FILE" \
