@@ -1,6 +1,7 @@
 import os
 import yaml
 import typing
+import logging
 
 class Config(object):
     """Config
@@ -29,7 +30,7 @@ class Config(object):
         else:
             try:
                 Config._CONFIG['apikey'] = Config._CONFIG['api']["params"]["apikey"]
-            except Exception as error:
+            except Exception:
                 Config._CONFIG['apikey'] = None
         
         if os.environ.get("MDCLOUD_URL", os.environ.get("MENLO_MD_URL")):
@@ -38,7 +39,7 @@ class Config(object):
             try:
                 api_type = Config._CONFIG["api"]["type"]
                 Config._CONFIG['serverUrl'] = Config._CONFIG["api"]["url"][api_type]
-            except Exception as error:
+            except Exception:
                 Config._CONFIG['serverUrl'] = "http://localhost:8008"
         
         if os.environ.get("MENLO_MD_SENTRY_DSN", os.environ.get("SENTRY_DSN")):
@@ -67,13 +68,6 @@ class Config(object):
             if 'headers_scan_with' not in Config._CONFIG:
                 Config._CONFIG['headers_scan_with'] = ""
 
-        
-
     @staticmethod
     def get_all():
         return Config._CONFIG
-
-    @staticmethod
-    def get(path):
-        return Config._CONFIG[path] if path in Config._CONFIG else None
-        

@@ -4,6 +4,7 @@ import asyncio
 import ast
 import logging
 from httpx import AsyncClient, AsyncByteStream
+from metadefender_menlo.api.utils.http_client_manager import HttpClientManager
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
@@ -69,10 +70,9 @@ class MetaDefenderAPI(ABC):
         headers = self._add_scan_with_header(headers)
         
         try:
-            async with AsyncClient() as client:
-                # Use GET with Range header instead of HEAD
-                response = await client.get(url, headers=headers)
-                return response.headers
+            client: AsyncClient = HttpClientManager.get_client()
+            response = await client.get(url, headers=headers)
+            return response.headers
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
                 "Exception: ": repr(error)
@@ -106,14 +106,14 @@ class MetaDefenderAPI(ABC):
 
         stream = AsyncFileStream(file_bytes)
 
-        async with AsyncClient() as client:
-            response = await client.post(
-                url,
-                content=stream,
-                headers=headers
-            )
+        client: AsyncClient = HttpClientManager.get_client()
+        response = await client.post(
+            url,
+            content=stream,
+            headers=headers
+        )
 
-            return response.json(), response.status_code
+        return response.json(), response.status_code
 
     async def check_result(self, data_id, apikey, ip=""):
         """Check analysis result for a data_id
@@ -218,22 +218,22 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
 
-        async with AsyncClient() as client:
-            if method == "GET":
-                response = await client.get(url, headers=headers)
-            elif method == "POST":
-                response = await client.post(url, headers=headers, data=data)
-            
-            # response.json(), response.status_code
-            status_code = response.status_code
-            content_type = response.headers.get('Content-Type', '')
-            
-            if 'application/json' in content_type:
-                json_response = response.json()
-                return json_response, status_code
-            else:
-                text_response = await response.text()
-                return text_response, status_code
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        elif method == "POST":
+            response = await client.post(url, headers=headers, data=data)
+        
+        # response.json(), response.status_code
+        status_code = response.status_code
+        content_type = response.headers.get('Content-Type', '')
+        
+        if 'application/json' in content_type:
+            json_response = response.json()
+            return json_response, status_code
+        else:
+            text_response = await response.text()
+            return text_response, status_code
 
     async def _request_as_bytes(self, api_type, fields={}, headers={}):
         """Make an API request and return the raw bytes response
@@ -249,13 +249,13 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
         
-        async with AsyncClient() as client:
-            if method == "GET":
-                response = await client.get(url, headers=headers)
-            
-            status_code = response.status
-            content = await response.read()
-            return content, status_code
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        
+        status_code = response.status
+        content = await response.read()
+        return content, status_code
 
     async def _request_status(self, api_type, fields={}, data=None, headers={}):
         """Make an API request and handle binary response
@@ -272,15 +272,15 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
         
-        async with AsyncClient() as client:
-            if method == "GET":
-                response = await client.get(url, headers=headers)
-            elif method == "POST":
-                response = await client.post(url, headers=headers, data=data)
-            
-            status_code = response.status_code
-            content = response.read()
-            return content, status_code
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        elif method == "POST":
+            response = await client.post(url, headers=headers, data=data)
+        
+        status_code = response.status_code
+        content = response.read()
+        return content, status_code
 
     async def _request_as_json_status(self, api_type, fields={}, data=None, headers={}):
         """Make an API request and handle both JSON and status code

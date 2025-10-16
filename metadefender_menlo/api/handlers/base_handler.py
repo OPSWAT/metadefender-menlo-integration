@@ -1,6 +1,8 @@
+import asyncio
 import uuid
 import logging
 import contextvars
+from metadefender_menlo.api.utils.domain_allowlist import DomainAllowlistUtils
 from fastapi.responses import StreamingResponse
 from starlette.background import BackgroundTask
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
@@ -10,13 +12,19 @@ request_id_context = contextvars.ContextVar("request_id")
 request_context = contextvars.ContextVar("request")
 
 class BaseHandler:
+    """
+    Base handler class that provides common functionality for all handlers.
+    """
 
-    def __init__(self):
+    def __init__(self, config = None):
         self.meta_defender_api = MetaDefenderAPI.get_instance()
         self.client_ip = None
         self.apikey = None
+        self.handler_timeout = None
+        self.config = config
+        self.allowlist_handler = DomainAllowlistUtils(config)
     
-    async def prepare_request(self, request):
+    def prepare_request(self, request):
         """ 
         Prepare the request context and extract necessary headers.
         This method sets the request context and extracts the client IP and API key from the request headers.
@@ -69,8 +77,7 @@ class BaseHandler:
         }))
         
         async def cleanup():
-                await resp.aclose()
-                await client.aclose()
+            await resp.aclose()
 
         return StreamingResponse(
             resp.aiter_raw(),
@@ -82,3 +89,17 @@ class BaseHandler:
             },
             background=BackgroundTask(cleanup)
         )
+    
+    async def process_result_with_timeout(self, *args):
+        """Process the result with an optional timeout. Subclasses should implement process_result."""
+        if self.handler_timeout is not None:
+            return await asyncio.wait_for(
+                self.process_result(*args),
+                timeout=self.handler_timeout
+            )
+        else:
+            return await self.process_result(*args)
+        
+    async def process_result(self):
+        """Process the result. This method should be implemented by subclasses."""
+        raise NotImplementedError("_get_and_process_result must be implemented by subclasses")

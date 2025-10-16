@@ -31,7 +31,30 @@ logging:
     enabled: false
     arn: ''
     region: ''
-
+allowlist:
+  enabled: false
+  db_table_name: 'dynamodb_menlo'
+  aws_profile: 'default'
+timeout:
+  submit:
+    enabled: false
+    value: null
+  sanitized:
+    enabled: false
+    value: null
+  result:
+    enabled: false
+    value: null
+  check:
+    enabled: false
+    value: null
+resource:
+  enabled: false
+  softlimit: null
+  hardlimit: null
+httpx_limits:
+  enabled: false
+  max_connections: null
 fallbackToOriginal: false
 headers_engines_metadata: '{"extraction":{"charset":"SJIS"},"compression":{"charset":"UTF-8"}}'
 headers_scan_with: ""
