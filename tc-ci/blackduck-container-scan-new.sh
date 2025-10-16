@@ -8,7 +8,7 @@ which curl
 # Variables
 export VERSION=m_"$(git rev-parse --short HEAD)"
 BLACKDUCK_URL="https://opswat.blackducksoftware.com/"
-BLACKDUCK_API_TOKEN="${BD_TOKEN}"
+BLACKDUCK_API_TOKEN="${BD_TOKEN:-${BLACK_DUCK_KEY}}"
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
 BRANCH_NAME="$(git branch --show-current)"
 GIT_TAG="$(git describe --tags --exact-match 2>/dev/null)"
