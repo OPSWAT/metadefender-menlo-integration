@@ -18,14 +18,13 @@ echo "BlackDuck Project: $BLACKDUCK_PROJECT_NAME"
 echo "Branch: $BRANCH_NAME"
 echo "Git Tag: $GIT_TAG"
 
-# Login to AWS ECR
-echo "Logging in to AWS ECR..."
-aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com
-if [[ "$?" != "0" ]]; then
-    echo "Failed to log in to ECR"
-    exit 1
-fi
+echo "Attempting to scan image $DOCKER_IMAGE"
 
+cd ./kubernetes
+
+./deploy.aws.sh ecr_login
+
+cd ../
 # This project uses: develop → main
 # develop = development branch
 # main = deployment branch
