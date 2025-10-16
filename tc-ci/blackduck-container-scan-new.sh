@@ -51,9 +51,9 @@ case "$BRANCH_NAME" in
         echo "Detected feature branch → version: $BRANCH_NAME"
         ;;
     [0-9]*)
-        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BD_PROJECT_VERSION="v${BRANCH_NAME}"
         BLACKDUCK_VERSION_PHASE="RELEASED"
-        echo "Detected version tag branch ($BRANCH_NAME) → version: $BRANCH_NAME (DEVELOPMENT)"
+        echo "Detected version tag branch ($BRANCH_NAME) → version: v${BRANCH_NAME}"
         ;;
     *)
         BD_PROJECT_VERSION="${BRANCH_NAME}"
@@ -117,8 +117,6 @@ if [[ "$detect_exit_code" != "0" ]]; then
     rm -f "$IMAGE_TAR_FILE"
     echo "##teamcity[blockClosed name='BlackDuck Container Scan']"
     exit 1
-else
-    echo "Detect script succeeded for image: $DOCKER_IMAGE"
 fi
 
 rm -f "$IMAGE_TAR_FILE"
