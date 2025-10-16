@@ -5,9 +5,22 @@ cd $CWD/..
 BLACKDUCK_URL="https://opswat.blackducksoftware.com/"
 export VERSION=m_"$(git rev-parse --short HEAD)"
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
-BRANCH_NAME="$(git branch --show-current)"
-GIT_TAG="$(git describe --tags --exact-match 2>/dev/null)"
 BD_PARENT_PROJECT="MD Cloud Menlo Container"
+
+BRANCH_NAME="$(git branch --show-current 2>/dev/null)"
+if [[ -z "$BRANCH_NAME" ]]; then
+    # Detached HEAD - try to get tag name
+    BRANCH_NAME="$(git describe --tags --exact-match 2>/dev/null)"
+    if [[ -z "$BRANCH_NAME" ]]; then
+        # Last resort - use commit SHA
+        BRANCH_NAME="$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
+        echo "WARNING: Not on a branch or tag, using commit SHA: $BRANCH_NAME"
+    else
+        echo "Detected tag in detached HEAD: $BRANCH_NAME"
+    fi
+fi
+
+
 echo "Attempting to scan image $DOCKER_IMAGE"
 
 cd ./kubernetes
@@ -16,53 +29,37 @@ cd ../
 BD_PROJECT_VERSION=""
 BD_VERSION_PHASE=""
 
-
-echo "Project branching: develop (development) → main (deployment)"
-
-if [[ "$BRANCH_NAME" == "develop" ]]; then
-    BRANCH_TYPE="development"
-elif [[ "$BRANCH_NAME" == "main" ]]; then
-    BRANCH_TYPE="deployment"
-else
-    BRANCH_TYPE="other"
-fi
-
-case $BRANCH_TYPE in
-    development)
+case "$BRANCH_NAME" in
+    develop)
         BD_PROJECT_VERSION="main"
         BLACKDUCK_VERSION_PHASE="DEVELOPMENT"
         echo "Detected development branch ($BRANCH_NAME) → version: main"
-    ;;
-    deployment)
-        if [[ -n "$GIT_TAG" ]]; then
-            BD_PROJECT_VERSION="${GIT_TAG}"
-            BLACKDUCK_VERSION_PHASE="RELEASED"
-            echo "Detected deployment branch ($BRANCH_NAME) with tag → version: $GIT_TAG"
-        else
-            BD_PROJECT_VERSION="deployment"
-            BLACKDUCK_VERSION_PHASE="PRERELEASE"
-            echo "Warning: deployment branch ($BRANCH_NAME) without tag → version: deployment"
-        fi
-    ;;
-    other)
-        case $BRANCH_NAME in
-            release/*|hotfix/*)
-                BD_PROJECT_VERSION="${BRANCH_NAME}"
-                BLACKDUCK_VERSION_PHASE="PRERELEASE"
-                echo "Detected release/hotfix branch ($BRANCH_NAME) → version: $BRANCH_NAME (PRERELEASE)"
-            ;;
-            feature/*)
-                BD_PROJECT_VERSION="${BRANCH_NAME}"
-                BLACKDUCK_VERSION_PHASE="DEVELOPMENT"
-                echo "Detected $BRANCH_NAME → version: $BRANCH_NAME"
-            ;;
-            *)
-                BD_PROJECT_VERSION="${BRANCH_NAME}"
-                BLACKDUCK_VERSION_PHASE="DEVELOPMENT"
-                echo "Using branch name as version: $BRANCH_NAME"
-            ;;
-        esac
-    ;;
+        ;;
+    main)
+        BD_PROJECT_VERSION="customer"
+        BLACKDUCK_VERSION_PHASE="RELEASED"
+        echo "Warning: deployment branch ($BRANCH_NAME) without tag → version: deployment"
+        ;;
+    release/*|hotfix/*)
+        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BLACKDUCK_VERSION_PHASE="PRERELEASE"
+        echo "Detected release/hotfix branch → version: $BRANCH_NAME (PRERELEASE)"
+        ;;
+    feature/*)
+        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BLACKDUCK_VERSION_PHASE="DEVELOPMENT"
+        echo "Detected feature branch → version: $BRANCH_NAME"
+        ;;
+    [0-9]*)
+        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BLACKDUCK_VERSION_PHASE="RELEASED"
+        echo "Detected version tag branch ($BRANCH_NAME) → version: $BRANCH_NAME (DEVELOPMENT)"
+        ;;
+    *)
+        BD_PROJECT_VERSION="${BRANCH_NAME}"
+        BLACKDUCK_VERSION_PHASE="DEVELOPMENT"
+        echo "Using branch name as version: $BRANCH_NAME"
+        ;;
 esac
 
 echo "Black Duck Version: $BD_PROJECT_VERSION"
