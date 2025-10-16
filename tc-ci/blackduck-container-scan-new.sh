@@ -97,6 +97,8 @@ if ! curl -O https://detect.blackduck.com/detect10.sh; then
 fi
 chmod +x detect10.sh
 
+echo "##teamcity[blockOpened name='BlackDuck Container Scan']"
+
 ./detect10.sh \
     --blackduck.url="$BLACKDUCK_URL" \
     --blackduck.api.token="$BD_TOKEN" \
@@ -123,4 +125,6 @@ else
 fi
 
 rm -f "$IMAGE_TAR_FILE"
+
+echo "##teamcity[blockClosed name='BlackDuck Container Scan']"
 echo "Scan complete."
