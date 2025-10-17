@@ -65,11 +65,15 @@ esac
 echo "Black Duck Version: $BD_PROJECT_VERSION"
 echo "Black Duck Phase: $BLACKDUCK_VERSION_PHASE"
 
+echo "##teamcity[blockOpened name='Docker Image Preparation']"
+echo "##teamcity[blockOpened name='Pulling Docker Image']"
+
 echo "Pulling Docker image from ECR..."
 if ! docker pull "$DOCKER_IMAGE"; then
     echo "Failed to pull image: $DOCKER_IMAGE"
     exit 1
 fi
+echo "##teamcity[blockClosed name='Pulling Docker Image']"
 
 IMAGE_TAR_FILE="/tmp/docker_image_$(date +%s).tar"
 
@@ -86,6 +90,9 @@ if ! docker load < "$IMAGE_TAR_FILE" > /dev/null 2>&1; then
     exit 1
 fi
 
+echo "##teamcity[blockClosed name='Docker Image Preparation']"
+
+echo "##teamcity[blockOpened name='Download Synopsys']"
 echo "Downloading Synopsys Detect script..."
 if ! curl -O https://detect.blackduck.com/detect10.sh; then
     echo "Failed to download Synopsys Detect script. Exiting."
@@ -94,6 +101,7 @@ if ! curl -O https://detect.blackduck.com/detect10.sh; then
 fi
 chmod +x detect10.sh
 
+echo "##teamcity[blockClosed name='Download Synopsys']"
 echo "##teamcity[blockOpened name='BlackDuck Container Scan']"
 
 ./detect10.sh \
