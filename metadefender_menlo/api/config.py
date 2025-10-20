@@ -9,29 +9,29 @@ class Config(object):
 
     _CONFIG: typing.Optional[dict] = None
 
-    def set_config_headers_scan_with(self, config_values: dict, os):
+    def set_config_headers_scan_with(self, config_values: dict, env):
         try:
-            if os.get("MENLO_MD_HEADERS_SCAN_WITH"):
-                config_values['headers_scan_with'] = os.get("MENLO_MD_HEADERS_SCAN_WITH")
+            if env.get("MENLO_MD_HEADERS_SCAN_WITH"):
+                config_values['headers_scan_with'] = env.get("MENLO_MD_HEADERS_SCAN_WITH")
         except Exception as e:
             logging.warning(f"Error configuring headers_scan_with: {e}")
             # Ensure headers_scan_with has a default value if configuration fails
             if 'headers_scan_with' not in config_values:
                 config_values['headers_scan_with'] = ""
 
-    def set_config_logging(self, config_values: dict, os):
-        config_values['logging']['kafka']['enabled'] = bool(os.get("MENLO_MD_KAFKA_ENABLED", config_values['logging']['kafka']['enabled']))
-        config_values['logging']['kafka']['client_id'] = os.get("MENLO_MD_KAFKA_CLIENT_ID", config_values['logging']['kafka']['client_id'])
-        config_values['logging']['kafka']['server'] = os.get("MENLO_MD_KAFKA_SERVER", config_values['logging']['kafka']['server'])
-        config_values['logging']['kafka']['topic'] = os.get("MENLO_MD_KAFKA_TOPIC", config_values['logging']['kafka']['topic'])
-        config_values['logging']['kafka']['ssl'] = bool(os.get("MENLO_MD_KAFKA_SSL", config_values['logging']['kafka']['ssl']))
-        config_values['logging']['sns']['enabled'] = os.get('MENLO_MD_SNS_ENABLED', config_values['logging']['sns']['enabled'])
-        config_values['logging']['sns']['arn'] = os.get('MENLO_MD_SNS_ARN', config_values['logging']['sns']['arn'])
-        config_values['logging']['sns']['region'] = os.get('MENLO_MD_SNS_REGION', config_values['logging']['sns']['region'])
+    def set_config_logging(self, config_values: dict, env):
+        config_values['logging']['kafka']['enabled'] = bool(env.get("MENLO_MD_KAFKA_ENABLED", config_values['logging']['kafka']['enabled']))
+        config_values['logging']['kafka']['client_id'] = env.get("MENLO_MD_KAFKA_CLIENT_ID", config_values['logging']['kafka']['client_id'])
+        config_values['logging']['kafka']['server'] = env.get("MENLO_MD_KAFKA_SERVER", config_values['logging']['kafka']['server'])
+        config_values['logging']['kafka']['topic'] = env.get("MENLO_MD_KAFKA_TOPIC", config_values['logging']['kafka']['topic'])
+        config_values['logging']['kafka']['ssl'] = bool(env.get("MENLO_MD_KAFKA_SSL", config_values['logging']['kafka']['ssl']))
+        config_values['logging']['sns']['enabled'] = env.get('MENLO_MD_SNS_ENABLED', config_values['logging']['sns']['enabled'])
+        config_values['logging']['sns']['arn'] = env.get('MENLO_MD_SNS_ARN', config_values['logging']['sns']['arn'])
+        config_values['logging']['sns']['region'] = env.get('MENLO_MD_SNS_REGION', config_values['logging']['sns']['region'])
 
-    def set_config_serverurl(self, config_values: dict, os):
-        if os.get("MENLO_MD_URL", os.get("MDCLOUD_URL")):
-            config_values['serverUrl'] = os.get("MENLO_MD_URL", os.get("MDCLOUD_URL"))
+    def set_config_serverurl(self, config_values: dict, env):
+        if env.get("MENLO_MD_URL", env.get("MDCLOUD_URL")):
+            config_values['serverUrl'] = env.get("MENLO_MD_URL", env.get("MDCLOUD_URL"))
         else:
             try:
                 api_type = config_values['api']['type']
@@ -39,35 +39,35 @@ class Config(object):
             except Exception:
                 config_values['serverUrl'] = "http://localhost:8008"
 
-    def set_config_apikey(self, config_values: dict, os):
-        if os.get('MENLO_MD_APIKEY'):
-            config_values['apikey'] = os.get('MENLO_MD_APIKEY')
+    def set_config_apikey(self, config_values: dict, env):
+        if env.get('MENLO_MD_APIKEY'):
+            config_values['apikey'] = env.get('MENLO_MD_APIKEY')
         else:
             try:
                 config_values['apikey'] = config_values['api']['params']['apikey']
             except Exception:
                 config_values['apikey'] = None
 
-    def set_config_attributes(self, config_values: dict, os):
-        config_values['env'] = os.get("MENLO_MD_ENV", os.get("ENVIRONMENT",'local'))
-        config_values['region'] = os.get("MENLO_MD_AWS_REGION", os.get("AWS_REGION", "us-west-2"))
-        config_values['commitHash'] = os.get("MENLO_MD_BITBUCKET_COMMIT_HASH", os.get("BITBUCKET_COMMIT_HASH", "-"))
-        config_values['scanRule'] = os.get("MENLO_MD_MDCLOUD_RULE", os.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive" if config_values['api']['type'] == "cloud" else None))
+    def set_config_attributes(self, config_values: dict, env):
+        config_values['env'] = env.get("MENLO_MD_ENV", env.get("ENVIRONMENT",'local'))
+        config_values['region'] = env.get("MENLO_MD_AWS_REGION", env.get("AWS_REGION", "us-west-2"))
+        config_values['commitHash'] = env.get("MENLO_MD_BITBUCKET_COMMIT_HASH", env.get("BITBUCKET_COMMIT_HASH", "-"))
+        config_values['scanRule'] = env.get("MENLO_MD_MDCLOUD_RULE", env.get("MDCLOUD_RULE", "multiscan, sanitize, unarchive" if config_values['api']['type'] == "cloud" else None))
         
-        self.set_config_apikey(config_values, os)
+        self.set_config_apikey(config_values, env)
 
-        self.set_config_serverurl(config_values, os)
+        self.set_config_serverurl(config_values, env)
         
-        if os.get("MENLO_MD_SENTRY_DSN", os.get("SENTRY_DSN")):
-            config_values['sentryDsn'] = os.get("MENLO_MD_SENTRY_DSN", os.get("SENTRY_DSN"))
+        if env.get("MENLO_MD_SENTRY_DSN", env.get("SENTRY_DSN")):
+            config_values['sentryDsn'] = env.get("MENLO_MD_SENTRY_DSN", env.get("SENTRY_DSN"))
 
-        self.set_config_logging(config_values, os)
+        self.set_config_logging(config_values, env)
 
-        if os.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
-            config_values['fallbackToOriginal'] = os.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"
+        if env.get("MENLO_MD_FALLBACK_TO_ORIGINAL"):
+            config_values['fallbackToOriginal'] = env.get("MENLO_MD_FALLBACK_TO_ORIGINAL") == "true"
 
         # Handle headers_scan_with configuration
-        self.set_config_headers_scan_with(config_values, os)
+        self.set_config_headers_scan_with(config_values, env)
 
     def __init__(self, config_file = None):
         if config_file is None:

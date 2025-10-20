@@ -63,9 +63,8 @@ class SanitizedFileHandler(BaseHandler):
             ))
             return self.json_response(response, {}, 500)
         finally:
-            if http_status != 200:
-                if hasattr(resp, "aclose"):
-                    await resp.aclose()
+            if http_status != 200 and hasattr(resp, "aclose"):
+                await resp.aclose()
 
 async def file_handler(request: Request, response: Response):
     return await SanitizedFileHandler(request.app.state.config).handle_get(request, response)
