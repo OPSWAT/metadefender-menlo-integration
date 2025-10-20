@@ -61,8 +61,6 @@ class SubmitHandler(BaseHandler):
         try:
             form: FormData = await request.form()
             upload: UploadFile = form.get("files") or form.get("file")
-            if upload.size == 0:
-                raise ValueError("Empty file detected")
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
@@ -79,9 +77,6 @@ class SubmitHandler(BaseHandler):
             upload.file.seek(0, os.SEEK_END)
             content_length = upload.file.tell()
             upload.file.seek(0)
-
-        if content_length == 0:
-            return self.json_response(response, {"error": "Empty file detected"}, 400)
 
         # form data
         metadata = {}

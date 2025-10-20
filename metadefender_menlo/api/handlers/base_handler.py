@@ -77,8 +77,7 @@ class BaseHandler:
         }))
         
         async def cleanup():
-                await resp.aclose()
-                await client.aclose()
+            await resp.aclose()
 
         return StreamingResponse(
             resp.aiter_raw(),

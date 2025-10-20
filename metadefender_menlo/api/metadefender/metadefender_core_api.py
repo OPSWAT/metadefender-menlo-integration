@@ -5,7 +5,7 @@ import urllib.parse
 from httpx import AsyncClient
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-
+from metadefender_menlo.api.utils.http_client_manager import HttpClientManager
 
 class MetaDefenderCoreAPI(MetaDefenderAPI):
 
@@ -91,7 +91,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             'User-Agent': 'MenloTornadoIntegration'
         }
 
-        client = AsyncClient()
+        client: AsyncClient = HttpClientManager.get_client()
         req = client.build_request("GET", upstream_url, headers=headers)
         resp = await client.send(req, stream=True)
 
