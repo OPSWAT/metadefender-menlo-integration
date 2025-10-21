@@ -67,8 +67,8 @@ class TestHealthCheckHandler(unittest.TestCase):
 
         logging.debug.assert_called_once_with(
             "{0} > {1} > {2}".format(
-                SERVICE.MenloPlugin,
-                TYPE.Internal,
+                SERVICE.menlo_plugin,
+                TYPE.internal,
                 {"message": "GET /health > OK!"}
             )
         )

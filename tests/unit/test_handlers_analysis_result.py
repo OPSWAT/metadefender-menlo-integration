@@ -122,8 +122,8 @@ class TestAnalysisResultHandler(unittest.TestCase):
         self.handler.json_response.assert_called_once_with({}, 500)
         logging.error.assert_called_once_with(
             "{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderAPI,
-                TYPE.Response,
+                SERVICE.meta_defender_api,
+                TYPE.response,
                 {"error": "Exception('Processing Error')"}
             ),
             {'apikey': test_apikey}
