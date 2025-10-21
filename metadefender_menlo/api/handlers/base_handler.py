@@ -52,7 +52,7 @@ class BaseHandler:
         :param status_code: The HTTP status code for the response.
         :return: The JSON response data.
         """
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.response, {
             "type": "json", "status": status_code, "response": json_response
         }))
         
@@ -72,7 +72,7 @@ class BaseHandler:
         :param status_code: The HTTP status code for the response.
         :return: A StreamingResponse object that streams the response data.
         """
-        logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.response, {
             "type": "stream", "status": status_code
         }))
         

@@ -115,8 +115,8 @@ class TestCheckExistingHandler(unittest.TestCase):
 
         logging.error.assert_called_once_with(
             "{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderAPI,
-                TYPE.Response,
+                SERVICE.meta_defender_api,
+                TYPE.response,
                 {"error": repr(test_error)}
             ),
             {'apikey': test_apikey}
