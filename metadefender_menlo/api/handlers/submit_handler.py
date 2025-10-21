@@ -51,8 +51,8 @@ class SubmitHandler(BaseHandler):
             return self.json_response(response, {"error": "Content-Type must be multipart/form-data"}, 400)
         
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MenloPlugin, 
-            TYPE.Request, 
+            SERVICE.menlo_plugin, 
+            TYPE.request, 
             {"method": "POST", "endpoint": "/api/v1/submit"}
         ))
 
@@ -64,7 +64,7 @@ class SubmitHandler(BaseHandler):
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Internal, 
+                TYPE.internal, 
                 {"error": repr(error)}
             ))
             return self.json_response(response, {"error": "No file uploaded"}, 400)
@@ -73,7 +73,7 @@ class SubmitHandler(BaseHandler):
             return self.json_response(response, {"error": "No file uploaded"}, 400)
                 
         content_length = None
-        if self.meta_defender_api.service_name == SERVICE.MetaDefenderCore:
+        if self.meta_defender_api.service_name == SERVICE.meta_defender_core:
             upload.file.seek(0, os.SEEK_END)
             content_length = upload.file.tell()
             upload.file.seek(0)
@@ -93,7 +93,7 @@ class SubmitHandler(BaseHandler):
         except asyncio.TimeoutError:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Response, 
+                TYPE.response, 
                 {"error": "Timeout while submitting file"}
             ))
             return self.json_response(response, {
@@ -103,7 +103,7 @@ class SubmitHandler(BaseHandler):
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Internal, 
+                TYPE.internal, 
                 {"error": repr(error)}
             ))
             return self.json_response(response, {}, 500)

@@ -25,8 +25,8 @@ class SanitizedFileHandler(BaseHandler):
             return self.json_response(response, {'error': 'UUID parameter is required'}, 400)
 
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MenloPlugin, 
-            TYPE.Request, 
+            SERVICE.menlo_plugin, 
+            TYPE.request, 
             {"method": "GET", "endpoint": "/api/v1/file?uuid=%s" % uuid}
         ))
 
@@ -42,8 +42,8 @@ class SanitizedFileHandler(BaseHandler):
                 return self.stream_response(resp, client, http_status)
             
             logging.info("{0} > {1} > {2}".format(
-                SERVICE.MenloPlugin, 
-                TYPE.Request, 
+                SERVICE.menlo_plugin, 
+                TYPE.request, 
                 {"method": "GET", "endpoint": "/api/v1/file?uuid=%s" % uuid, "http_status": http_status}
             ))
 
@@ -51,14 +51,14 @@ class SanitizedFileHandler(BaseHandler):
         except asyncio.TimeoutError:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Response, 
+                TYPE.response, 
                 {"error": "Timeout while retrieving sanitized file"}
             ))
             return self.json_response(response, {}, 500)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Internal, 
+                TYPE.internal, 
                 {"error": repr(error)}
             ))
             return self.json_response(response, {}, 500)
