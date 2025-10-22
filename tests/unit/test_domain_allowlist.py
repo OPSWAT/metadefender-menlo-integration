@@ -213,5 +213,103 @@ class TestDomainAllowlistUtils(unittest.TestCase):
                 self.assertEqual(set(result), set(expected_domains))
                 self.assertEqual(set(utils.domains_cache[api_key]), set(expected_domains))
 
+    @patch('metadefender_menlo.api.utils.domain_allowlist.boto3')
+    def test_is_in_allowlist_found_and_deleted(self, mock_boto3):
+        mock_session = Mock()
+        mock_dynamodb = Mock()
+        mock_table = Mock()
+        
+        mock_boto3.Session.return_value = mock_session
+        mock_session.resource.return_value = mock_dynamodb
+        mock_dynamodb.Table.return_value = mock_table
+        
+        utils = DomainAllowlistUtils(self.config_enabled)
+        
+        test_uuid = 'test-uuid-123'
+        test_filename = 'document.pdf'
+        mock_table.get_item.return_value = {
+            'Item': {
+                'id': f'ALLOW#{test_uuid}',
+                'filename': test_filename
+            }
+        }
+        
+        result, status_code = utils.is_in_allowlist(test_uuid)
+        expected_response = {
+            'result': 'completed',
+            'outcome': 'clean',
+            'report_url': '',
+            'filename': test_filename,
+            'modifications': ['Domain whitelisted']
+        }
+        self.assertEqual(result, expected_response)
+        self.assertEqual(status_code, 200)
+        
+        mock_table.get_item.assert_called_once_with(Key={'id': f'ALLOW#{test_uuid}'})
+        mock_table.delete_item.assert_called_once_with(Key={'id': f'ALLOW#{test_uuid}'})
+
+    @patch('metadefender_menlo.api.utils.domain_allowlist.boto3')
+    def test_is_in_allowlist_not_found(self, mock_boto3):
+        mock_session = Mock()
+        mock_dynamodb = Mock()
+        mock_table = Mock()
+        
+        mock_boto3.Session.return_value = mock_session
+        mock_session.resource.return_value = mock_dynamodb
+        mock_dynamodb.Table.return_value = mock_table
+        
+        utils = DomainAllowlistUtils(self.config_enabled)
+        
+        test_uuid = 'test-uuid-456'
+        mock_table.get_item.return_value = {}
+        
+        result, status_code = utils.is_in_allowlist(test_uuid)
+        
+        self.assertIsNone(result)
+        self.assertIsNone(status_code)
+        
+        mock_table.get_item.assert_called_once_with(Key={'id': f'ALLOW#{test_uuid}'})
+        mock_table.delete_item.assert_not_called()
+
+    @patch('metadefender_menlo.api.utils.domain_allowlist.boto3')
+    def test_is_in_allowlist_empty_item(self, mock_boto3):
+        mock_session = Mock()
+        mock_dynamodb = Mock()
+        mock_table = Mock()
+        
+        mock_boto3.Session.return_value = mock_session
+        mock_session.resource.return_value = mock_dynamodb
+        mock_dynamodb.Table.return_value = mock_table
+        
+        utils = DomainAllowlistUtils(self.config_enabled)
+    
+        test_uuid = 'test-uuid-789'
+        mock_table.get_item.return_value = {
+            'Item': {
+                'id': f'ALLOW#{test_uuid}'
+            }
+        }
+        
+        result, status_code = utils.is_in_allowlist(test_uuid)
+        
+        expected_response = {
+            'result': 'completed',
+            'outcome': 'clean',
+            'report_url': '',
+            'filename': '',
+            'modifications': ['Domain whitelisted']
+        }
+        self.assertEqual(result, expected_response)
+        self.assertEqual(status_code, 200)
+        
+        mock_table.get_item.assert_called_once_with(Key={'id': f'ALLOW#{test_uuid}'})
+        mock_table.delete_item.assert_called_once_with(Key={'id': f'ALLOW#{test_uuid}'})
+
+    def test_is_in_allowlist_disabled(self):
+        utils = DomainAllowlistUtils(self.config_disabled)
+        
+        with self.assertRaises(AttributeError):
+            utils.is_in_allowlist('test-uuid')
+
 if __name__ == '__main__':
     unittest.main()
