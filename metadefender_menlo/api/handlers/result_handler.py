@@ -32,8 +32,8 @@ class ResultHandler(BaseHandler):
             if allowlist_response is not None:
                 return self.json_response(response, allowlist_response, status_code)
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MenloPlugin, 
-            TYPE.Request, 
+            SERVICE.menlo_plugin, 
+            TYPE.request, 
             {"method": "GET", "endpoint": "/api/v1/result/%s" % uuid}
         ))
         
@@ -45,7 +45,7 @@ class ResultHandler(BaseHandler):
         except asyncio.TimeoutError:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Response, 
+                TYPE.response, 
                 {"error": f"Timeout while retrieving result for {uuid}"}
             ))
             return self.json_response(response, {
@@ -58,7 +58,7 @@ class ResultHandler(BaseHandler):
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Response, 
+                TYPE.response, 
                 {"error": repr(error)}
             ))
             return self.json_response(response, {}, 500)

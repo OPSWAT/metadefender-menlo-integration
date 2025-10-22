@@ -26,8 +26,8 @@ class CheckHandler(BaseHandler):
         self.prepare_request(request)
         
         logging.info("{0} > {1} > {2}".format(
-            SERVICE.MenloPlugin, 
-            TYPE.Request, 
+            SERVICE.menlo_plugin, 
+            TYPE.request, 
             {"method": "GET", "endpoint": "/api/v1/check?sha256=%s" % sha256}
         ))
         
@@ -37,7 +37,7 @@ class CheckHandler(BaseHandler):
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
                 self.meta_defender_api.service_name, 
-                TYPE.Response, 
+                TYPE.response, 
                 {"error": repr(error)}
             ))
             return self.json_response(response, {}, 500)

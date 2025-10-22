@@ -101,10 +101,10 @@ class TestFileSubmitHandler(unittest.TestCase):
         self.handler.meta_defender_api.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
         await self.handler.post()
 
-        mock_debug.assert_any_call("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
+        mock_debug.assert_any_call("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.request, {
             "headers": "arg1 : value1"
         }))
-        mock_debug.assert_any_call("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Request, {
+        mock_debug.assert_any_call("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.request, {
             "headers": "arg2 : value2"
         }))
         
