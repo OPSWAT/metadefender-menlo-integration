@@ -14,13 +14,13 @@ VERSION = "2.0.2"
 
 REQUIRES = [
     "aiocontextvars==0.2.2",
-    "boto3==1.35.75",
+    "boto3==1.40.56",
     "certifi==2025.10.5",
     "h11==0.16.0",
-    "httpx==0.27.0",
+    "httpx==0.28.1",
     "kafka-python==2.2.15",
     "python-dotenv==0.19.2",
-    "pyyaml==6.0.1",
+    "pyyaml==6.0.3",
     "sentry-sdk==3.0.0a6",
     "tornado==6.5.2",
     "typing==3.7.4.3",
