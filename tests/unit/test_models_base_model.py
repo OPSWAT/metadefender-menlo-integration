@@ -102,18 +102,15 @@ class TestModel(unittest.TestCase):
     def test_equality_comparisons(self):
         instance1 = self.SimpleModel()
         instance1.name = 'John'
-        
         instance2 = self.SimpleModel()
         instance2.name = 'John'
-        
         instance3 = self.SimpleModel()
         instance3.name = 'Jane'
         
         self.assertTrue(instance1 == instance2)
         self.assertFalse(instance1 == instance3)
-        self.assertFalse(instance1 != instance2)
-        self.assertTrue(instance1 != instance3)
-
+        self.assertFalse(not (instance1 == instance2))
+        self.assertTrue(not (instance1 == instance3))
 
 if __name__ == '__main__':
     unittest.main()

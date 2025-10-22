@@ -32,7 +32,7 @@ class TestCheckExistingHandler(unittest.IsolatedAsyncioTestCase):
         self.mock_response = MagicMock(spec=Response)
         
         self.handler.meta_defender_api = Mock()
-        self.handler.meta_defender_api.service_name = SERVICE.MetaDefenderCore
+        self.handler.meta_defender_api.service_name = SERVICE.meta_defender_core
         self.handler.client_ip = '127.0.0.1'
         self.handler.apikey = 'test-api-key'
 
@@ -126,7 +126,7 @@ class TestCheckExistingHandler(unittest.IsolatedAsyncioTestCase):
         
         handler = CheckHandler(config=test_config_with_timeout)
         handler.meta_defender_api = Mock()
-        handler.meta_defender_api.service_name = SERVICE.MetaDefenderCore
+        handler.meta_defender_api.service_name = SERVICE.meta_defender_core
         
         test_sha256 = 'c' * 64
         expected_response = {'result': 'clean'}

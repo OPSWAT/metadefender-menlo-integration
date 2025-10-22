@@ -13,7 +13,7 @@ from metadefender_menlo.api.log_types import SERVICE
 class MetaDefenderAPIImpl(MetaDefenderAPI):
     def __init__(self, settings, url, apikey):
         super().__init__(settings, url, apikey)
-        self.service_name = SERVICE.MetaDefenderCore
+        self.service_name = SERVICE.meta_defender_core
 
     def _get_submit_file_headers(self, metadata, apikey, ip):
         headers = {
@@ -227,7 +227,7 @@ class MetaDefenderAPITest(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('scanWith', result)
         self.assertEqual(result, headers)
 
-        self.api.service_name = SERVICE.MetaDefenderCloud
+        self.api.service_name = SERVICE.meta_defender_cloud
         headers = {'apikey': 'test'}
         result = self.api._add_scan_with_header(headers)
         self.assertNotIn('scanWith', result)
@@ -402,7 +402,7 @@ class MetaDefenderAPITest(unittest.IsolatedAsyncioTestCase):
         cloud_settings['headers_scan_with'] = 'test-value'
         
         cloud_api = MetaDefenderAPIImpl(cloud_settings, "https://cloud-url.com", "cloud-key")
-        cloud_api.service_name = SERVICE.MetaDefenderCloud
+        cloud_api.service_name = SERVICE.meta_defender_cloud
         
         with patch.object(cloud_api, 'settings', side_effect=Exception("Mocked settings error")):
             headers = {'apikey': 'test-key'}
@@ -412,7 +412,7 @@ class MetaDefenderAPITest(unittest.IsolatedAsyncioTestCase):
 
     def test_add_scan_with_header_settings_edge_cases(self):
         cloud_api = MetaDefenderAPIImpl(self.settings, "https://cloud-url.com", "cloud-key")
-        cloud_api.service_name = SERVICE.MetaDefenderCloud
+        cloud_api.service_name = SERVICE.meta_defender_cloud
         
         delattr(cloud_api, 'settings')
         headers = {'apikey': 'test-key'}

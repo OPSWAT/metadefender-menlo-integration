@@ -22,7 +22,7 @@ class TestMetaDefenderCoreAPI(unittest.IsolatedAsyncioTestCase):
         self.api = MetaDefenderCoreAPI(self.settings, self.url, self.apikey)
 
     def test_init(self):
-        self.assertEqual(self.api.service_name, SERVICE.MetaDefenderCore)
+        self.assertEqual(self.api.service_name, SERVICE.meta_defender_core)
         self.assertEqual(self.api.settings, self.settings)
         self.assertEqual(self.api.server_url, self.url)
         self.assertEqual(self.api.apikey, self.apikey)

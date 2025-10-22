@@ -26,7 +26,7 @@ class TestMetaDefenderCloudAPI(unittest.IsolatedAsyncioTestCase):
         )
 
     def test_init(self):
-        self.assertEqual(self.api.service_name, SERVICE.MetaDefenderCloud)
+        self.assertEqual(self.api.service_name, SERVICE.meta_defender_cloud)
         self.assertEqual(self.api.settings, self.settings)
         self.assertEqual(self.api.server_url, self.server_url)
         self.assertEqual(self.api.apikey, self.apikey)
