@@ -24,12 +24,12 @@ BD_PROJECT_VERSION=""
 BLACKDUCK_VERSION_PHASE=""
 
 case "$BRANCH_NAME" in
-    *develop*|*master*)
+    *develop*)
         BD_PROJECT_VERSION="main"
         BLACKDUCK_VERSION_PHASE="DEVELOPMENT"
         echo "Detected main branch ($BRANCH_NAME) → version: main"
         ;;
-    main|customer)
+    main)
         BD_PROJECT_VERSION="customer"
         BLACKDUCK_VERSION_PHASE="RELEASED"
         echo "Detected customer branch → version: ${BRANCH_NAME}"
