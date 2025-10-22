@@ -11,7 +11,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
 
     def __init__(self, settings, url, apikey):
         super().__init__(settings, url, apikey)
-        self.service_name = SERVICE.MetaDefenderCore
+        self.service_name = SERVICE.meta_defender_core
         self.settings = settings
         self.server_url = url
         self.apikey = apikey
@@ -57,7 +57,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
         headers = {k: v for k, v in headers.items() if v is not None}
 
         logging.debug("{0} > {1} > {2} Add headers: {0}".format(
-            SERVICE.MenloPlugin, TYPE.Internal, {"apikey": self.apikey}))
+            SERVICE.menlo_plugin, TYPE.internal, {"apikey": self.apikey}))
         
         return headers
     
@@ -78,7 +78,7 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             return False
 
     async def sanitized_file(self, data_id, apikey, ip=""):
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
             "message": f"Retrieve Sanitized file for {data_id}"
         }))
         

@@ -12,7 +12,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
 
     def __init__(self, settings, url, apikey):
         super().__init__(settings, url, apikey)
-        self.service_name = SERVICE.MetaDefenderCloud
+        self.service_name = SERVICE.meta_defender_cloud
         self.settings = settings
         self.server_url = url
         self.apikey = apikey
@@ -38,7 +38,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         headers = self._add_scan_with_header(headers)
         
         logging.debug("{0} > {1} > Add headers: {2}".format(
-            SERVICE.MenloPlugin, TYPE.Internal, headers))
+            SERVICE.menlo_plugin, TYPE.internal, headers))
         
         return headers
     
@@ -89,7 +89,7 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
         return await self._handle_no_sanitized_file(data_id, apikey)
 
     async def _download_sanitized_file(self, fileurl, apikey):
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
             "message": f"Download Sanitized file from {fileurl}"
         }))
 
@@ -123,21 +123,21 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
     def _log_sanitization_result(self, failure_reasons):
         http_status = 204
         if failure_reasons:
-            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+            logging.info("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.response, {
                 "message": "Sanitization failed with failure reasons.",
                 "failure_reasons": failure_reasons,
                 "status": http_status
             }))
         else:
-            logging.info("{0} > {1} > {2}".format(SERVICE.MenloPlugin, TYPE.Response, {
+            logging.info("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.response, {
                 "message": "Sanitized file not available!", "status": http_status
             }))
         return None, http_status, None
 
     def _handle_error(self, error, apikey):
         logging.error("{0} > {1} > {2}".format(
-            SERVICE.MenloPlugin,
-            TYPE.Internal,
+            SERVICE.menlo_plugin,
+            TYPE.internal,
             repr(error)
         ), {'apikey': apikey})
         return {"error": str(error)}, 500
