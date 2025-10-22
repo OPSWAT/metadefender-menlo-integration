@@ -1,82 +1,36 @@
 import unittest
-from unittest.mock import Mock, patch
-import logging
-
+from unittest.mock import Mock, MagicMock, patch
 import os
 import sys
-import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.handlers.inbound_handler import InboundHandler
+from fastapi import Request, Response
 
-class TestInboundMetadataHandler(unittest.TestCase):
-    def setUp(self):
-        """Set up test fixtures before each test method."""
-        self.application = Mock()
-        self.application.ui_methods = {}  
-        self.application.ui_modules = {} 
-        self.request = Mock()
+
+class TestInboundMetadataHandler(unittest.IsolatedAsyncioTestCase):
+    
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    def setUp(self, mock_get_instance):
+        mock_get_instance.return_value = MagicMock()
         
-        self.handler = InboundHandler(
-            application=self.application,
-            request=self.request
-        )
+        self.test_config = {
+            'allowlist': {
+                'enabled': False
+            }
+        }
         
-        self.original_logging_warning = logging.warning
-        
-        logging.warning = Mock()
+        self.handler = InboundHandler(config=self.test_config)
+        self.mock_request = MagicMock(spec=Request)
+        self.mock_response = MagicMock(spec=Response)
 
-    def tearDown(self):
-        """Clean up after each test method."""
-        logging.warning = self.original_logging_warning
+    async def test_handle_post_not_implemented(self):
+        result = await self.handler.handle_post(self.mock_request, self.mock_response)
+        self.assertEqual(result, {"error": "Not implemented"})
+        self.assertEqual(self.mock_response.status_code, 400)
 
-    def test_post(self):
-        """Test POST method."""
-        self.handler.json_response = Mock()
-        expected_message = "POST /api/v1/submit > Not implemented"
-        expected_response = {"error": "Not implemented"}
-        expected_status = 400
-
-        self.handler.post()
-
-        logging.warning.assert_called_once_with(expected_message)
-
-        self.handler.json_response.assert_called_once_with(
-            expected_response,
-            expected_status
-        )
-
-    @patch('logging.warning')
-    def test_post_with_logging_error(self, mock_logging):
-        """Test POST method when logging raises an exception."""
-        self.handler.json_response = Mock()
-        mock_logging.return_value = None  
-        self.handler.post()
-
-        self.handler.json_response.assert_called_once_with(
-            {"error": "Not implemented"},
-            400
-        )
-
-        mock_logging.assert_called_once()
-
-    def test_post_response_format(self):
-        """Test the exact format and content of the POST response."""
-        response_data = None
-        response_status = None
-        
-        def capture_response(data, status):
-            nonlocal response_data, response_status
-            response_data = data
-            response_status = status
-            
-        self.handler.json_response = capture_response
-
-        self.handler.post()
-
-        self.assertIsInstance(response_data, dict)
-        self.assertIn('error', response_data)
-        
-        self.assertEqual(response_status, 400)
+    def test_initialization(self):
+        self.assertIsNotNone(self.handler)
+        self.assertEqual(self.handler.config, self.test_config)
 
 
 if __name__ == '__main__':

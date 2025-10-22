@@ -1,122 +1,165 @@
 import unittest
-from unittest.mock import MagicMock, patch
-import json
-from tornado.httputil import HTTPServerRequest
-
+from unittest.mock import MagicMock, Mock, patch, AsyncMock
+import asyncio
 import sys
 import os
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
-from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from metadefender_menlo.api.handlers.base_handler import BaseHandler, LogRequestFilter, request_id_context, request_context
+from metadefender_menlo.api.handlers.base_handler import BaseHandler, request_id_context, request_context
+from fastapi import Request, Response
+from fastapi.responses import StreamingResponse
 
-class TestBaseHandler(unittest.TestCase):
 
-    def setUp(self):
-        self.request_mock = MagicMock(spec=HTTPServerRequest)
-        self.request_mock.headers = {}
-        self.request_mock.remote_ip = '127.0.0.1'
-        self.request_mock.connection = MagicMock()  
-        self.handler = BaseHandler(MagicMock(), self.request_mock)
+class TestBaseHandler(unittest.IsolatedAsyncioTestCase):
 
-    def test_prepare_with_request_id(self):
-        self.request_mock.headers = {'request-id': 'test-id'}
-        self.handler.prepare()
-        self.assertEqual(request_id_context.get(), 'test-id')
-        self.assertEqual(request_context.get(), self.request_mock)
-
-    def test_prepare_without_request_id(self):
-        self.handler.prepare()
-        self.assertIsNotNone(request_id_context.get())
-        self.assertNotEqual(request_id_context.get(), '')
-        self.assertEqual(request_context.get(), self.request_mock)
-
-    @patch.object(MetaDefenderAPI, 'get_instance')
-    def test_initialize(self, mock_get_instance):
-        mock_api = MagicMock()
-        mock_get_instance.return_value = mock_api
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    def setUp(self, mock_get_instance):
+        self.mock_api = MagicMock()
+        mock_get_instance.return_value = self.mock_api
         
-        # Reserved IP address used for testing/documentation purposes
-        self.request_mock.headers = {'X-Real-IP': '192.0.2.1'}
-        self.handler.initialize()
-        self.assertEqual(self.handler.meta_defender_api, mock_api)
-        self.assertEqual(self.handler.client_ip, '192.0.2.1')
+        self.config = {
+            'allowlist': {
+                'enabled': False
+            }
+        }
+        self.handler = BaseHandler(self.config)
+        
+        self.mock_request = MagicMock(spec=Request)
+        self.mock_request.headers = MagicMock()
+        self.mock_request.client = MagicMock()
+        self.mock_request.client.host = '127.0.0.1'
+        
+        self.mock_response = MagicMock(spec=Response)
 
-        self.request_mock.headers = {'X-Forwarded-For': '198.51.100.1'}
-        self.handler.initialize()
+    def test_initialization(self):
+        self.assertIsNotNone(self.handler.meta_defender_api)
+        self.assertIsNone(self.handler.client_ip)
+        self.assertIsNone(self.handler.apikey)
+        self.assertIsNone(self.handler.handler_timeout)
+        self.assertEqual(self.handler.config, self.config)
+
+    def test_prepare_request_scenarios(self):
+        self.mock_request.headers.get = MagicMock(side_effect=lambda key, default=None: {
+            'request-id': 'test-request-id',
+            'X-Real-IP': '192.0.2.1',
+            'Authorization': 'test-api-key'
+        }.get(key, default))
+        
+        self.handler.prepare_request(self.mock_request)
+        
+        self.assertEqual(request_id_context.get(), 'test-request-id')
+        self.assertEqual(request_context.get(), self.mock_request)
+        self.assertEqual(self.handler.client_ip, '192.0.2.1')
+        self.assertEqual(self.handler.apikey, 'test-api-key')
+
+        self.mock_request.headers.get = MagicMock(side_effect=lambda key, default=None: {
+            'Authorization': 'test-api-key'
+        }.get(key, default))
+        
+        self.handler.prepare_request(self.mock_request)
+        
+        request_id = request_id_context.get()
+        self.assertIsNotNone(request_id)
+        self.assertNotEqual(request_id, '')
+        self.assertEqual(request_context.get(), self.mock_request)
+
+        self.mock_request.headers.get = MagicMock(side_effect=lambda key, default=None: {
+            'X-Forwarded-For': '198.51.100.1',
+            'Authorization': 'test-api-key'
+        }.get(key, default))
+        
+        self.handler.prepare_request(self.mock_request)
         self.assertEqual(self.handler.client_ip, '198.51.100.1')
 
-        self.request_mock.headers = {}
-        self.handler.initialize()
+        self.mock_request.headers.get = Mock(return_value=None)
+        self.mock_request.client.host = '127.0.0.1'
+        
+        self.handler.prepare_request(self.mock_request)
         self.assertEqual(self.handler.client_ip, '127.0.0.1')
 
+    @patch('logging.info')
+    def test_json_response_scenarios(self, mock_logging):
+        json_data = {'key': 'value', 'status': 'success'}
+        status_code = 200
+        
+        result = self.handler.json_response(self.mock_response, json_data, status_code)
+        
+        self.assertEqual(result, json_data)
+        self.assertEqual(self.mock_response.status_code, status_code)
+        mock_logging.assert_called()
+
+        json_data = {'key': 'value'}
+        status_code = 204
+        
+        result = self.handler.json_response(self.mock_response, json_data, status_code)
+        
+        self.assertEqual(result, {})
+        self.assertEqual(self.mock_response.status_code, status_code)
+        mock_logging.assert_called()
+
+        json_data = {'error': 'Something went wrong'}
+        status_code = 500
+        
+        result = self.handler.json_response(self.mock_response, json_data, status_code)
+        
+        self.assertEqual(result, json_data)
+        self.assertEqual(self.mock_response.status_code, status_code)
+        mock_logging.assert_called()
 
     @patch('logging.info')
-    def test_json_response(self, mock_logging):
-        self.handler.set_status = MagicMock()
-        self.handler.set_header = MagicMock()
-        self.handler.write = MagicMock()
-
-        data = {'key': 'value'}
-        self.handler.json_response(data, 201)
-
+    def test_stream_response(self, mock_logging):
+        mock_resp = MagicMock()
+        mock_resp.aiter_raw = MagicMock(return_value=iter([b'chunk1', b'chunk2']))
+        mock_resp.headers = MagicMock()
+        mock_resp.headers.get = MagicMock(side_effect=lambda key, default=None: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename="test.pdf"'
+        }.get(key, default))
+        mock_resp.aclose = AsyncMock()
+        
+        mock_client = MagicMock()
+        
+        result = self.handler.stream_response(mock_resp, mock_client, 200)
+        
+        self.assertIsInstance(result, StreamingResponse)
         mock_logging.assert_called_once()
-        self.handler.set_status.assert_called_once_with(201)
-        self.handler.set_header.assert_called_once_with("Content-Type", 'application/json')
-        self.handler.write.assert_called_once_with(json.dumps(data))
 
-    @patch('logging.info')
-    def test_json_response_204(self, mock_logging):
-        self.handler.set_status = MagicMock()
-        self.handler.set_header = MagicMock()
-        self.handler.write = MagicMock()
+    async def test_process_result_with_timeout_scenarios(self):
+        self.handler.handler_timeout = None
+        
+        async def mock_process_result(arg1, arg2):
+            return arg1 + arg2
+        
+        self.handler.process_result = mock_process_result
+        
+        result = await self.handler.process_result_with_timeout(5, 10)
+        self.assertEqual(result, 15)
 
-        data = None
-        self.handler.json_response(data, 204)
+        self.handler.handler_timeout = 5
+        
+        async def mock_process_result(value):
+            await asyncio.sleep(0.01)
+            return value * 2
+        
+        self.handler.process_result = mock_process_result
+        
+        result = await self.handler.process_result_with_timeout(10)
+        self.assertEqual(result, 20)
 
-        mock_logging.assert_called_once()
-        self.handler.set_status.assert_called_once_with(204)
-        self.handler.set_header.assert_called_once_with("Content-Type", 'application/json')
-        self.handler.write.assert_not_called()
+        self.handler.handler_timeout = 0.1
+        
+        async def mock_process_result():
+            await asyncio.sleep(1)
+            return "completed"
+        
+        self.handler.process_result = mock_process_result
+        
+        with self.assertRaises(asyncio.TimeoutError):
+            await self.handler.process_result_with_timeout()
 
-    def test_stream_response(self):
-        self.handler.set_status = MagicMock()
-        self.handler.set_header = MagicMock()
-        self.handler.write = MagicMock()
+    async def test_process_result_not_implemented(self):
+        with self.assertRaises(NotImplementedError):
+            await self.handler.process_result()
 
-        data = b'binary data'
-        self.handler.stream_response(data, 200)
-
-        self.handler.set_status.assert_called_once_with(200)
-        self.handler.set_header.assert_called_once_with("Content-Type", 'application/octet-stream')
-        self.handler.write.assert_called_once_with(data)
-
-    def test_stream_response_204(self):
-        self.handler.set_status = MagicMock()
-        self.handler.set_header = MagicMock()
-        self.handler.write = MagicMock()
-
-        data = None
-        self.handler.stream_response(data, 204)
-
-        self.handler.set_status.assert_called_once_with(204)
-        self.handler.set_header.assert_called_once_with("Content-Type", 'application/octet-stream')
-        self.handler.write.assert_not_called()
-
-class TestLogRequestFilter(unittest.TestCase):
-
-    def setUp(self):
-        self.filter = LogRequestFilter()
-
-    def test_filter(self):
-        record = MagicMock()
-        request_id_context.set('test-id')
-        request_context.set('test-context')
-
-        result = self.filter.filter(record)
-
-        self.assertTrue(result)
-        self.assertEqual(record.request_id, 'test-id')
-        self.assertEqual(record.request_info, 'test-context')
 
 if __name__ == '__main__':
     unittest.main()
