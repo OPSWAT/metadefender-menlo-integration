@@ -30,8 +30,8 @@ class HealthHandler(BaseHandler):
 
             if http_status != 200:
                 logging.error(f"Error checking MetaDefender Core health: {http_status, json_response}")
-                return self.base_response | {'md_'+api_type: {"status": "Error checking MetaDefender Core Health", "code": http_status}}
-                
+                return self.json_response(response, {"error": "MetaDefender Core health check failed"}, http_status)
+
             return self.base_response | {'md_'+api_type: self.json_response(response, json_response, http_status)}
         else:
             return self.base_response
