@@ -27,11 +27,12 @@ class HealthHandler(BaseHandler):
             json_response, http_status = await self.meta_defender_api.check_core_health(
                 self.config['api']['params']['apikey']
             )
-            if http_status == 200:
-                return self.base_response | {'md_'+api_type: self.json_response(response, json_response, http_status)}
-            else:
+
+            if http_status != 200:
                 logging.error(f"Error checking MetaDefender Core health: {http_status, json_response}")
-                return self.base_response | {'md_'+api_type: {"status": "Error checking MetaDefender Core Health"}}
+                return self.base_response | {'md_'+api_type: {"status": "Error checking MetaDefender Core Health", "code": http_status}}
+                
+            return self.base_response | {'md_'+api_type: self.json_response(response, json_response, http_status)}
         else:
             return self.base_response
         
