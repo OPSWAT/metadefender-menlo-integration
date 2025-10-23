@@ -235,6 +235,25 @@ class MetaDefenderAPI(ABC):
             text_response = await response.text()
             return text_response, status_code
 
+    async def _request_core_health_as_json(self, url, method, headers={}):
+        url = url
+        headers = headers
+
+        client: AsyncClient = HttpClientManager.get_client()
+        
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        
+        status_code = response.status_code
+        content_type = response.headers.get('Content-Type', '')
+
+        if 'application/json' in content_type:
+            json_response = response.json()
+            return json_response, status_code
+        else:
+            text_response = await response.text()
+            return text_response, status_code
+
     async def _request_as_bytes(self, api_type, fields={}, headers={}):
         """Make an API request and return the raw bytes response
 
@@ -338,6 +357,13 @@ class MetaDefenderAPI(ABC):
             except Exception as e:
                 logging.warning(f"Error adding scanWith header: {e}")
                 # Continue without the header if there's an error
+        elif self.service_name == SERVICE.meta_defender_core:
+            try:
+                if hasattr(self, 'api') and self.api['params']['apikey']:
+                    apikey = self.api['params']['apikey']
+                    headers['apikey'] = apikey
+            except Exception as e:
+                logging.warning(f"Error adding apikey header: {e}")
                 
         return headers
 

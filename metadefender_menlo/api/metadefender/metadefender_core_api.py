@@ -20,13 +20,21 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
             "file_submit": {"method": "POST", "endpoint": "/file"},
             "check_result": {"method": "GET", "endpoint": "/file/{data_id}"},
             "hash_lookup": {"method": "GET", "endpoint": "/hash/{hash}"},
-            "sanitized_file": {"method": "GET", "endpoint": "/file/converted/{data_id}"}
+            "sanitized_file": {"method": "GET", "endpoint": "/file/converted/{data_id}"},
+            "health_check": {"method": "GET", "endpoint": "/admin/config/healthcheck"}
         }
 
     async def check_hash(self, sha256, apikey, client_ip):
         json_response, http_status = await super().check_hash(sha256, apikey, client_ip)
         if any(value == "Not Found" for value in json_response.values()):
             return {"sha256": sha256}, 404
+        return json_response, http_status
+
+    async def check_core_health(self, apikey):
+        header = {'apikey': apikey}
+        url = self.server_url + self.api_endpoints["health_check"]["endpoint"]
+        headers = self._add_scan_with_header(header)
+        json_response, http_status = await self._request_core_health_as_json(url, "GET", headers=headers)
         return json_response, http_status
 
     def _get_submit_file_headers(self, metadata, apikey, client_ip):
