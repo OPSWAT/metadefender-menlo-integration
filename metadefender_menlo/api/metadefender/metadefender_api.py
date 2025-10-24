@@ -236,8 +236,6 @@ class MetaDefenderAPI(ABC):
             return text_response, status_code
 
     async def _request_core_health_as_json(self, url, method, headers={}):
-        url = url
-        headers = headers
 
         client: AsyncClient = HttpClientManager.get_client()
         
@@ -357,13 +355,6 @@ class MetaDefenderAPI(ABC):
             except Exception as e:
                 logging.warning(f"Error adding scanWith header: {e}")
                 # Continue without the header if there's an error
-        elif self.service_name == SERVICE.meta_defender_core:
-            try:
-                if hasattr(self, 'api') and self.api['params']['apikey']:
-                    apikey = self.api['params']['apikey']
-                    headers['apikey'] = apikey
-            except Exception as e:
-                logging.warning(f"Error adding apikey header: {e}")
                 
         return headers
 
