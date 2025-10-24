@@ -12,8 +12,8 @@ class HealthHandler(BaseHandler):
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
             "version": "2.0.2",
-            "commitHash": config.get('commitHash', '-'),
-            "rule": config.get('scanRule')
+            "commitHash": (config or {}).get('commitHash', '-'),
+            "rule": (config or {}).get('scanRule')
         }
 
     async def handle_request(self, request: Request, response: Response):
@@ -22,9 +22,7 @@ class HealthHandler(BaseHandler):
         api_type = (self.config or {}).get('api', {}).get('type')
         if api_type == 'core':
             
-            json_response, http_status = await self.meta_defender_api.check_core_health(
-                self.config['api']['params']['apikey']
-            )
+            json_response, http_status = await self.meta_defender_api.check_core_health(self.apikey)
 
             if http_status != 200:
                 logging.error(f"Error checking MetaDefender Core health: {http_status, json_response}")

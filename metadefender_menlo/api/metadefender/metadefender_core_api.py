@@ -32,9 +32,8 @@ class MetaDefenderCoreAPI(MetaDefenderAPI):
 
     async def check_core_health(self, apikey):
         header = {'apikey': apikey}
-        url = self.server_url + self.api_endpoints["health_check"]["endpoint"]
         headers = self._add_scan_with_header(header)
-        json_response, http_status = await self._request_core_health_as_json(url, "GET", headers=headers)
+        json_response, http_status = await self._request_as_json("health_check", headers=headers)
         return json_response, http_status
 
     def _get_submit_file_headers(self, metadata, apikey, client_ip):

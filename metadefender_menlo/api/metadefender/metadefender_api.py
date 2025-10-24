@@ -235,23 +235,6 @@ class MetaDefenderAPI(ABC):
             text_response = await response.text()
             return text_response, status_code
 
-    async def _request_core_health_as_json(self, url, method, headers={}):
-
-        client: AsyncClient = HttpClientManager.get_client()
-        
-        if method == "GET":
-            response = await client.get(url, headers=headers)
-        
-        status_code = response.status_code
-        content_type = response.headers.get('Content-Type', '')
-
-        if 'application/json' in content_type:
-            json_response = response.json()
-            return json_response, status_code
-        else:
-            text_response = await response.text()
-            return text_response, status_code
-
     async def _request_as_bytes(self, api_type, fields={}, headers={}):
         """Make an API request and return the raw bytes response
 
