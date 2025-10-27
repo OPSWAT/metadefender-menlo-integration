@@ -41,7 +41,7 @@ class BaseHandler:
         except Exception:
             pass
 
-        self.apikey = request.headers.get('Authorization')
+        self.apikey = request.headers.get('Authorization') or self.config.get('apikey')
 
     def json_response(self, response, json_response, status_code=200):
         """
