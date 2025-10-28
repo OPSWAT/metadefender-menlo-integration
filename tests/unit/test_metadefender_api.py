@@ -1,10 +1,7 @@
 import unittest
 from unittest.mock import patch, AsyncMock, MagicMock, Mock
-import json
-from httpx import HTTPError
 import os
 import sys
-import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
 from metadefender_menlo.api.log_types import SERVICE
@@ -322,7 +319,7 @@ class MetaDefenderAPITest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(status, 200)
         self.assertEqual(json_response["file"], "data")
 
-    async def test_config_and_get_instance(self):
+    def test_config_and_get_instance(self):
         MetaDefenderAPI.config(self.settings, "https://test-url.com", "test-api-key", MetaDefenderAPIImpl)
         instance = MetaDefenderAPI.get_instance()
 

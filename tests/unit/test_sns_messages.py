@@ -1,6 +1,6 @@
 import unittest
 import string
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))

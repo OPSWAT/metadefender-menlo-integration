@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch, Mock
-import json
 import os
 import sys
 
@@ -157,8 +156,8 @@ class TestMetaDefenderCloudAPI(unittest.IsolatedAsyncioTestCase):
         mock_client.send = AsyncMock(return_value=mock_file_response)
         mock_get_client.return_value = mock_client
         
-        resp_with_fallback, status_with_fallback, _ = await api_with_fallback.sanitized_file("data-id", "key", "1.1.1.1")
-        resp_without_fallback, status_without_fallback, _ = await self.api.sanitized_file("data-id", "key", "1.1.1.1")
+        _, status_with_fallback, _ = await api_with_fallback.sanitized_file("data-id", "key", "1.1.1.1")
+        _, status_without_fallback, _ = await self.api.sanitized_file("data-id", "key", "1.1.1.1")
         
         self.assertEqual(status_with_fallback, 204)
         self.assertEqual(status_without_fallback, 404)
@@ -185,7 +184,7 @@ class TestMetaDefenderCloudAPI(unittest.IsolatedAsyncioTestCase):
             mock_get_client.return_value = mock_client
             
             with patch('metadefender_menlo.api.metadefender.metadefender_cloud_api.logging'):
-                resp, http_status, client = await self.api.sanitized_file("data-id", "key", "1.1.1.1")
+                _, http_status, _ = await self.api.sanitized_file("data-id", "key", "1.1.1.1")
                 self.assertEqual(http_status, 204)
 
     @patch('metadefender_menlo.api.utils.http_client_manager.HttpClientManager.get_client')

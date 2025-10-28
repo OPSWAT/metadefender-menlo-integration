@@ -66,7 +66,7 @@ class TestConfig(unittest.TestCase):
             if var in os.environ:
                 del os.environ[var]
 
-    def cleanUp(self):
+    def tearDown(self):
         if os.path.exists(self.temp_file.name):
             os.unlink(self.temp_file.name)
         for var, value in self.original_env_vars.items():
@@ -77,11 +77,11 @@ class TestConfig(unittest.TestCase):
         Config._CONFIG = None
 
     def test_constructor_validations(self):
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertIsNotNone(Config._CONFIG)
         self.assertEqual(Config._CONFIG['api']['type'], 'cloud')
         self.assertEqual(Config._CONFIG['api']['params']['apikey'], 'test-apikey-from-file')
-        self.assertEqual(Config._CONFIG['logging']['kafka']['enabled'], True)
+        self.assertTrue(Config._CONFIG['logging']['kafka']['enabled'])
 
         Config._CONFIG = None
         with self.assertRaises(Exception) as context:
@@ -107,59 +107,59 @@ class TestConfig(unittest.TestCase):
     def test_environment_variable_precedence(self):
         os.environ['MENLO_MD_ENV'] = 'production'
         os.environ['ENVIRONMENT'] = 'staging'
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['env'], 'production')
 
         del os.environ['MENLO_MD_ENV']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['env'], 'staging')
         
         del os.environ['ENVIRONMENT']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['env'], 'local')
 
         os.environ['MENLO_MD_AWS_REGION'] = 'us-east-1'
         os.environ['AWS_REGION'] = 'eu-west-1'
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['region'], 'us-east-1')
         
         del os.environ['MENLO_MD_AWS_REGION']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['region'], 'eu-west-1')
         
         del os.environ['AWS_REGION']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['region'], 'us-west-2')
 
         os.environ['MENLO_MD_BITBUCKET_COMMIT_HASH'] = 'abc123-menlo'
         os.environ['BITBUCKET_COMMIT_HASH'] = 'def456-bitbucket'
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['commitHash'], 'abc123-menlo')
         
         del os.environ['MENLO_MD_BITBUCKET_COMMIT_HASH']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['commitHash'], 'def456-bitbucket')
         
         del os.environ['BITBUCKET_COMMIT_HASH']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['commitHash'], '-')
 
     def test_scan_rule_configuration(self):
         os.environ['MENLO_MD_MDCLOUD_RULE'] = 'custom-scan-rule'
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['scanRule'], 'custom-scan-rule')
         
         del os.environ['MENLO_MD_MDCLOUD_RULE']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['scanRule'], 'multiscan, sanitize, unarchive')
 
         core_config = self.test_config.copy()
@@ -170,23 +170,23 @@ class TestConfig(unittest.TestCase):
         
         try:
             Config._CONFIG = None
-            config = Config(core_file.name)
+            Config(core_file.name)
             self.assertIsNone(Config._CONFIG['scanRule'])
             Config._CONFIG = None
             os.environ['MENLO_MD_MDCLOUD_RULE'] = 'core-custom-rule'
-            config = Config(core_file.name)
+            Config(core_file.name)
             self.assertEqual(Config._CONFIG['scanRule'], 'core-custom-rule')
         finally:
             os.unlink(core_file.name)
 
     def test_apikey_configuration(self):
         os.environ['MENLO_MD_APIKEY'] = 'env-apikey-123'
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['apikey'], 'env-apikey-123')
         
         del os.environ['MENLO_MD_APIKEY']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['apikey'], 'test-apikey-from-file')
 
         no_apikey_config = self.test_config.copy()
@@ -197,7 +197,7 @@ class TestConfig(unittest.TestCase):
         
         try:
             Config._CONFIG = None
-            config = Config(no_apikey_file.name)
+            Config(no_apikey_file.name)
             self.assertIsNone(Config._CONFIG['apikey'])
         finally:
             os.unlink(no_apikey_file.name)
@@ -205,17 +205,17 @@ class TestConfig(unittest.TestCase):
     def test_server_url_configuration(self):
         os.environ['MENLO_MD_URL'] = 'https://menlo-custom.com'
         os.environ['MDCLOUD_URL'] = 'https://mdcloud-custom.com'
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['serverUrl'], 'https://menlo-custom.com')
 
         del os.environ['MENLO_MD_URL']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['serverUrl'], 'https://mdcloud-custom.com')
         
         del os.environ['MDCLOUD_URL']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['serverUrl'], 'https://cloud.test.com')
 
         core_config = self.test_config.copy()
@@ -226,11 +226,11 @@ class TestConfig(unittest.TestCase):
         
         try:
             Config._CONFIG = None
-            config = Config(core_file.name)
+            Config(core_file.name)
             self.assertEqual(Config._CONFIG['serverUrl'], 'https://core.test.com')
             Config._CONFIG = None
             os.environ['MENLO_MD_URL'] = 'https://env-override.com'
-            config = Config(core_file.name)
+            Config(core_file.name)
             self.assertEqual(Config._CONFIG['serverUrl'], 'https://env-override.com')
         finally:
             os.unlink(core_file.name)
@@ -244,7 +244,7 @@ class TestConfig(unittest.TestCase):
         
         try:
             Config._CONFIG = None
-            config = Config(invalid_file.name)
+            Config(invalid_file.name)
             self.assertEqual(Config._CONFIG['serverUrl'], 'http://localhost:8008')
         finally:
             os.unlink(invalid_file.name)
@@ -252,24 +252,24 @@ class TestConfig(unittest.TestCase):
     def test_sentry_and_logging_configuration(self):
         os.environ['MENLO_MD_SENTRY_DSN'] = 'https://menlo-sentry@sentry.io/123'
         os.environ['SENTRY_DSN'] = 'https://generic-sentry@sentry.io/456'
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['sentryDsn'], 'https://menlo-sentry@sentry.io/123')
         
         del os.environ['MENLO_MD_SENTRY_DSN']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['sentryDsn'], 'https://generic-sentry@sentry.io/456')
         
         del os.environ['SENTRY_DSN']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertNotIn('sentryDsn', Config._CONFIG)
 
         os.environ['MENLO_MD_SNS_ENABLED'] = 'true'
         os.environ['MENLO_MD_SNS_ARN'] = 'arn:aws:sns:us-east-1:123456789012:env-topic'
         os.environ['MENLO_MD_SNS_REGION'] = 'us-east-1'
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         
         self.assertEqual(Config._CONFIG['logging']['sns']['enabled'], 'true')
         self.assertEqual(Config._CONFIG['logging']['sns']['arn'], 'arn:aws:sns:us-east-1:123456789012:env-topic')
@@ -280,39 +280,39 @@ class TestConfig(unittest.TestCase):
         del os.environ['MENLO_MD_SNS_ARN']
         del os.environ['MENLO_MD_SNS_REGION']
         
-        config = Config(self.temp_file.name)
-        self.assertEqual(Config._CONFIG['logging']['sns']['enabled'], False)
+        Config(self.temp_file.name)
+        self.assertFalse(Config._CONFIG['logging']['sns']['enabled'])
         self.assertEqual(Config._CONFIG['logging']['sns']['arn'], 'arn:aws:sns:us-west-2:123456789012:test-topic')
         self.assertEqual(Config._CONFIG['logging']['sns']['region'], 'us-west-2')
 
     def test_fallback_and_headers_configuration(self):
         os.environ['MENLO_MD_FALLBACK_TO_ORIGINAL'] = 'false'
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertFalse(Config._CONFIG['fallbackToOriginal'])
         
         Config._CONFIG = None
         os.environ['MENLO_MD_FALLBACK_TO_ORIGINAL'] = 'true'
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertTrue(Config._CONFIG['fallbackToOriginal'])
         
         del os.environ['MENLO_MD_FALLBACK_TO_ORIGINAL']
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertTrue(Config._CONFIG['fallbackToOriginal'])
 
         os.environ['MENLO_MD_HEADERS_SCAN_WITH'] = 'custom-headers-value'
         Config._CONFIG = None
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         self.assertEqual(Config._CONFIG['headers_scan_with'], 'custom-headers-value')
 
     def test_get_all_method(self):
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         result = Config.get_all()
         
         self.assertIsNotNone(result)
         self.assertIs(result, Config._CONFIG)
         self.assertEqual(result['api']['type'], 'cloud')
-        self.assertEqual(result['logging']['kafka']['enabled'], True)
+        self.assertTrue(result['logging']['kafka']['enabled'])
         self.assertIn('env', result)
         self.assertIn('region', result)
         self.assertIn('commitHash', result)
@@ -340,7 +340,7 @@ class TestConfig(unittest.TestCase):
         os.environ['MENLO_MD_FALLBACK_TO_ORIGINAL'] = 'false'
         os.environ['MENLO_MD_HEADERS_SCAN_WITH'] = 'prod-headers'
         
-        config = Config(self.temp_file.name)
+        Config(self.temp_file.name)
         final_config = Config.get_all()
         
         self.assertEqual(final_config['env'], 'production')

@@ -205,10 +205,10 @@ class TestMetaDefenderCoreAPI(unittest.IsolatedAsyncioTestCase):
         mock_get_client.return_value = mock_client
         
         with patch('metadefender_menlo.api.metadefender.metadefender_core_api.logging'):
-            resp, http_status, client = await self.api.sanitized_file("test-data-id", "api-key", "192.168.1.1")
+            _, http_status, _ = await self.api.sanitized_file("test-data-id", "api-key", "192.168.1.1")
             self.assertEqual(http_status, 204)
             
-            resp, http_status, client = await api_no_fallback.sanitized_file("test-data-id", "api-key", "192.168.1.1")
+            _, http_status, _ = await api_no_fallback.sanitized_file("test-data-id", "api-key", "192.168.1.1")
             self.assertEqual(http_status, 404)
 
     async def test_extract_filename_from_headers(self):

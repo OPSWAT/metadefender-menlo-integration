@@ -127,6 +127,7 @@ class TestBaseHandler(unittest.IsolatedAsyncioTestCase):
         self.handler.handler_timeout = None
         
         async def mock_process_result(arg1, arg2):
+            await asyncio.sleep(0)
             return arg1 + arg2
         
         self.handler.process_result = mock_process_result

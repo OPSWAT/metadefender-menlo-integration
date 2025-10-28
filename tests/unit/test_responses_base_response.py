@@ -80,8 +80,8 @@ class TestBaseResponse(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(BaseResponse._allowed_responses, [])
         self.assertEqual(BaseResponse._http_responses, {})
         
-        instance1 = BaseResponse(allowed_responses=[200])
-        instance2 = BaseResponse(allowed_responses=[400])
+        BaseResponse(allowed_responses=[200])
+        BaseResponse(allowed_responses=[400])
         
         self.assertEqual(len(BaseResponse._http_responses), 2)
         self.assertIn('200', BaseResponse._http_responses)

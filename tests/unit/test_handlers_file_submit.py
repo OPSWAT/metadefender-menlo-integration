@@ -147,7 +147,6 @@ class TestSubmitHandler(unittest.IsolatedAsyncioTestCase):
         self._setup_mock_request()
         
         async def slow_submit(*args):
-            import asyncio
             await asyncio.sleep(1)
             return ({'uuid': 'test-uuid'}, 200)
         
@@ -169,7 +168,7 @@ class TestSubmitHandler(unittest.IsolatedAsyncioTestCase):
             return_value=({'uuid': 'test-uuid'}, 200)
         )
         
-        result_json, result_status = await self.handler.process_result(mock_upload, metadata)
+        _, result_status = await self.handler.process_result(mock_upload, metadata)
         
         self.handler.meta_defender_api.submit.assert_called_once_with(
             mock_upload.file, metadata, self.handler.apikey, self.handler.client_ip
@@ -277,7 +276,7 @@ class TestSubmitHandler(unittest.IsolatedAsyncioTestCase):
             return_value=(test_response, test_status)
         )
 
-        result = await self.handler.handle_post(self.mock_request, self.mock_response)
+        await self.handler.handle_post(self.mock_request, self.mock_response)
 
         # Verify content-length was calculated
         self.handler.meta_defender_api.submit.assert_called_once()

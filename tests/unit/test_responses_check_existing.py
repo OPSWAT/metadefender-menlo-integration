@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
