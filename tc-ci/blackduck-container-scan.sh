@@ -113,7 +113,6 @@ echo "##teamcity[blockOpened name='BlackDuck Container Scan']"
     --detect.container.scan.file.path="$IMAGE_TAR_FILE" \
     --detect.tools=CONTAINER_SCAN \
     --detect.tools.excluded=BINARY_SCAN \
-    --detect.excluded.detector.types=pip \
     --detect.blackduck.signature.scanner.memory=8192 \
     --detect.project.version.distribution=SAAS \
     --detect.blackduck.signature.scanner.jvm.additional.options="-XX:+UseG1GC" \
