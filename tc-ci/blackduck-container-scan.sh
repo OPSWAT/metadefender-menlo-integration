@@ -5,6 +5,7 @@ cd $CWD/..
 BLACKDUCK_URL="https://opswat.blackducksoftware.com/"
 export VERSION=m_"$(git rev-parse --short HEAD)"
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
+echo "DOCKER_IMAGE: $DOCKER_IMAGE"
 BD_PARENT_PROJECT="MD Cloud Menlo Container"
 
 BRANCH_NAME="$(git branch --show-current 2>/dev/null)"
@@ -113,7 +114,6 @@ echo "##teamcity[blockOpened name='BlackDuck Container Scan']"
     --detect.container.scan.file.path="$IMAGE_TAR_FILE" \
     --detect.tools=CONTAINER_SCAN \
     --detect.tools.excluded=BINARY_SCAN \
-    --detect.excluded.detector.types=pip \
     --detect.blackduck.signature.scanner.memory=8192 \
     --detect.project.version.distribution=SAAS \
     --detect.blackduck.signature.scanner.jvm.additional.options="-XX:+UseG1GC" \
