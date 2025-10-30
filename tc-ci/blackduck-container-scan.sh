@@ -5,6 +5,7 @@ cd $CWD/..
 BLACKDUCK_URL="https://opswat.blackducksoftware.com/"
 export VERSION=m_"$(git rev-parse --short HEAD)"
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
+echo "DOCKER_IMAGE: $DOCKER_IMAGE"
 BD_PARENT_PROJECT="MD Cloud Menlo Container"
 
 BRANCH_NAME="$(git branch --show-current 2>/dev/null)"
