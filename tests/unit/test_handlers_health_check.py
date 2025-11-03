@@ -1,60 +1,40 @@
 import unittest
-from unittest.mock import Mock, patch
-import json
+from unittest.mock import Mock, MagicMock, patch
 import logging
 
 import os
 import sys
-import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
-from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.handlers.health_handler import HealthHandler
+from fastapi import Request, Response
 
-class TestHealthCheckHandler(unittest.TestCase):
-    def setUp(self):
-        """Set up test fixtures before each test method."""
-        self.application = Mock()
-        self.application.ui_methods = {}
-        self.application.ui_modules = {}
 
-        self.request = Mock()
-        self.request.connection = Mock()
-        self.request.connection.context = {}
-
+class TestHealthCheckHandler(unittest.IsolatedAsyncioTestCase):
+    
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    def setUp(self, mock_get_instance):
+        mock_get_instance.return_value = MagicMock()
+        
         self.test_config = {
             'commitHash': 'abc123',
-            'scanRule': 'test-rule'
+            'scanRule': 'test-rule',
+            'allowlist': {
+                'enabled': False
+            }
         }
 
-        self.handler = HealthHandler(
-            application=self.application,
-            request=self.request,
-            config=self.test_config,
-        )
-
+        self.handler = HealthHandler(config=self.test_config)
+        
+        self.mock_request = MagicMock(spec=Request)
+        self.mock_response = MagicMock(spec=Response)
+        
         self.original_logging_debug = logging.debug
         logging.debug = Mock()
-        
 
     def tearDown(self):
-        """Clean up after each test method."""
         logging.debug = self.original_logging_debug
 
-    def test_initialize(self):
-        """Test the initialize method with new config."""
-        with patch.object(self.handler, 'initialize') as mock_super_init:
-            self.handler.initialize(self.test_config)
-            
-            self.assertEqual(self.handler.settings, self.test_config)
-            mock_super_init.assert_called_once_with(self.test_config)
-
-    def test_get(self):
-        """Test the GET method response."""
-        self.handler.settings = self.test_config
-        self.handler.set_status = Mock()
-        self.handler.set_header = Mock()
-        self.handler.write = Mock()
-
+    async def test_handle_request(self):
         expected_response = {
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
@@ -63,49 +43,48 @@ class TestHealthCheckHandler(unittest.TestCase):
             "rule": self.test_config['scanRule']
         }
 
-        self.handler.get()
+        result = await self.handler.handle_request(self.mock_request, self.mock_response)
 
-        logging.debug.assert_called_once_with(
-            "{0} > {1} > {2}".format(
-                SERVICE.menlo_plugin,
-                TYPE.internal,
-                {"message": "GET /health > OK!"}
-            )
-        )
+        self.assertEqual(result, expected_response)
+        self.assertIn('status', result)
+        self.assertIn('name', result)
+        self.assertIn('version', result)
+        self.assertIn('commitHash', result)
+        self.assertIn('rule', result)
 
-        self.handler.set_status.assert_called_once_with(200)
-        self.handler.set_header.assert_called_once_with(
-            "Content-Type",
-            'application/json'
-        )
+    async def test_handle_request_response_format(self):
+        result = await self.handler.handle_request(self.mock_request, self.mock_response)
 
-        self.handler.write.assert_called_once_with(
-            json.dumps(expected_response)
-        )
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result['status'], 'Ready')
+        self.assertEqual(result['name'], 'MetaDefender - Menlo integration')
+        self.assertEqual(result['version'], '2.0.2')
+        self.assertEqual(result['commitHash'], self.test_config['commitHash'])
+        self.assertEqual(result['rule'], self.test_config['scanRule'])
 
-    def test_get_response_format(self):
-        """Test the exact format and content of the GET response."""
-        self.handler.settings = self.test_config
-        self.handler.set_status = Mock()
-        self.handler.set_header = Mock()
-        self.handler.write = Mock()
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    async def test_handle_request_with_different_config(self, mock_get_instance):
+        mock_get_instance.return_value = MagicMock()
+        
+        different_config = {
+            'commitHash': 'xyz789',
+            'scanRule': 'different-rule',
+            'allowlist': {
+                'enabled': False
+            }
+        }
+        
+        handler = HealthHandler(config=different_config)
+        result = await handler.handle_request(self.mock_request, self.mock_response)
 
-        self.handler.get()
+        self.assertEqual(result['commitHash'], 'xyz789')
+        self.assertEqual(result['rule'], 'different-rule')
 
-        written_data = self.handler.write.call_args[0][0]
-        response_dict = json.loads(written_data)
-
-        self.assertIn('status', response_dict)
-        self.assertIn('name', response_dict)
-        self.assertIn('version', response_dict)
-        self.assertIn('commitHash', response_dict)
-        self.assertIn('rule', response_dict)
-
-        self.assertEqual(response_dict['status'], 'Ready')
-        self.assertEqual(response_dict['name'], 'MetaDefender - Menlo integration')
-        self.assertEqual(response_dict['version'], '2.0.2')
-        self.assertEqual(response_dict['commitHash'], self.test_config['commitHash'])
-        self.assertEqual(response_dict['rule'], self.test_config['scanRule'])
+    async def test_handle_request_returns_dict(self):
+        result = await self.handler.handle_request(self.mock_request, self.mock_response)
+        
+        self.assertIsInstance(result, dict)
+        self.assertEqual(len(result), 5)
 
 
 if __name__ == '__main__':

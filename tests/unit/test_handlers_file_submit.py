@@ -1,132 +1,289 @@
 import unittest
-from unittest.mock import MagicMock, patch, AsyncMock
-from tornado.web import HTTPError
-
-import sys
+from unittest.mock import Mock, MagicMock, patch, AsyncMock
+import logging
 import os
+import sys
+import asyncio
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
-from metadefender_menlo.api.handlers.file_submit import FileSubmitHandler
+from metadefender_menlo.api.handlers.submit_handler import SubmitHandler, stream_file, AsyncFileStream, submit_handler
 from metadefender_menlo.api.log_types import SERVICE, TYPE
+from fastapi import Request, Response
+from starlette.datastructures import FormData, UploadFile
+import io
 
-class MockApplication:
-    def __init__(self):
-        self.ui_methods = {}
-        self.ui_modules = {}
 
-class TestFileSubmitHandler(unittest.TestCase):
-    def setUp(self):
-        self.mock_app = MockApplication()
-        self.handler = FileSubmitHandler(application=self.mock_app, request=MagicMock())
-        self.handler.meta_defender_api = MagicMock()
+class TestSubmitHandler(unittest.IsolatedAsyncioTestCase):
+    
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    def setUp(self, mock_get_instance):
+        mock_get_instance.return_value = MagicMock()
+        
+        self.test_config = {
+            'timeout': {
+                'submit': {
+                    'enabled': False,
+                    'value': 30
+                }
+            },
+            'allowlist': {
+                'enabled': False
+            }
+        }
+        
+        self.handler = SubmitHandler(config=self.test_config)
+        self.mock_request = MagicMock(spec=Request)
+        self.mock_response = MagicMock(spec=Response)
+        
+        self.handler.meta_defender_api = Mock()
+        self.handler.meta_defender_api.service_name = SERVICE.meta_defender_core
         self.handler.client_ip = '127.0.0.1'
+        self.handler.apikey = 'test-api-key'
 
-    @patch('metadefender_menlo.api.file_submit_handler.logging.info')
-    @patch('metadefender_menlo.api.file_submit_handler.logging.debug')
-    @patch('metadefender_menlo.api.file_submit_handler.FileSubmit')
-    @patch('metadefender_menlo.api.file_submit_handler.FileSubmitHandler.validateFile')
-    async def test_post_successful(self, mock_validate, mock_filesubmit, mock_debug, mock_info):
-        self.handler.request.headers = {'Authorization': 'test_apikey'}
-        self.handler.request.files = {
-            'file': [{'filename': 'test.txt', 'content_type': 'text/plain', 'body': b'file_content'}]
-        }
-        mock_validate.return_value = self.handler.request.files
-        self.handler.meta_defender_api.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
-        mock_filesubmit.return_value.handle_response.return_value = ({"response": "ok"}, 200)
-        self.handler.json_response = MagicMock()
+        self.original_logging_info = logging.info
+        self.original_logging_error = logging.error
+        logging.info = Mock()
+        logging.error = Mock()
 
-        await self.handler.post()
+    def tearDown(self):
+        logging.info = self.original_logging_info
+        logging.error = self.original_logging_error
 
-        mock_validate.assert_called_once()
-        self.handler.meta_defender_api.submit_file.assert_called_once_with(
-            'test.txt', b'file_content', metadata={}, apikey='test_apikey', ip='127.0.0.1'
+    def _setup_mock_request(self, content_type="multipart/form-data", has_file=True):
+        self.mock_request.headers = MagicMock()
+        self.mock_request.headers.get = Mock(return_value=content_type)
+        self.mock_request.client = MagicMock()
+        self.mock_request.client.host = '127.0.0.1'
+        
+        if has_file:
+            mock_upload = MagicMock(spec=UploadFile)
+            mock_upload.filename = 'test.txt'
+            mock_upload.file = io.BytesIO(b'test content')
+            mock_upload.close = AsyncMock()
+            
+            mock_form = MagicMock(spec=FormData)
+            mock_form.get = Mock(side_effect=lambda key: {
+                'files': mock_upload,
+                'userid': 'test_user',
+                'srcuri': 'https://example.com',
+                'filename': 'test.txt'
+            }.get(key))
+            
+            self.mock_request.form = AsyncMock(return_value=mock_form)
+        else:
+            mock_form = MagicMock(spec=FormData)
+            mock_form.get = Mock(return_value=None)
+            self.mock_request.form = AsyncMock(return_value=mock_form)
+
+    @patch('metadefender_menlo.api.handlers.submit_handler.SubmitResponse')
+    async def test_handle_post_success(self, mock_submit_response):
+        test_response = {'uuid': 'test-uuid-123', 'result': 'accepted'}
+        test_status = 200
+
+        self._setup_mock_request()
+        self.handler.meta_defender_api.submit = AsyncMock(
+            return_value=(test_response, test_status)
         )
-        self.handler.json_response.assert_called_once_with({"response": "ok"}, 200)
-        mock_info.assert_called_once()
-        mock_debug.assert_called()
 
-    @patch('metadefender_menlo.api.file_submit_handler.logging.error')
-    @patch('metadefender_menlo.api.file_submit_handler.FileSubmitHandler.validateFile')
-    async def test_post_exception(self, mock_validate, mock_error):
-        self.handler.request.headers = {'Authorization': 'test_apikey'}
-        self.handler.request.files = {
-            'file': [{'filename': 'test.txt', 'content_type': 'text/plain', 'body': b'file_content'}]
-        }
-        mock_validate.return_value = self.handler.request.files
-        self.handler.meta_defender_api.submit_file = AsyncMock(side_effect=Exception("Submission error"))
-        self.handler.json_response = MagicMock()
+        mock_submit_response_instance = mock_submit_response.return_value
+        mock_submit_response_instance.handle_response = AsyncMock(
+            return_value=(test_response, test_status)
+        )
 
-        await self.handler.post()
+        result = await self.handler.handle_post(self.mock_request, self.mock_response)
 
-        self.handler.json_response.assert_called_once_with({}, 500)
-        mock_error.assert_called()
+        self.assertEqual(result, test_response)
+        self.assertEqual(self.mock_response.status_code, test_status)
+        logging.info.assert_called()
+        self.handler.meta_defender_api.submit.assert_called_once()
 
-    def test_validate_file_no_file(self):
-        self.handler.request.files = {}
-
-        with self.assertRaises(HTTPError) as context:
-            self.handler.validateFile('test_apikey')
-
-        self.assertEqual(context.exception.status_code, 400)
-        self.assertEqual(str(context.exception), 'HTTP 400: Bad Request (No file uploaded)')
-
-    def test_validate_file_too_many_files(self):
-        self.handler.request.files = {
-            'file1': [{'filename': 'file1.txt', 'content_type': 'text/plain', 'body': b'file1_content'}],
-            'file2': [{'filename': 'file2.txt', 'content_type': 'text/plain', 'body': b'file2_content'}]
-        }
-
-        with self.assertRaises(HTTPError) as context:
-            self.handler.validateFile('test_apikey')
-        self.assertEqual(context.exception.status_code, 400)
-        self.assertEqual(str(context.exception), 'HTTP 400: Bad Request (Too many files uploaded)')
-
-    def test_validate_file_valid(self):
-        self.handler.request.files = {
-            'file': [{'filename': 'test.txt', 'content_type': 'text/plain', 'body': b'file_content'}]
-        }
-
-        files = self.handler.validateFile('test_apikey')
-        self.assertEqual(files, self.handler.request.files)
-
-    @patch('metadefender_menlo.api.file_submit_handler.logging.debug')
-    async def test_post_logging_and_metadata(self, mock_debug):
-        self.handler.request.headers = {'Authorization': 'test_apikey'}
-        self.handler.request.files = {
-            'file': [{'filename': 'test.txt', 'content_type': 'text/plain', 'body': b'file_content'}]
-        }
-        self.handler.request.arguments = {'arg1': 'value1', 'arg2': 'value2'}
+    async def test_handle_post_invalid_content_type(self):
+        self._setup_mock_request(content_type="application/json")
+        result = await self.handler.handle_post(self.mock_request, self.mock_response)
         
-        self.handler.validateFile = MagicMock(return_value=self.handler.request.files)
-        self.handler.json_response = MagicMock()
-        self.handler.meta_defender_api.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
-        await self.handler.post()
+        self.assertEqual(result, {'error': 'Content-Type must be multipart/form-data'})
+        self.assertEqual(self.mock_response.status_code, 400)
 
-        mock_debug.assert_any_call("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.request, {
-            "headers": "arg1 : value1"
-        }))
-        mock_debug.assert_any_call("{0} > {1} > {2}".format(SERVICE.menlo_plugin, TYPE.request, {
-            "headers": "arg2 : value2"
-        }))
+    async def test_handle_post_no_file(self):
+        self._setup_mock_request(has_file=False)
+        result = await self.handler.handle_post(self.mock_request, self.mock_response)
         
-    @patch('metadefender_menlo.api.file_submit_handler.logging.info')
-    async def test_post_logging_info_called(self, mock_info):
-        self.handler.request.headers = {'Authorization': 'test_apikey'}
-        self.handler.request.files = {
-            'file': [{'filename': 'test.txt', 'content_type': 'text/plain', 'body': b'file_content'}]
+        self.assertEqual(result, {'error': 'No file uploaded'})
+        self.assertEqual(self.mock_response.status_code, 400)
+
+    @patch('metadefender_menlo.api.handlers.submit_handler.SubmitResponse')
+    async def test_handle_post_api_error(self, mock_submit_response):
+        self._setup_mock_request()
+        self.handler.meta_defender_api.submit = AsyncMock(
+            side_effect=Exception("API Error")
+        )
+
+        result = await self.handler.handle_post(self.mock_request, self.mock_response)
+
+        self.assertEqual(result, {})
+        self.assertEqual(self.mock_response.status_code, 500)
+        logging.error.assert_called_once()
+
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    @patch('metadefender_menlo.api.handlers.submit_handler.SubmitResponse')
+    async def test_handle_post_with_timeout_enabled(self, mock_submit_response, mock_get_instance):
+        mock_get_instance.return_value = MagicMock()
+        
+        test_config_with_timeout = {
+            'timeout': {
+                'submit': {
+                    'enabled': True,
+                    'value': 0.1
+                }
+            },
+            'allowlist': {
+                'enabled': False
+            }
         }
         
-        self.handler.validateFile = MagicMock(return_value=self.handler.request.files)
-        self.handler.meta_defender_api.submit_file = AsyncMock(return_value=({"response": "ok"}, 200))
-        self.handler.json_response = MagicMock()
+        handler = SubmitHandler(config=test_config_with_timeout)
+        handler.meta_defender_api = Mock()
+        handler.meta_defender_api.service_name = SERVICE.meta_defender_core
         
-        await self.handler.post()
+        self._setup_mock_request()
+        
+        async def slow_submit(*args):
+            await asyncio.sleep(1)
+            return ({'uuid': 'test-uuid'}, 200)
+        
+        handler.meta_defender_api.submit = slow_submit
+        
+        result = await handler.handle_post(self.mock_request, self.mock_response)
+        
+        self.assertEqual(result['result'], 'skip')
+        self.assertEqual(result['uuid'], '')
+        self.assertEqual(self.mock_response.status_code, 500)
+        logging.error.assert_called()
 
-        mock_info.assert_called_once()
-        log_args = mock_info.call_args[0][0]
-        self.assertIn('method', log_args)
-        self.assertIn('fileName', log_args)
-        self.assertIn('content_type', log_args)
-        self.assertIn('dimension', log_args)
+    async def test_process_result(self):
+        mock_upload = MagicMock(spec=UploadFile)
+        mock_upload.file = io.BytesIO(b'test content')
+        metadata = {'userid': 'test_user', 'filename': 'test.txt'}
+        
+        self.handler.meta_defender_api.submit = AsyncMock(
+            return_value=({'uuid': 'test-uuid'}, 200)
+        )
+        
+        _, result_status = await self.handler.process_result(mock_upload, metadata)
+        
+        self.handler.meta_defender_api.submit.assert_called_once_with(
+            mock_upload.file, metadata, self.handler.apikey, self.handler.client_ip
+        )
+        self.assertEqual(result_status, 200)
+
+    async def test_get_uuid_and_add_to_allowlist_disabled(self):
+        json_response = {'uuid': 'test-uuid'}
+        http_status = 200
+        metadata = {'srcuri': 'example.com', 'filename': 'test.txt'}
+        
+        self.handler.allowlist_handler = Mock()
+        self.handler.allowlist_handler.is_allowlist_enabled.return_value = False
+        
+        await self.handler.get_uuid_and_add_to_allowlist(json_response, http_status, metadata)
+        
+        self.handler.allowlist_handler.is_allowlist_enabled.assert_called_once()
+        self.handler.allowlist_handler.add_to_allowlist.assert_not_called()
+
+    async def test_get_uuid_and_add_to_allowlist_enabled(self):
+        json_response = {'uuid': 'test-uuid'}
+        http_status = 200
+        metadata = {'srcuri': 'example.com', 'filename': 'test.txt'}
+        
+        self.handler.allowlist_handler = Mock()
+        self.handler.allowlist_handler.is_allowlist_enabled.return_value = True
+        
+        await self.handler.get_uuid_and_add_to_allowlist(json_response, http_status, metadata)
+        
+        self.handler.allowlist_handler.is_allowlist_enabled.assert_called_once()
+        self.handler.allowlist_handler.add_to_allowlist.assert_called_once_with(
+            200, 'test-uuid', 'example.com', 'test.txt', self.handler.apikey
+        )
+
+    async def test_stream_file_function(self):
+        """Test the stream_file function"""
+        file_obj = io.BytesIO(b'test content')
+        chunks = []
+        async for chunk in stream_file(file_obj):
+            chunks.append(chunk)
+        
+        self.assertEqual(len(chunks), 1)
+        self.assertEqual(chunks[0], b'test content')
+
+    async def test_async_file_stream_class(self):
+        """Test the AsyncFileStream class"""
+        file_obj = io.BytesIO(b'stream test')
+        stream = AsyncFileStream(file_obj)
+        
+        chunks = []
+        async for chunk in stream:
+            chunks.append(chunk)
+        
+        self.assertEqual(len(chunks), 1)
+        self.assertEqual(chunks[0], b'stream test')
+
+    @patch('metadefender_menlo.api.handlers.submit_handler.SubmitHandler')
+    async def test_submit_handler_function(self, mock_submit_handler_class):
+        """Test the submit_handler function"""
+        mock_request = MagicMock(spec=Request)
+        mock_response = MagicMock(spec=Response)
+        mock_request.app.state.config = self.test_config
+        
+        mock_handler_instance = mock_submit_handler_class.return_value
+        mock_handler_instance.handle_post = AsyncMock(return_value={'result': 'success'})
+        
+        result = await submit_handler(mock_request, mock_response)
+        
+        mock_submit_handler_class.assert_called_once_with(self.test_config)
+        mock_handler_instance.handle_post.assert_called_once_with(mock_request, mock_response)
+        self.assertEqual(result, {'result': 'success'})
+
+    @patch('metadefender_menlo.api.handlers.submit_handler.SubmitResponse')
+    async def test_handle_post_with_content_length_calculation(self, mock_submit_response):
+        """Test content length calculation for MetaDefenderCore"""
+        test_response = {'uuid': 'test-uuid', 'result': 'accepted'}
+        test_status = 200
+
+        self._setup_mock_request()
+        self.handler.meta_defender_api.service_name = SERVICE.meta_defender_core
+        
+        # Mock the upload file with content
+        mock_upload = MagicMock(spec=UploadFile)
+        mock_upload.filename = 'test.txt'
+        mock_file = io.BytesIO(b'test content for length calculation')
+        mock_upload.file = mock_file
+        mock_upload.close = AsyncMock()
+        
+        mock_form = MagicMock(spec=FormData)
+        mock_form.get = Mock(side_effect=lambda key: {
+            'files': mock_upload,
+            'userid': 'test_user',
+            'srcuri': 'https://example.com',
+            'filename': 'test.txt'
+        }.get(key))
+        
+        self.mock_request.form = AsyncMock(return_value=mock_form)
+        
+        self.handler.meta_defender_api.submit = AsyncMock(
+            return_value=(test_response, test_status)
+        )
+
+        mock_submit_response_instance = mock_submit_response.return_value
+        mock_submit_response_instance.handle_response = AsyncMock(
+            return_value=(test_response, test_status)
+        )
+
+        await self.handler.handle_post(self.mock_request, self.mock_response)
+
+        # Verify content-length was calculated
+        self.handler.meta_defender_api.submit.assert_called_once()
+        call_args = self.handler.meta_defender_api.submit.call_args[0]
+        metadata = call_args[1]
+        self.assertIn('content-length', metadata)
+        self.assertEqual(metadata['content-length'], len(b'test content for length calculation'))
 
 if __name__ == '__main__':
     unittest.main()
