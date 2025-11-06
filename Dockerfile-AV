@@ -23,8 +23,5 @@ COPY . /usr/src/app
 # Create a directory for logs (if needed by your application)
 RUN mkdir /var/log/metadefender-menlo
 
-# Expose the port that your application uses
-EXPOSE 3000
-
 # Set the entry point to scan the container and then start the application
 ENTRYPOINT ["./start.sh"]
