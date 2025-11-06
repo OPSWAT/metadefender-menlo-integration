@@ -13,7 +13,5 @@ clamscan -r --bell -i / --exclude-dir="^/proc" --exclude-dir="^/sys" --exclude-d
 # Check the scan result and print it
 echo "ClamAV scan completed. Report saved to $SCAN_REPORT."
 cat $SCAN_REPORT
-
-# Start the application
-echo "Starting the application..."
-exec python3 -m metadefender_menlo
+# Exit the container
+exit 0
