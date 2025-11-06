@@ -1,5 +1,5 @@
-# Base image with Python 3.8
-FROM python:3.8-alpine
+# Base image with Python 3.10 (boto3 1.40.59 requires Python >=3.9)
+FROM python:3.10-alpine
 
 # Create the application directory
 RUN mkdir -p /usr/src/app
@@ -7,7 +7,8 @@ WORKDIR /usr/src/app
 
 # Copy the requirements file and install dependencies
 COPY ./requirements.txt /usr/src/app/
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --upgrade pip && \
+    pip3 install --no-cache-dir -r requirements.txt
 
 # Install ClamAV and its dependencies
 RUN apk add --no-cache clamav clamav-libunrar && \
