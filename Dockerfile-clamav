@@ -1,0 +1,19 @@
+ARG IMAGE
+
+FROM ${IMAGE}
+
+# Install ClamAV and its dependencies
+RUN apk add --no-cache clamav clamav-libunrar
+
+# Update ClamAV database (allow failure to continue with existing DB)
+RUN freshclam || echo "WARNING: freshclam failed, continuing with existing database"
+
+# Copy the scan script
+COPY start.sh /usr/src/app/start.sh
+
+# Make scan script executable
+RUN chmod +x /usr/src/app/start.sh
+
+# Set entrypoint to run the scan
+ENTRYPOINT ["/usr/src/app/start.sh"]
+

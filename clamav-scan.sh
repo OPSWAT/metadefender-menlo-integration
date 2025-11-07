@@ -36,6 +36,12 @@ fi
 echo "Successfully pulled Docker image ${DOCKER_IMAGE}"
 echo "##teamcity[blockClosed name='Pull Image']"
 
+# Build the scan image using the already-built Docker image as base
+echo "##teamcity[blockOpened name='Build Scan Image']"
+echo "Building ClamAV scan image..."
+docker build --build-arg IMAGE="${DOCKER_IMAGE}" -f Dockerfile-clamav -t menlo-clamav:latest .
+echo "##teamcity[blockClosed name='Build Scan Image']"
+
 # Run ClamAV scan
 echo "##teamcity[blockOpened name='Run ClamAV Scan']"
 echo "Running Docker container for ClamAV scan..."
@@ -47,23 +53,26 @@ if [[ $(docker ps -aq -f name="${CONTAINER_NAME}") ]]; then
     docker rm -f "${CONTAINER_NAME}"
 fi
 
-# Run container: install ClamAV, mount start.sh, and run scan
-CONTAINER_ID=$(docker run -d --name "${CONTAINER_NAME}" \
-    -v "$(pwd)/start.sh:/usr/src/app/start.sh:ro" \
-    "$DOCKER_IMAGE" sh -c "
-        apk add --no-cache clamav clamav-libunrar && \
-        freshclam && \
-        chmod +x /usr/src/app/start.sh && \
-        /usr/src/app/start.sh
-    ")
+# Run the Docker container (scan script is already in the image)
+CONTAINER_ID=$(docker run -d --name "${CONTAINER_NAME}" menlo-clamav:latest)
 
 # Wait for the container to finish
 EXIT_CODE=$(docker wait "${CONTAINER_ID}")
 
-# Copy the ClamAV report to the artifacts directory
-docker cp "${CONTAINER_ID}:${REPORT_FILE}" "${ARTIFACTS_DIR}/"
+# Show container logs to see what happened
+echo ""
+echo "=== Container Logs ==="
+docker logs "${CONTAINER_ID}"
+echo "======================"
+echo ""
 
-echo "ClamAV report copied to ${ARTIFACTS_DIR}/clamav_scan_report.txt"
+# Copy the ClamAV report to the artifacts directory (if it exists)
+if docker cp "${CONTAINER_ID}:${REPORT_FILE}" "${ARTIFACTS_DIR}/" 2>/dev/null; then
+    echo "ClamAV report copied to ${ARTIFACTS_DIR}/clamav_scan_report.txt"
+else
+    echo "WARNING: Failed to copy scan report from container (exit code: ${EXIT_CODE})"
+    echo "The scan may have failed before creating the report file."
+fi
 
 # Clean up the container
 docker rm -f "${CONTAINER_ID}"
@@ -72,5 +81,8 @@ echo "##teamcity[blockClosed name='Run ClamAV Scan']"
 # Publish artifacts to TeamCity
 echo "##teamcity[publishArtifacts '${ARTIFACTS_DIR} => .']"
 echo "ClamAV scan completed. Report available in ${ARTIFACTS_DIR}/"
+
+# Exit with the scan result code (0 = no viruses, 1 = viruses found, 2 = error)
+exit $EXIT_CODE
 
 
