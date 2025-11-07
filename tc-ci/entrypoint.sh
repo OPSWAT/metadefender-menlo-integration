@@ -27,3 +27,4 @@ echo "=========================="
 
 # Exit with scan result code (0 = no viruses, 1 = viruses found, 2 = error)
 exit $SCAN_EXIT_CODE
+
