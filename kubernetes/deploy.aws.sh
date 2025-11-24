@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 ## Requirements:
 # kubectl
@@ -28,17 +28,27 @@ if [[ "$CMD" = '' ]]; then
 fi
 
 function configure_cluster() {
+  local exit_code=0
   # Try eksctl first, fall back to aws eks update-kubeconfig if eksctl is not available
   if command -v eksctl &> /dev/null; then
     echo "Using eksctl to configure kubeconfig..."
-    eksctl utils write-kubeconfig --cluster=$EKS_CLUSTER --region ${AWS_REGION}
+    eksctl utils write-kubeconfig --cluster=$EKS_CLUSTER --region ${AWS_REGION} || exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+      echo "ERROR: Failed to configure kubeconfig using eksctl. Cluster '$EKS_CLUSTER' may not exist or may not be accessible." >&2
+      exit $exit_code
+    fi
   elif command -v aws &> /dev/null; then
     echo "eksctl not found, using aws eks update-kubeconfig..."
-    aws eks update-kubeconfig --name $EKS_CLUSTER --region ${AWS_REGION}
+    aws eks update-kubeconfig --name $EKS_CLUSTER --region ${AWS_REGION} || exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+      echo "ERROR: Failed to configure kubeconfig using aws CLI. Cluster '$EKS_CLUSTER' may not exist or may not be accessible." >&2
+      exit $exit_code
+    fi
   else
-    echo "ERROR: Neither eksctl nor aws CLI found. Cannot configure kubeconfig."
+    echo "ERROR: Neither eksctl nor aws CLI found. Cannot configure kubeconfig." >&2
     exit 1
   fi
+  echo "Successfully configured kubeconfig for cluster: $EKS_CLUSTER"
 }
 
 # View Kubernetes resources
@@ -92,5 +102,3 @@ function apply_hpa() {
   kubectl -n $EKS_NAMESPACE apply -f hpa.yaml
 }
 
-# execute commands
-$CMD ${@:2}
