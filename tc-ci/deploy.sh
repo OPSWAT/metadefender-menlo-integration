@@ -45,10 +45,6 @@ DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menl
 
 echo "Attempting to deploy image $DOCKER_IMAGE"
 
-if [[ $ENVIRONMENT == "dev" ]]; then
-    export MENLO_MD_URL=${MENLO_MD_URL}
-fi
-
 if [[ $CDR_WORKFLOW == "true" ]]; then
     if [[ $ENVIRONMENT == "prod" ]]; then
         export EKS_NAMESPACE=menlo-${ENVIRONMENT}-cdr
