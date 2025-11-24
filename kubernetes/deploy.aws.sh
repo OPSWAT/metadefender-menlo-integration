@@ -1,8 +1,9 @@
 #!/bin/bash
+set -e
 
 ## Requirements:
 # kubectl
-# eksctl
+# eksctl (optional, falls back to aws eks update-kubeconfig)
 # aws cli
 
 ## Env variables:
@@ -27,7 +28,17 @@ if [[ "$CMD" = '' ]]; then
 fi
 
 function configure_cluster() {
-  eksctl utils write-kubeconfig --cluster=$EKS_CLUSTER --region ${AWS_REGION}
+  # Try eksctl first, fall back to aws eks update-kubeconfig if eksctl is not available
+  if command -v eksctl &> /dev/null; then
+    echo "Using eksctl to configure kubeconfig..."
+    eksctl utils write-kubeconfig --cluster=$EKS_CLUSTER --region ${AWS_REGION}
+  elif command -v aws &> /dev/null; then
+    echo "eksctl not found, using aws eks update-kubeconfig..."
+    aws eks update-kubeconfig --name $EKS_CLUSTER --region ${AWS_REGION}
+  else
+    echo "ERROR: Neither eksctl nor aws CLI found. Cannot configure kubeconfig."
+    exit 1
+  fi
 }
 
 # View Kubernetes resources
