@@ -21,11 +21,16 @@ echo "Attempting to build image $DOCKER_IMAGE"
 
 cd ./kubernetes
 
-./deploy.aws.sh ecr_login
+# Login to ECR using AWS CLI
+echo "Logging into ECR..."
+aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com
 
-# Check if image exists in ECR
-echo "Checking if image exists in ECR..."
-if ./deploy.aws.sh inspect &> /dev/null; then
+# Check if image exists in ECR using AWS CLI
+echo "Checking if image exists in ECR: $DOCKER_IMAGE"
+IMAGE_TAG=$(echo $DOCKER_IMAGE | sed 's|.*/||')  # Extract tag: dev-m_790ce64
+REPO_NAME="opswat/mdcl-menlo"
+
+if aws ecr describe-images --repository-name $REPO_NAME --image-ids imageTag=$IMAGE_TAG --region ${AWS_REGION} &> /dev/null; then
     echo "Image already exists in ECR: $DOCKER_IMAGE"
     echo "Skipping build and push"
 else
