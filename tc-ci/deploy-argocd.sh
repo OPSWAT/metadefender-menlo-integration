@@ -17,23 +17,13 @@ set -euo pipefail
 CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
 cd $CWD/..
 
-# Check for required tools
-if ! command -v kubectl &> /dev/null; then
-    echo "ERROR: kubectl is not installed or not in PATH" >&2
-    echo "Please install kubectl to continue with deployment." >&2
-    exit 1
-fi
+# Install required tools (kubectl and argocd)
+source ./tc-ci/install-tools.sh
 
+# Check for AWS CLI
 if ! command -v aws &> /dev/null; then
     echo "ERROR: AWS CLI is not installed or not in PATH" >&2
     echo "Please install AWS CLI to continue with deployment." >&2
-    exit 1
-fi
-
-if ! command -v argocd &> /dev/null; then
-    echo "ERROR: argocd CLI is not installed or not in PATH" >&2
-    echo "Please install ArgoCD CLI to continue with deployment." >&2
-    echo "Installation: https://argo-cd.readthedocs.io/en/stable/cli_installation/" >&2
     exit 1
 fi
 

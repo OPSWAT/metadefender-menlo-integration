@@ -32,6 +32,6 @@ if [[ $? -ne 0 ]]; then
     [[ $? -ne 0 ]] && exit $?
 else
     echo "Image already exists, skipping"
-fi
+fitc-
 
 exit 0
