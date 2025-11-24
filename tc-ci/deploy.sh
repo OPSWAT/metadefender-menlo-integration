@@ -51,13 +51,17 @@ fi
 
 if [[ $CDR_WORKFLOW == "true" ]]; then
     if [[ $ENVIRONMENT == "prod" ]]; then
-        export EKS_NAMESPACE=${ENVIRONMENT}-mdc-menlo-cdr
+        export EKS_NAMESPACE=menlo-${ENVIRONMENT}-cdr
     else
         export EKS_NAMESPACE=${ENVIRONMENT}-mdc-menlo
     fi
     export MENLO_MD_MDCLOUD_RULE="cdr"
 else 
-    export EKS_NAMESPACE=${ENVIRONMENT}-mdc-menlo
+    if [[ $ENVIRONMENT == "prod" ]]; then
+        export EKS_NAMESPACE=menlo-${ENVIRONMENT}
+    else
+        export EKS_NAMESPACE=${ENVIRONMENT}-mdc-menlo
+    fi
     export MENLO_MD_MDCLOUD_RULE="multiscan, sanitize, unarchive"
 fi
 
