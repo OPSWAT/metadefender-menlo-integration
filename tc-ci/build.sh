@@ -27,27 +27,43 @@ aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS 
 
 # Check if image exists in ECR using AWS CLI
 echo "Checking if image exists in ECR: $DOCKER_IMAGE"
-IMAGE_TAG=$(echo $DOCKER_IMAGE | sed 's|.*/||')  # Extract tag: dev-m_790ce64
 REPO_NAME="opswat/mdcl-menlo"
+IMAGE_TAG="${ENVIRONMENT}-${VERSION}"  # e.g., dev-m_790ce64
 
 if aws ecr describe-images --repository-name $REPO_NAME --image-ids imageTag=$IMAGE_TAG --region ${AWS_REGION} &> /dev/null; then
     echo "Image already exists in ECR: $DOCKER_IMAGE"
     echo "Skipping build and push"
 else
     echo "Image does not exist in ECR, building and pushing..."
-    ./deploy.aws.sh build_image
+    
+    # Build the Docker image
+    echo "Building Docker image: $DOCKER_IMAGE"
+    cd $CWD/..
+    docker build -t $DOCKER_IMAGE .
     if [[ $? -ne 0 ]]; then
-        echo "ERROR: Failed to build image" >&2
+        echo "ERROR: Failed to build Docker image" >&2
         exit 1
     fi
+    echo "Docker image built successfully"
     
-    ./deploy.aws.sh push_image
+    # Push the Docker image to ECR
+    echo "Pushing Docker image to ECR: $DOCKER_IMAGE"
+    docker push $DOCKER_IMAGE
     if [[ $? -ne 0 ]]; then
-        echo "ERROR: Failed to push image" >&2
+        echo "ERROR: Failed to push Docker image to ECR" >&2
         exit 1
     fi
+    echo "Docker image pushed successfully"
     
-    echo "Successfully built and pushed image: $DOCKER_IMAGE"
+    # Verify the image was actually pushed to ECR
+    echo "Verifying image exists in ECR..."
+    sleep 2  # Give ECR a moment to register the image
+    if aws ecr describe-images --repository-name $REPO_NAME --image-ids imageTag=${ENVIRONMENT}-${VERSION} --region ${AWS_REGION} &> /dev/null; then
+        echo "✓ Image verified in ECR: $DOCKER_IMAGE"
+    else
+        echo "WARNING: Image push completed but verification failed. The image may still be processing in ECR." >&2
+        echo "You can verify manually with: aws ecr describe-images --repository-name $REPO_NAME --image-ids imageTag=$IMAGE_TAG --region ${AWS_REGION}" >&2
+    fi
 fi
 
 exit 0
