@@ -59,18 +59,17 @@ echo "Logging into ECR..."
 
 # Verify image exists in ECR
 echo "Verifying image exists in ECR: $DOCKER_IMAGE"
-./deploy.aws.sh inspect
-if [[ $? -ne 0 ]]; then
+if ! ./deploy.aws.sh inspect &> /dev/null; then
     echo "ERROR: Image $DOCKER_IMAGE does not exist in ECR!" >&2
     echo "Please build and push the image first using: ./tc-ci/build.sh" >&2
+    echo "" >&2
+    echo "The image should be built and pushed before deploying to ArgoCD." >&2
+    echo "Make sure Step 1 includes building the Docker image, or add a separate build step." >&2
     exit 1
 fi
 
-# Pull the image from ECR (optional - for verification)
-echo "Pulling image from ECR..."
-docker pull $DOCKER_IMAGE
-
-echo "Image pulled successfully: $DOCKER_IMAGE"
+echo "Image verified in ECR: $DOCKER_IMAGE"
+echo "Note: ArgoCD will pull the image directly from ECR, no local pull needed."
 
 # Login to ArgoCD (if not already logged in)
 echo "Checking ArgoCD login status..."

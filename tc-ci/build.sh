@@ -22,16 +22,27 @@ echo "Attempting to build image $DOCKER_IMAGE"
 cd ./kubernetes
 
 ./deploy.aws.sh ecr_login
-./deploy.aws.sh inspect
 
-if [[ $? -ne 0 ]]; then
+# Check if image exists in ECR
+echo "Checking if image exists in ECR..."
+if ./deploy.aws.sh inspect &> /dev/null; then
+    echo "Image already exists in ECR: $DOCKER_IMAGE"
+    echo "Skipping build and push"
+else
+    echo "Image does not exist in ECR, building and pushing..."
     ./deploy.aws.sh build_image
-    [[ $? -ne 0 ]] && exit $?
+    if [[ $? -ne 0 ]]; then
+        echo "ERROR: Failed to build image" >&2
+        exit 1
+    fi
     
     ./deploy.aws.sh push_image
-    [[ $? -ne 0 ]] && exit $?
-else
-    echo "Image already exists, skipping"
-fitc-
+    if [[ $? -ne 0 ]]; then
+        echo "ERROR: Failed to push image" >&2
+        exit 1
+    fi
+    
+    echo "Successfully built and pushed image: $DOCKER_IMAGE"
+fi
 
 exit 0
