@@ -44,11 +44,11 @@ while [[ $# -gt 0 ]]; do
             ;;
         unit)
             echo "Running unit tests..."
-            python3 -m unittest discover -v ./tests/unit -p 'test*.py'
+            python3 -m pytest ./tests/unit -v
             ;;
         integration)
             echo "Running integration tests..."
-            python3 -m unittest discover -v ./tests/integration -p 'tests*.py'
+            python3 -m pytest ./tests/integration -v
             ;;
         coverage)
             setup
