@@ -1,162 +1,163 @@
 import unittest
-from unittest.mock import Mock, patch, AsyncMock
+from unittest.mock import Mock, MagicMock, patch, AsyncMock
+import asyncio
 import logging
-
 import os
 import sys
-import logging
 sys.path.insert(0, os.path.abspath('../mdcl-menlo-middleware'))
 from metadefender_menlo.api.handlers.sanitized_file_handler import SanitizedFileHandler
+from metadefender_menlo.api.log_types import SERVICE, TYPE
+from fastapi import Request, Response
+from fastapi.responses import StreamingResponse
 
-class TestRetrieveSanitizedHandler(unittest.TestCase):
-    def setUp(self):
-        """Set up test environment before each test case."""
-        mock_application = Mock()
-        mock_application.ui_methods = {'method_name': Mock()}
 
-        self.handler = SanitizedFileHandler(
-            application=mock_application,
-            request=Mock(),
-        )
+class TestRetrieveSanitizedHandler(unittest.IsolatedAsyncioTestCase):
+    
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    def setUp(self, mock_get_instance):
+        mock_get_instance.return_value = MagicMock()
+        
+        self.test_config = {
+            'timeout': {
+                'sanitized': {
+                    'enabled': False,
+                    'value': 30
+                }
+            },
+            'allowlist': {
+                'enabled': False
+            }
+        }
+        
+        self.handler = SanitizedFileHandler(config=self.test_config)
+        self.mock_request = MagicMock(spec=Request)
+        self.mock_response = MagicMock(spec=Response)
         
         self.handler.meta_defender_api = Mock()
+        self.handler.meta_defender_api.service_name = SERVICE.meta_defender_core
         self.handler.client_ip = '127.0.0.1'
+        self.handler.apikey = 'test-api-key'
         
         self.original_logging_info = logging.info
         self.original_logging_error = logging.error
-        
         logging.info = Mock()
         logging.error = Mock()
 
     def tearDown(self):
-        """Clean up after each test case."""
         logging.info = self.original_logging_info
         logging.error = self.original_logging_error
 
-    def test_init(self):
-        """Test handler initialization."""
-        self.assertIsInstance(self.handler, SanitizedFileHandler)
+    def _setup_mock_request(self, uuid=None):
+        self.mock_request.query_params = MagicMock()
+        self.mock_request.query_params.get = Mock(return_value=uuid)
+        self.mock_request.headers = MagicMock()
+        self.mock_request.headers.get = Mock(side_effect=lambda key, default=None: {
+            'Authorization': 'test-api-key',
+            'X-Real-IP': '127.0.0.1'
+        }.get(key, default))
+        self.mock_request.client = MagicMock()
+        self.mock_request.client.host = '127.0.0.1'
 
-    @patch('metadefender_menlo.api.responses.retrieve_sanitized.RetrieveSanitized')
-    async def test_get_success(self, mock_retrieve_sanitized):
-        """Test successful GET request."""
+    async def test_handle_get_success_stream(self):
         test_uuid = 'test-uuid-123'
-        test_apikey = 'test-apikey-456' # gitleaks:allow
-        test_file = b'test file content'
-        test_status_code = 200
         
-        self.handler.get_argument = Mock(return_value=test_uuid)
-        self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.meta_defender_api.retrieve_sanitized_file = AsyncMock(
-            return_value=(test_file, test_status_code)
-        )
+        mock_resp = MagicMock()
+        mock_resp.aiter_raw = MagicMock(return_value=iter([b'chunk1', b'chunk2']))
+        mock_resp.headers = MagicMock()
+        mock_resp.headers.get = MagicMock(side_effect=lambda key, default=None: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename="sanitized.pdf"'
+        }.get(key, default))
+        mock_resp.aclose = AsyncMock()
         
-        mock_sanitized_instance = mock_retrieve_sanitized.return_value
-        mock_sanitized_instance.handle_response.return_value = (test_file, test_status_code)
+        mock_client = MagicMock()
+        test_status = 200
         
-        self.handler.stream_response = Mock()
-
-        await self.handler.get()
-
-        self.handler.get_argument.assert_called_once_with('uuid')
-        self.handler.meta_defender_api.retrieve_sanitized_file.assert_called_once_with(
-            uuid=test_uuid,
-            apikey=test_apikey,
-            client_ip=self.handler.client_ip
-        )
-        mock_sanitized_instance.handle_response.assert_called_once_with(
-            status_code=test_status_code,
-            file=test_file
-        )
-        self.handler.stream_response.assert_called_once_with(test_file, test_status_code)
-        logging.info.assert_called_once()
-
-    async def test_get_missing_uuid(self):
-        """Test GET request with missing UUID."""
-        self.handler.get_argument = Mock(return_value=None)
-        self.handler.json_response = Mock()
-
-        await self.handler.get()
-
-        self.handler.json_response.assert_called_once_with(
-            {'error': 'Missing required parameter: uuid'},
-            400
+        self._setup_mock_request(test_uuid)
+        self.handler.meta_defender_api.sanitized_file = AsyncMock(
+            return_value=(mock_resp, test_status, mock_client)
         )
 
-    async def test_get_missing_apikey(self):
-        """Test GET request with missing API key."""
-        self.handler.get_argument = Mock(return_value='test-uuid')
-        self.handler.request.headers = {}
-        self.handler.json_response = Mock()
+        result = await self.handler.handle_get(self.mock_request, self.mock_response)
 
-        await self.handler.get()
-
-        self.handler.json_response.assert_called_once_with(
-            {'error': 'Missing required header: Authorization'},
-            401
+        self.assertIsInstance(result, StreamingResponse)
+        logging.info.assert_called()
+        self.handler.meta_defender_api.sanitized_file.assert_called_once_with(
+            test_uuid, 'test-api-key', '127.0.0.1'
         )
 
-    @patch('metadefender_menlo.api.responses.retrieve_sanitized.RetrieveSanitized')
-    async def test_get_sanitize_error(self, mock_retrieve_sanitized):
-        """Test GET request with sanitization error."""
-        test_uuid = 'test-uuid-123'
-        test_apikey = 'test-apikey-456' # gitleaks:allow
-        test_file = b'test file content'
-        test_status_code = 200
+    async def test_handle_get_missing_uuid(self):
+        self._setup_mock_request(None)
+        result = await self.handler.handle_get(self.mock_request, self.mock_response)
+        self.assertEqual(result, {'error': 'UUID parameter is required'})
+        self.assertEqual(self.mock_response.status_code, 400)
+
+    async def test_handle_get_non_200_status(self):
+        test_uuid = 'test-uuid-456'
         
-        self.handler.get_argument = Mock(return_value=test_uuid)
-        self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.meta_defender_api.retrieve_sanitized_file = AsyncMock(
-            return_value=(test_file, test_status_code)
-        )
+        mock_resp = MagicMock()
+        mock_resp.aclose = AsyncMock()
+        mock_client = MagicMock()
+        test_status = 404
         
-        mock_sanitized_instance = mock_retrieve_sanitized.return_value
-        mock_sanitized_instance.handle_response.side_effect = Exception('Sanitization failed')
-        
-        self.handler.json_response = Mock()
-
-        await self.handler.get()
-
-        self.handler.json_response.assert_called_once_with(
-            {'error': 'Error processing sanitized file'},
-            500
+        self._setup_mock_request(test_uuid)
+        self.handler.meta_defender_api.sanitized_file = AsyncMock(
+            return_value=(mock_resp, test_status, mock_client)
         )
-        logging.error.assert_called_once()
 
-    async def test_get_general_error(self):
-        """Test GET request with general error."""
-        self.handler.get_argument = Mock(side_effect=Exception('General error'))
-        self.handler.json_response = Mock()
+        result = await self.handler.handle_get(self.mock_request, self.mock_response)
 
-        await self.handler.get()
+        self.assertEqual(result, {})
+        self.assertEqual(self.mock_response.status_code, test_status)
+        mock_resp.aclose.assert_called_once()
 
-        self.handler.json_response.assert_called_once_with(
-            {'error': 'Internal server error'},
-            500
-        )
-        logging.error.assert_called_once()
-
-    @patch('metadefender_menlo.api.responses.retrieve_sanitized.RetrieveSanitized')
-    async def test_get_api_error(self, mock_retrieve_sanitized):
-        """Test GET request with API error."""
-        test_uuid = 'test-uuid-123'
-        test_apikey = 'test-apikey-456' # gitleaks:allow
+    @patch('metadefender_menlo.api.handlers.base_handler.MetaDefenderAPI.get_instance')
+    async def test_handle_get_timeout(self, mock_get_instance):
+        mock_get_instance.return_value = MagicMock()
         
-        self.handler.get_argument = Mock(return_value=test_uuid)
-        self.handler.request.headers = {'Authorization': test_apikey}
-        self.handler.meta_defender_api.retrieve_sanitized_file = AsyncMock(
+        test_config_with_timeout = {
+            'timeout': {
+                'sanitized': {
+                    'enabled': True,
+                    'value': 0.1
+                }
+            },
+            'allowlist': {
+                'enabled': False
+            }
+        }
+        
+        handler = SanitizedFileHandler(config=test_config_with_timeout)
+        handler.meta_defender_api = Mock()
+        handler.meta_defender_api.service_name = SERVICE.meta_defender_core
+        
+        test_uuid = 'test-uuid-timeout'
+        self._setup_mock_request(test_uuid)
+        
+        async def slow_sanitized_file(*args):
+            await asyncio.sleep(1)
+            return (MagicMock(), 200, MagicMock())
+        
+        handler.meta_defender_api.sanitized_file = slow_sanitized_file
+        
+        result = await handler.handle_get(self.mock_request, self.mock_response)
+        
+        self.assertEqual(result, {})
+        self.assertEqual(self.mock_response.status_code, 500)
+        logging.error.assert_called()
+
+    async def test_handle_get_general_error(self):
+        test_uuid = 'test-uuid-error'
+        self._setup_mock_request(test_uuid)
+        self.handler.meta_defender_api.sanitized_file = AsyncMock(
             side_effect=Exception('API error')
         )
-        
-        self.handler.json_response = Mock()
 
-        await self.handler.get()
+        result = await self.handler.handle_get(self.mock_request, self.mock_response)
 
-        self.handler.json_response.assert_called_once_with(
-            {'error': 'Internal server error'},
-            500
-        )
-        logging.error.assert_called_once()
+        self.assertEqual(result, {})
+        self.assertEqual(self.mock_response.status_code, 500)
+        logging.error.assert_called()
 
 
 if __name__ == '__main__':

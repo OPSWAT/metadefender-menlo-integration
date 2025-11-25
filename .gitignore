@@ -7,6 +7,10 @@ app.log*
 .sonar
 gitleaks.json
 .python-version
+.coverage
+/tests/coverage
 
 node_modules
 mockserver
+
+aws

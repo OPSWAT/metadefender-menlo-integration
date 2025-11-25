@@ -4,6 +4,7 @@ import asyncio
 import ast
 import logging
 from httpx import AsyncClient, AsyncByteStream
+from metadefender_menlo.api.utils.http_client_manager import HttpClientManager
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 
 
@@ -29,7 +30,7 @@ class MetaDefenderAPI(ABC):
     _instance = None
     
     def __init__(self, settings, server_url, apikey):
-        self.service_name = SERVICE.MetaDefenderAPI
+        self.service_name = SERVICE.meta_defender_api
         self.settings = settings
         self.server_url = server_url
         self.apikey = apikey
@@ -66,14 +67,14 @@ class MetaDefenderAPI(ABC):
             "User-Agent": "MenloTornadoIntegration",
             "Range": "bytes=0-0"  # Request only first byte to minimize data transfer
         }
+        headers = self._add_scan_with_header(headers)
         
         try:
-            async with AsyncClient() as client:
-                # Use GET with Range header instead of HEAD
-                response = await client.get(url, headers=headers)
-                return response.headers
+            client: AsyncClient = HttpClientManager.get_client()
+            response = await client.get(url, headers=headers)
+            return response.headers
         except Exception as error:
-            logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
+            logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
                 "Exception: ": repr(error)
             }),  {'apikey': self.apikey})
             return {}  # Return empty dict instead of None
@@ -99,20 +100,20 @@ class MetaDefenderAPI(ABC):
 
         url = self.server_url + self.api_endpoints["file_submit"]["endpoint"]
 
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Request, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.request, {
             "message": "Submit file", "url": url, "headers": headers
         }))
 
         stream = AsyncFileStream(file_bytes)
 
-        async with AsyncClient() as client:
-            response = await client.post(
-                url,
-                content=stream,
-                headers=headers
-            )
+        client: AsyncClient = HttpClientManager.get_client()
+        response = await client.post(
+            url,
+            content=stream,
+            headers=headers
+        )
 
-            return response.json(), response.status_code
+        return response.json(), response.status_code
 
     async def check_result(self, data_id, apikey, ip=""):
         """Check analysis result for a data_id
@@ -128,7 +129,7 @@ class MetaDefenderAPI(ABC):
         Returns:
             API response and status code
         """
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Request, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.request, {
             "message": "Check result", "data_id": data_id
         }))
         
@@ -137,10 +138,11 @@ class MetaDefenderAPI(ABC):
             'x-forwarded-for': ip,
             'x-real-ip': ip
         }
+        headers = self._add_scan_with_header(headers)
         
         response, status = await self._request_as_json("check_result", fields={"data_id": data_id}, headers=headers)
         
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
             "status": status, "response": response
         }))
         
@@ -160,7 +162,7 @@ class MetaDefenderAPI(ABC):
         Returns:
             API response and status code
         """
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Request, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.request, {
             "message": "Check hash", "hash": hash_value
         }))
         
@@ -169,10 +171,11 @@ class MetaDefenderAPI(ABC):
             'x-forwarded-for': ip,
             'x-real-ip': ip
         }
+        headers = self._add_scan_with_header(headers)
         
         response, status = await self._request_as_json("hash_lookup", fields={"hash": hash_value}, headers=headers)
         
-        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.Response, {
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
             "status": status, "response": response
         }))
 
@@ -215,22 +218,22 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
 
-        async with AsyncClient() as client:
-            if method == "GET":
-                response = await client.get(url, headers=headers)
-            elif method == "POST":
-                response = await client.post(url, headers=headers, data=data)
-            
-            # response.json(), response.status_code
-            status_code = response.status_code
-            content_type = response.headers.get('Content-Type', '')
-            
-            if 'application/json' in content_type:
-                json_response = response.json()
-                return json_response, status_code
-            else:
-                text_response = await response.text()
-                return text_response, status_code
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        elif method == "POST":
+            response = await client.post(url, headers=headers, data=data)
+        
+        # response.json(), response.status_code
+        status_code = response.status_code
+        content_type = response.headers.get('Content-Type', '')
+        
+        if 'application/json' in content_type:
+            json_response = response.json()
+            return json_response, status_code
+        else:
+            text_response = await response.text()
+            return text_response, status_code
 
     async def _request_as_bytes(self, api_type, fields={}, headers={}):
         """Make an API request and return the raw bytes response
@@ -246,13 +249,13 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
         
-        async with AsyncClient() as client:
-            if method == "GET":
-                response = await client.get(url, headers=headers)
-            
-            status_code = response.status
-            content = await response.read()
-            return content, status_code
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        
+        status_code = response.status
+        content = await response.read()
+        return content, status_code
 
     async def _request_status(self, api_type, fields={}, data=None, headers={}):
         """Make an API request and handle binary response
@@ -269,15 +272,15 @@ class MetaDefenderAPI(ABC):
         url = self._get_url(api_type, fields)
         method = self.api_endpoints[api_type]["method"]
         
-        async with AsyncClient() as client:
-            if method == "GET":
-                response = await client.get(url, headers=headers)
-            elif method == "POST":
-                response = await client.post(url, headers=headers, data=data)
-            
-            status_code = response.status_code
-            content = response.read()
-            return content, status_code
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        elif method == "POST":
+            response = await client.post(url, headers=headers, data=data)
+        
+        status_code = response.status_code
+        content = response.read()
+        return content, status_code
 
     async def _request_as_json_status(self, api_type, fields={}, data=None, headers={}):
         """Make an API request and handle both JSON and status code
@@ -311,6 +314,32 @@ class MetaDefenderAPI(ABC):
             return param_list[0].decode('utf-8') if param_list else None
         except Exception:
             return param
+
+    def _add_scan_with_header(self, headers):
+        """Add scanWith header to Cloud API requests if configured
+        Note: This header is only used for MetaDefender Cloud, not Core
+
+        Args:
+            headers: Dictionary of headers to modify
+
+        Returns:
+            Modified headers dictionary
+        """
+        # Only add scanWith header for Cloud API, not Core API
+        if self.service_name == SERVICE.meta_defender_cloud:
+            try:
+                if hasattr(self, 'settings') and self.settings and 'headers_scan_with' in self.settings:
+                    scan_with_value = self.settings['headers_scan_with']
+                    
+                    # Add header if value is not empty
+                    if scan_with_value and scan_with_value.strip():
+                        headers['scanWith'] = scan_with_value
+                        
+            except Exception as e:
+                logging.warning(f"Error adding scanWith header: {e}")
+                # Continue without the header if there's an error
+                
+        return headers
 
     @abstractmethod
     def _get_submit_file_headers(self, metadata, apikey, ip):
