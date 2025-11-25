@@ -11,7 +11,8 @@ echo "##teamcity[setParameter name='env.BITBUCKET_COMMIT_HASH' value='$COMMIT_HA
 export VERSION=m_`git rev-parse --short HEAD`
 DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
 
-
+# Set TeamCity parameter for Docker image (matches env.DOCKER_IMAGE_MENLO_us-west-2 in TeamCity config)
+echo "##teamcity[setParameter name='env.DOCKER_IMAGE_MENLO_us-west-2' value='${DOCKER_IMAGE}']"
 
 echo "Attempting to build image $DOCKER_IMAGE"
 
@@ -61,9 +62,5 @@ else
         echo "You can verify manually with: aws ecr describe-images --repository-name $REPO_NAME --image-ids imageTag=$IMAGE_TAG --region ${AWS_REGION}" >&2
     fi
 fi
-
-# Set TeamCity parameter for Docker image
-TC_PARAM_NAME="DOCKER_IMAGE_MENLO_us-west-2"
-echo "##teamcity[setParameter name='${TC_PARAM_NAME}' value='${DOCKER_IMAGE}']"
 
 exit 0
