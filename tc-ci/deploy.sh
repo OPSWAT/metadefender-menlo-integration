@@ -51,7 +51,7 @@ if [[ $CDR_WORKFLOW == "true" ]]; then
     else
         export EKS_NAMESPACE=${ENVIRONMENT}-mdc-menlo
     fi
-    export MENLO_MD_MDCLOUD_RULE="cdr"
+    export MENLO_MD_MDCLOUD_RULE="cdr-only"
 else 
     if [[ $ENVIRONMENT == "prod" ]]; then
         export EKS_NAMESPACE=menlo-${ENVIRONMENT}
