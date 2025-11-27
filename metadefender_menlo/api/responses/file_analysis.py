@@ -84,11 +84,12 @@ class FileAnalyis(BaseResponse):
         model.result = 'pending' if not analysis_completed else 'completed'
         model.outcome = self.model_outcome(model.result, json_response)
         model.report_url = md_instance.report_url.format(data_id=json_response['data_id'])
-        model.filename = await self._extract_filename(json_response)
-        try:
-            model.sanitized_file_path = md_instance.get_sanitized_file_path(json_response)
-        except Exception:
-            pass
+        if analysis_completed:
+            try:
+                model.filename = await self._extract_filename(json_response)
+                model.sanitized_file_path = md_instance.get_sanitized_file_path(json_response)
+            except Exception:
+                pass
         
         return model
     
