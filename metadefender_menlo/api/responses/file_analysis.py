@@ -5,6 +5,7 @@ import urllib.parse
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
+from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
 from metadefender_menlo.api.models.file_analysis_response import FileAnalysisResponse
 from metadefender_menlo.api.responses.base_response import BaseResponse
 
@@ -122,8 +123,6 @@ class FileAnalyis(BaseResponse):
             display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
 
             try:
-                from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
-                
                 if json_response.get('sanitized', {}).get('result') == 'Allowed' or "Sanitized" in json_response['process_info']['post_processing']['actions_ran']:
                     if isinstance(md_instance, MetaDefenderCoreAPI):
                         display_name = "sanitized_{display_name}".format(display_name=display_name)
