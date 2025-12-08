@@ -27,7 +27,7 @@ CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
 cd $CWD/..
 
 export VERSION=m_`git rev-parse --short HEAD`
-DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
+DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
 
 echo "Attempting to deploy image $DOCKER_IMAGE"
 
@@ -41,7 +41,7 @@ if [[ $CDR_WORKFLOW == "true" ]]; then
     else
         export EKS_NAMESPACE=menlo-${ENVIRONMENT}
     fi
-    export MENLO_MD_MDCLOUD_RULE="cdr"
+    export MENLO_MD_MDCLOUD_RULE="cdr-only"
 else 
     export EKS_NAMESPACE=menlo-${ENVIRONMENT}
     export MENLO_MD_MDCLOUD_RULE="multiscan, sanitize, unarchive"

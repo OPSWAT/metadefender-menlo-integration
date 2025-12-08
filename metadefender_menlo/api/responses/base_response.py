@@ -12,20 +12,17 @@ class BaseResponse(object):
             status_code = str(code)
             self._http_responses[status_code] = self._default_response
 
-    def handle_response(self, status_code, raw_response):
+    async def handle_response(self, raw_response, status_code):
         int_status_code = int(status_code)
         if int_status_code not in self._allowed_responses:
-            raise Exception(
-                'Not Allowed',
-                "{0} response code not allowed".format(status_code)
-            )
+            raise ValueError('Not Allowed: {0} response code not allowed'.format(status_code))
 
         str_status_code = str(status_code)
-        response, new_code = self._http_responses[str_status_code](
-            raw_response, status_code)
-        return (response, new_code)
+        response_body, new_code = await self._http_responses[str_status_code](raw_response, status_code)
+        return (response_body, new_code)
+        
 
-    def _default_response(self, json_response, status_code=200):
+    async def _default_response(self, json_response, status_code=200):
         return (json_response, status_code)
 
     def _translate(self, field, translation, value):
