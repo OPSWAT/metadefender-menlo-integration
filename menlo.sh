@@ -25,7 +25,7 @@ function setup {
     source .venv/bin/activate
 
     echo "Installing dependencies..."
-    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
 }
 
 if [[ $# == 0 ]]; then
