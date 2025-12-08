@@ -11,8 +11,11 @@
 CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
 cd $CWD/..
 
+COMMIT_HASH="%build.vcs.number%"
+echo "##teamcity[setParameter name='env.BITBUCKET_COMMIT_HASH' value='$COMMIT_HASH']"
+
 export VERSION=m_`git rev-parse --short HEAD`
-DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/mdcl-menlo:${ENVIRONMENT}-$VERSION
+DOCKER_IMAGE=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com/opswat/mdcl-menlo:${ENVIRONMENT}-$VERSION
 
 echo "Attempting to build image $DOCKER_IMAGE"
 

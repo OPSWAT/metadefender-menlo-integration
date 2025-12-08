@@ -4,7 +4,6 @@ from logging import Handler
 
 from kafka import KafkaProducer
 
-
 class KafkaLogHandler(Handler):
 
     terminator = '\n'
