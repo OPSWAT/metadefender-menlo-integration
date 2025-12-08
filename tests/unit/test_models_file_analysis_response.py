@@ -7,7 +7,6 @@ from metadefender_menlo.api.models.file_analysis_response import FileAnalysisRes
 class TestFileAnalysisResponse(unittest.TestCase):
 
     def setUp(self):
-        """Set up test cases with initial parameters."""
         self.result = "pending"
         self.outcome = "clean"
         self.report_url = "https://example.com/report"
@@ -23,47 +22,32 @@ class TestFileAnalysisResponse(unittest.TestCase):
         )
 
     def test_initialization(self):
-        """Test object initialization with default values."""
         self.assertEqual(self.file_analysis.result, self.result)
         self.assertEqual(self.file_analysis.outcome, self.outcome)
         self.assertEqual(self.file_analysis.report_url, self.report_url)
         self.assertEqual(self.file_analysis.filename, self.filename)
         self.assertEqual(self.file_analysis.modifications, self.modifications)
 
-    def test_result_setter(self):
-        """Test the setter for 'result' with valid and invalid values."""
-        self.file_analysis.result = "completed"
-        self.assertEqual(self.file_analysis.result, "completed")
+    def test_property_setters_with_validation(self):
+        test_cases = [
+            ('result', 'completed', None),
+            ('result', 'invalid_status', ValueError),
+            ('outcome', 'infected', None),
+            ('outcome', 'unknown_status', ValueError),
+            ('report_url', 'https://example.com/new_report', None),
+            ('report_url', None, ValueError),
+            ('filename', 'new_file.txt', None),
+            ('modifications', ['modified', 'scanned'], None)
+        ]
+        
+        for property_name, value, expected_exception in test_cases:
+            if expected_exception:
+                with self.assertRaises(expected_exception):
+                    setattr(self.file_analysis, property_name, value)
+            else:
+                setattr(self.file_analysis, property_name, value)
+                self.assertEqual(getattr(self.file_analysis, property_name), value)
 
-        with self.assertRaises(ValueError):
-            self.file_analysis.result = "invalid_status"
-
-    def test_outcome_setter(self):
-        """Test the setter for 'outcome' with valid and invalid values."""
-        self.file_analysis.outcome = "infected"
-        self.assertEqual(self.file_analysis.outcome, "infected")
-
-        with self.assertRaises(ValueError):
-            self.file_analysis.outcome = "unknown_status"
-
-    def test_report_url_setter(self):
-        """Test the setter for 'report_url'."""
-        self.file_analysis.report_url = "https://example.com/new_report"
-        self.assertEqual(self.file_analysis.report_url, "https://example.com/new_report")
-
-        with self.assertRaises(ValueError):
-            self.file_analysis.report_url = None  # Should raise ValueError for None
-
-    def test_filename_setter(self):
-        """Test the setter for 'filename'."""
-        self.file_analysis.filename = "new_file.txt"
-        self.assertEqual(self.file_analysis.filename, "new_file.txt")
-
-    def test_modifications_setter(self):
-        """Test the setter for 'modifications'."""
-        new_modifications = ["modified", "scanned"]
-        self.file_analysis.modifications = new_modifications
-        self.assertEqual(self.file_analysis.modifications, new_modifications)
 
 if __name__ == '__main__':
     unittest.main()

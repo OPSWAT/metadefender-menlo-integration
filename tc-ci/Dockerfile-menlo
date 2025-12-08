@@ -1,0 +1,12 @@
+ARG IMAGE
+FROM ${IMAGE}
+
+RUN apk add --no-cache clamav clamav-libunrar
+RUN freshclam || echo "WARNING: freshclam failed, continuing with existing database"
+
+COPY tc-ci/entrypoint.sh /usr/src/app/entrypoint.sh
+
+RUN chmod +x /usr/src/app/entrypoint.sh
+
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+

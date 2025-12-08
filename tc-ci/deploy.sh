@@ -41,7 +41,7 @@ if [[ $CDR_WORKFLOW == "true" ]]; then
     else
         export EKS_NAMESPACE=menlo-${ENVIRONMENT}
     fi
-    export MENLO_MD_MDCLOUD_RULE="cdr"
+    export MENLO_MD_MDCLOUD_RULE="cdr-only"
 else 
     export EKS_NAMESPACE=menlo-${ENVIRONMENT}
     export MENLO_MD_MDCLOUD_RULE="multiscan, sanitize, unarchive"

@@ -33,8 +33,8 @@ class SubmitResponse(BaseResponse):
             return (translation, 200)
         except Exception as error:
             logging.error("{0} > {1} > {2}".format(
-                SERVICE.MetaDefenderAPI,
-                TYPE.Response,
+                SERVICE.meta_defender_api,
+                TYPE.response,
                 {"error": repr(error), "MdCloudResponse": json_response}
             ), {'apikey': self._apikey})
             return ({}, 500)
