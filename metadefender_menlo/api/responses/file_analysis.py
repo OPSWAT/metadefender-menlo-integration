@@ -122,9 +122,11 @@ class FileAnalyis(BaseResponse):
             display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
 
             try:
-                # Check if 'result' exists inside 'sanitized'
+                from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
+                
                 if json_response.get('sanitized', {}).get('result') == 'Allowed' or "Sanitized" in json_response['process_info']['post_processing']['actions_ran']:
-                    display_name = "sanitized_{display_name}".format(display_name=display_name)
+                    if isinstance(md_instance, MetaDefenderCoreAPI):
+                        display_name = "sanitized_{display_name}".format(display_name=display_name)
             except Exception:
                 pass
 
