@@ -1,8 +1,10 @@
 class SERVICE:
-    MenloPlugin="MenloPlugin"
-    MetaDefenderCloud="MetaDefenderCloud"
+    menlo_plugin="MenloPlugin"
+    meta_defender_cloud="MetaDefenderCloud"
+    meta_defender_core="MetaDefenderCore"
+    meta_defender_api="MetaDefenderAPI"
 
 class TYPE:
-    Request="Request"
-    Response="Response"
-    Internal="Internal"
+    request="Request"
+    response="Response"
+    internal="Internal"

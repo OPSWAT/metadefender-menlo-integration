@@ -19,7 +19,7 @@ class TestHelloApp(AsyncHTTPTestCase):
         __main__.FileSubmitHandler.validateFile = Mock(
             return_value=(file)
         )
-        __main__.initial_config(
+        __main__.setup_config(
             './config.yml', './metadefender_menlo/conf/sns-config.json')
         __main__.SNSLogHandler.publishMessage = self.logMethod
 

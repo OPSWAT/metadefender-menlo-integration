@@ -1,158 +1,399 @@
 
 from abc import ABC, abstractmethod
-import datetime
-import json
+import asyncio
+import ast
 import logging
-from tornado.httpclient import HTTPClientError
+from httpx import AsyncClient, AsyncByteStream
+from metadefender_menlo.api.utils.http_client_manager import HttpClientManager
 from metadefender_menlo.api.log_types import SERVICE, TYPE
-import httpx
 
+
+async def stream_file(file_obj):
+    loop = asyncio.get_running_loop()
+    while True:
+        chunk = await loop.run_in_executor(None, file_obj.read, 8192)
+        if not chunk:
+            break
+        yield chunk
+
+class AsyncFileStream(AsyncByteStream):
+    def __init__(self, file_obj):
+        super().__init__()
+        self.file_obj = file_obj
+
+    async def __aiter__(self):
+        async for chunk in stream_file(self.file_obj):
+            yield chunk
 
 class MetaDefenderAPI(ABC):
-    settings = None
-    apikey = None
-    server_url = 'http://localhost:8008'
-    report_url = ""
-    api_endpoints = {
-        "submit_file": {
-            "type": "POST",
-            "endpoint": "/file"
-        },
-        "retrieve_result": {
-            "type": "GET",
-            "endpoint": "/file/{data_id}"
-        },
-        "sanitized_file": {
-            "type": "GET",
-            "endpoint": "/file/converted/{data_id}"
-        },
-        "hash_lookup": {
-            "type": "GET",
-            "endpoint": "/hash/{hash}"
+
+    _instance = None
+    
+    def __init__(self, settings, server_url, apikey):
+        self.service_name = SERVICE.meta_defender_api
+        self.settings = settings
+        self.server_url = server_url
+        self.apikey = apikey
+        self.api_endpoints = {
+            "file_submit": {"method": "POST", "endpoint": "/file"},
+            "check_result": {"method": "GET", "endpoint": "/file/{data_id}"},
+            "hash_lookup": {"method": "GET", "endpoint": "/hash/{hash}"},
+            "sanitized_file": {"method": "GET", "endpoint": "/file/converted/{data_id}"}
         }
-    }
-    def md_cls(url, key): return None
 
-    @staticmethod
-    def config(settings, url, apikey, metadefender_cls):
-        MetaDefenderAPI.settings = settings
-        MetaDefenderAPI.server_url = url
-        MetaDefenderAPI.apikey = apikey
-        MetaDefenderAPI.md_cls = metadefender_cls
+    @classmethod
+    def config(cls, settings, server_url, apikey, md_cls=None):
+        cls.settings = settings
+        cls.server_url = server_url
+        cls.apikey = apikey
+        cls.md_cls = md_cls
+        
 
-    @staticmethod
-    def get_instance():
-        cls_func = MetaDefenderAPI.md_cls
-        return cls_func(MetaDefenderAPI.settings, MetaDefenderAPI.server_url, MetaDefenderAPI.apikey)
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls.md_cls(cls.settings, cls.server_url, cls.apikey)
+        return cls._instance
+        
+    async def get_sanitized_file_headers(self, data_id, apikey):
+        """
+        Get headers for a sanitized file by requesting just a small range
+        to avoid downloading the entire file
+        """
+        url = self._get_url("sanitized_file", {"data_id": data_id})
+        
+        headers = {
+            "apikey": apikey,
+            "User-Agent": "MenloTornadoIntegration",
+            "Range": "bytes=0-0"  # Request only first byte to minimize data transfer
+        }
+        headers = self._add_scan_with_header(headers)
+        
+        try:
+            client: AsyncClient = HttpClientManager.get_client()
+            response = await client.get(url, headers=headers)
+            return response.headers
+        except Exception as error:
+            logging.error("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
+                "Exception: ": repr(error)
+            }),  {'apikey': self.apikey})
+            return {}  # Return empty dict instead of None
+
+    async def submit(self, file_bytes, metadata, apikey='', client_ip=None):
+        """Submit a file for scanning
+
+        MDEndpoint:
+            /api/v1/submit
+
+        Args:
+            filename: Original filename
+            file_bytes: Bytes content of the file
+            metadata: Additional metadata to send with the file
+            apikey: API key for authentication
+            ip: IP address of the client
+
+        Returns:
+            API response and status code
+
+        """
+        headers = self._get_submit_file_headers(metadata, apikey, client_ip)
+
+        url = self.server_url + self.api_endpoints["file_submit"]["endpoint"]
+
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.request, {
+            "message": "Submit file", "url": url, "headers": headers
+        }))
+
+        stream = AsyncFileStream(file_bytes)
+
+        client: AsyncClient = HttpClientManager.get_client()
+        response = await client.post(
+            url,
+            content=stream,
+            headers=headers
+        )
+
+        return response.json(), response.status_code
+
+    async def check_result(self, data_id, apikey, ip=""):
+        """Check analysis result for a data_id
+
+        MDEndpoint:
+            /api/v1/result/{data_id}
+
+        Args:
+            data_id: Data ID to check
+            apikey: API key for authentication
+            ip: IP address of the client
+
+        Returns:
+            API response and status code
+        """
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.request, {
+            "message": "Check result", "data_id": data_id
+        }))
+        
+        headers = {
+            'apikey': apikey,
+            'x-forwarded-for': ip,
+            'x-real-ip': ip
+        }
+        headers = self._add_scan_with_header(headers)
+        
+        response, status = await self._request_as_json("check_result", fields={"data_id": data_id}, headers=headers)
+        
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
+            "status": status, "response": response
+        }))
+        
+        return response, status
+
+    async def check_hash(self, hash_value, apikey, ip=""):
+        """Check if a file hash exists
+
+        MDEndpoint:
+            /api/v1/check?sha256=%s
+
+        Args:
+            hash_value: Hash value to check
+            apikey: API key for authentication
+            ip: IP address of the client
+
+        Returns:
+            API response and status code
+        """
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.request, {
+            "message": "Check hash", "hash": hash_value
+        }))
+        
+        headers = {
+            'apikey': apikey,
+            'x-forwarded-for': ip,
+            'x-real-ip': ip
+        }
+        headers = self._add_scan_with_header(headers)
+        
+        response, status = await self._request_as_json("hash_lookup", fields={"hash": hash_value}, headers=headers)
+        
+        logging.info("{0} > {1} > {2}".format(self.service_name, TYPE.response, {
+            "status": status, "response": response
+        }))
+
+        response['sha256'] = hash_value
+        
+        return response, status
+    
+    def _get_url(self, api_type, fields={}):
+        """ Create the URL for an API request.
+
+        Args:
+            api_type: the API endpoint string type
+            fields: dictionary to replace placeholders in endpoint URLs
+
+        Returns:
+            The complete URL as a string
+        """
+        api_data = self.api_endpoints[api_type]
+        endpoint = api_data["endpoint"]
+        
+        # Replace placeholders in endpoint URL with provided values
+        for key, value in fields.items():
+            if isinstance(value, str):
+                endpoint = endpoint.replace("{"+key+"}", value)
+
+        return self.server_url + endpoint
+
+    async def _request_as_json(self, api_type, fields={}, data=None, headers={}):
+        """Make an API request and return the JSON response
+
+        Args:
+            api_type: the API endpoint string type
+            fields: dictionary to replace placeholders in endpoint URLs
+            data: payload to send with the request (for POST)
+            headers: dictionary of headers to include
+
+        Returns:
+            JSON response object
+        """
+        url = self._get_url(api_type, fields)
+        method = self.api_endpoints[api_type]["method"]
+
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        elif method == "POST":
+            response = await client.post(url, headers=headers, data=data)
+        
+        # response.json(), response.status_code
+        status_code = response.status_code
+        content_type = response.headers.get('Content-Type', '')
+        
+        if 'application/json' in content_type:
+            json_response = response.json()
+            return json_response, status_code
+        else:
+            text_response = await response.text()
+            return text_response, status_code
+
+    async def _request_as_bytes(self, api_type, fields={}, headers={}):
+        """Make an API request and return the raw bytes response
+
+        Args:
+            api_type: the API endpoint string type
+            fields: dictionary to replace placeholders in endpoint URLs
+            headers: dictionary of headers to include
+
+        Returns:
+            bytes data and status code
+        """
+        url = self._get_url(api_type, fields)
+        method = self.api_endpoints[api_type]["method"]
+        
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        
+        status_code = response.status
+        content = await response.read()
+        return content, status_code
+
+    async def _request_status(self, api_type, fields={}, data=None, headers={}):
+        """Make an API request and handle binary response
+
+        Args:
+            api_type: the API endpoint string type
+            fields: dictionary to replace placeholders in endpoint URLs
+            data: payload to send with the request (for POST)
+            headers: dictionary of headers to include
+
+        Returns:
+            Data and status code
+        """
+        url = self._get_url(api_type, fields)
+        method = self.api_endpoints[api_type]["method"]
+        
+        client: AsyncClient = HttpClientManager.get_client()
+        if method == "GET":
+            response = await client.get(url, headers=headers)
+        elif method == "POST":
+            response = await client.post(url, headers=headers, data=data)
+        
+        status_code = response.status_code
+        content = response.read()
+        return content, status_code
+
+    async def _request_as_json_status(self, api_type, fields={}, data=None, headers={}):
+        """Make an API request and handle both JSON and status code
+
+        Args:
+            api_type: the API endpoint string type
+            fields: dictionary to replace placeholders in endpoint URLs
+            data: payload to send with the request (for POST)
+            headers: dictionary of headers to include
+
+        Returns:
+            JSON response object and status code
+        """
+        response, status_code = await self._request_as_json(api_type, fields, data, headers)
+        return response, status_code
+
+    def _get_decoded_parameter(self, param):
+        """Decode URL parameters safely
+
+        Args:
+            param: The parameter to decode
+
+        Returns:
+            Decoded parameter or None
+        """
+        if not param:
+            return None
+        
+        try:
+            param_list = ast.literal_eval(param) 
+            return param_list[0].decode('utf-8') if param_list else None
+        except Exception:
+            return param
+
+    def _add_scan_with_header(self, headers):
+        """Add scanWith header to Cloud API requests if configured
+        Note: This header is only used for MetaDefender Cloud, not Core
+
+        Args:
+            headers: Dictionary of headers to modify
+
+        Returns:
+            Modified headers dictionary
+        """
+        # Only add scanWith header for Cloud API, not Core API
+        if self.service_name == SERVICE.meta_defender_cloud:
+            try:
+                if hasattr(self, 'settings') and self.settings and 'headers_scan_with' in self.settings:
+                    scan_with_value = self.settings['headers_scan_with']
+                    
+                    # Add header if value is not empty
+                    if scan_with_value and scan_with_value.strip():
+                        headers['scanWith'] = scan_with_value
+                        
+            except Exception as e:
+                logging.warning(f"Error adding scanWith header: {e}")
+                # Continue without the header if there's an error
+                
+        return headers
 
     @abstractmethod
-    def __init__(self, url, apikey):
+    def _get_submit_file_headers(self, metadata, apikey, ip):
+        """Get headers for file submission
+
+        Args:
+            filename: Original filename
+            metadata: Additional metadata,
+            apikey: API key for authentication
+            ip: IP address of the client
+
+        Returns:
+            Dictionary of headers
+        """
         pass
 
     @abstractmethod
-    def _get_submit_file_headers(self, filename, metadata):
+    def get_sanitized_file_path(self, json_response):
+        """Extract sanitized file path from response
+
+        Args:
+            json_response: API response
+
+        Returns:
+            Path to sanitized file
+        """
+        pass
+
+    
+    @abstractmethod
+    async def sanitized_file(self, data_id, apikey, ip=""):
+        """Retrieve sanitized file content
+
+        Args:
+            data_id: Data ID to retrieve
+            apikey: API key for authentication
+            ip: IP address of the client
+
+        Returns:
+            File content and status code
+
+        MDEndpoint:
+            /api/v1/file?uuid=%s
+        """
         pass
 
     @abstractmethod
     def check_analysis_complete(self, json_response):
+        """Check if analysis is complete
+
+        Args:
+            json_response: API response
+
+        Returns:
+            Boolean indicating completion status
+        """
         pass
-
-    async def submit_file(self, filename, fp, metadata=None, apikey="", ip=None):
-
-        headers = self._get_submit_file_headers(filename, metadata)
-        headers = {**headers, **{'apikey': apikey},
-                   'x-forwarded-for': ip, 'x-real-ip': ip}
-        json_response, http_status = await self._request_as_json_status("submit_file", body=fp, headers=headers)
-
-        return (json_response, http_status)
-
-    async def retrieve_result(self, data_id, apikey):
-        logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-            "message": f"Retrieve result for {data_id}"
-        }))
-
-        analysis_completed = False
-
-        while (not analysis_completed):
-            json_response, http_status = await self.check_result(data_id, apikey)
-            analysis_completed = self._check_analysis_complete(json_response)
-
-        return (json_response, http_status)
-
-    async def check_result(self, data_id, apikey, ip):
-        return await self._request_as_json_status("retrieve_result", fields={"data_id": data_id}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
-
-    async def hash_lookup(self, sha256, apikey, ip):
-        logging.info("{0} > {1} > {2}".format(
-            SERVICE.MetaDefenderCloud, TYPE.Request, {"message": "Hash Lookup for {0}".format(sha256)}))
-        return await self._request_as_json_status("hash_lookup", fields={"hash": sha256}, headers={'apikey': apikey, 'x-forwarded-for': ip, 'x-real-ip': ip})
-
-    @abstractmethod
-    async def retrieve_sanitized_file(self, data_id, apikey, ip):
-        pass
-
-    async def _request_as_json_status(self, endpoint_id, fields=None, headers=None, body=None):
-        response, http_status = await self._request_status(endpoint_id, fields, headers, body)
-
-        json_resp = json.loads(response)
-
-        return (json_resp, http_status)
-
-    async def _request_status(self, endpoint_id, fields=None, headers=None, body=None):
-
-        endpoint_details = self.api_endpoints[endpoint_id]
-        endpoint_path = endpoint_details["endpoint"]
-        if fields is not None:
-            endpoint_path = endpoint_details["endpoint"].format(**fields)
-        metadefender_url = self.server_url + endpoint_path
-
-        request_method = endpoint_details["type"]
-
-        if headers and self.apikey and headers["apikey"] is None:
-            headers["apikey"] = self.apikey
-
-        before_submission = datetime.datetime.now()
-        logging.info("{0} > {1} >{2}".format(SERVICE.MetaDefenderCloud, TYPE.Request, {
-            "request_method": request_method,
-            "endpoint": metadefender_url,
-            "apikey": headers["apikey"]
-        }))
-
-        http_status = None
-        response_body = None
-
-        headers["User-Agent"] = "MenloTornadoIntegration"
-        try:
-            async with httpx.AsyncClient() as client:
-                response: httpx.Response = await client.request(request_method, metadefender_url, headers=headers, timeout=60, content=body)
-                http_status = response.status_code
-                response_body = response.content
-
-            total_submission_time = datetime.datetime.now() - before_submission
-
-            logging.info("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-                "request_time": total_submission_time.total_seconds(),
-                "http_status": http_status
-            }))
-        except HTTPClientError as error:
-            # TODO: When is it raised (It is not raised on 4xx or 5xx from client.request)
-            http_status = error.code
-            response_body = reponse_body_error(error)
-        except OSError as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-                "OSError: ": repr(error)
-            }), {'apikey': self.apikey})
-            http_status = 500
-            response_body = reponse_body_error(error)
-        except Exception as error:
-            logging.error("{0} > {1} > {2}".format(SERVICE.MetaDefenderCloud, TYPE.Response, {
-                "Exception: ": repr(error)
-            }),  {'apikey': self.apikey})
-            http_status = 500
-            response_body = reponse_body_error(error)
-
-        return (response_body, http_status)
-
-
-def reponse_body_error(message):
-    return '{"error": "' + str(message) + '"}'
