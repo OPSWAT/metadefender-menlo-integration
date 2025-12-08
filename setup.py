@@ -12,19 +12,8 @@ VERSION = "2.0.2"
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 
-REQUIRES = [
-    "boto3==1.40.59",
-    "httpx==0.28.1",
-    "kafka-python==2.2.15",
-    "pyyaml==6.0.3",
-    "sentry-sdk==3.0.0a7",
-    "tornado==6.5.2",
-    "pytest==8.4.2",
-    "pytest-cov==7.0.0",
-    "uvicorn==0.37.0",
-    "fastapi==0.120.0",
-    "python-multipart==0.0.20",
-]
+with open('requirements.txt') as f:
+    REQUIRES = [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
 setup(
     name=NAME,
