@@ -5,6 +5,7 @@ import urllib.parse
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
+from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefenderCloudAPI
 from metadefender_menlo.api.models.file_analysis_response import FileAnalysisResponse
 from metadefender_menlo.api.responses.base_response import BaseResponse
 
@@ -84,11 +85,12 @@ class FileAnalyis(BaseResponse):
         model.result = 'pending' if not analysis_completed else 'completed'
         model.outcome = self.model_outcome(model.result, json_response)
         model.report_url = md_instance.report_url.format(data_id=json_response['data_id'])
-        model.filename = await self._extract_filename(json_response)
-        try:
-            model.sanitized_file_path = md_instance.get_sanitized_file_path(json_response)
-        except Exception:
-            pass
+        if analysis_completed:
+            try:
+                model.filename = await self._extract_filename(json_response)
+                model.sanitized_file_path = md_instance.get_sanitized_file_path(json_response)
+            except Exception:
+                pass
         
         return model
     
@@ -113,15 +115,16 @@ class FileAnalyis(BaseResponse):
     async def _extract_filename(self, json_response):
         try:
             md_instance = MetaDefenderAPI.get_instance()
+            display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
+            if isinstance(md_instance, MetaDefenderCloudAPI):
+                return display_name
+
             haders = await md_instance.get_sanitized_file_headers(json_response['data_id'], self._apikey)
             filename = await self._extract_filename_from_headers(haders)
             if filename:
                 return filename
-            
-            display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
 
             try:
-                # Check if 'result' exists inside 'sanitized'
                 if json_response.get('sanitized', {}).get('result') == 'Allowed' or "Sanitized" in json_response['process_info']['post_processing']['actions_ran']:
                     display_name = "sanitized_{display_name}".format(display_name=display_name)
             except Exception:
