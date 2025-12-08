@@ -5,7 +5,7 @@ import urllib.parse
 
 from metadefender_menlo.api.log_types import SERVICE, TYPE
 from metadefender_menlo.api.metadefender.metadefender_api import MetaDefenderAPI
-from metadefender_menlo.api.metadefender.metadefender_core_api import MetaDefenderCoreAPI
+from metadefender_menlo.api.metadefender.metadefender_cloud_api import MetaDefenderCloudAPI
 from metadefender_menlo.api.models.file_analysis_response import FileAnalysisResponse
 from metadefender_menlo.api.responses.base_response import BaseResponse
 
@@ -115,17 +115,18 @@ class FileAnalyis(BaseResponse):
     async def _extract_filename(self, json_response):
         try:
             md_instance = MetaDefenderAPI.get_instance()
+            display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
+            if isinstance(md_instance, MetaDefenderCloudAPI):
+                return display_name
+
             haders = await md_instance.get_sanitized_file_headers(json_response['data_id'], self._apikey)
             filename = await self._extract_filename_from_headers(haders)
             if filename:
                 return filename
-            
-            display_name = urllib.parse.unquote(json_response['file_info']['display_name'])
 
             try:
                 if json_response.get('sanitized', {}).get('result') == 'Allowed' or "Sanitized" in json_response['process_info']['post_processing']['actions_ran']:
-                    if isinstance(md_instance, MetaDefenderCoreAPI):
-                        display_name = "sanitized_{display_name}".format(display_name=display_name)
+                    display_name = "sanitized_{display_name}".format(display_name=display_name)
             except Exception:
                 pass
 
