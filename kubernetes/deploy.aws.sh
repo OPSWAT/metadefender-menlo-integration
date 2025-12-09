@@ -15,6 +15,7 @@ CMD=$1
 if [[ "$CMD" = '' ]]; then
   echo "Available commands:"
   echo ""
+  echo "configure_cluster"
   echo "view_resources"
   echo "create_namespace"
   echo "build_image"
@@ -102,3 +103,7 @@ function apply_hpa() {
   kubectl -n $EKS_NAMESPACE apply -f hpa.yaml
 }
 
+# Execute the command if provided
+if [[ -n "$CMD" ]]; then
+  $CMD
+fi
