@@ -1,4 +1,17 @@
 #!/bin/bash
+#############################
+# Installs Python 3.10.9 on the build agent if not already present.
+# Compiles OpenSSL 1.1.1k and Python from source.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses sudo for privileged operations
+#
+# Requirements:
+# - Agent must have sudo access without password
+# - Amazon Linux 2 / Amazon Linux 2023
+#############################
 set -e
 
 cat /etc/*-release

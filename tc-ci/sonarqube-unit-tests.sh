@@ -1,4 +1,17 @@
 #!/bin/bash
+#############################
+# Runs unit tests with coverage report for SonarQube analysis.
+# Generates coverage.xml in tests/coverage/ directory.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None
+#
+# Requirements:
+# - Python 3.11 container or environment
+# - menlo.sh script with 'coverage' command
+#############################
 set -e
 
 ls -al

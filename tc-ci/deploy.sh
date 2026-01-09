@@ -1,4 +1,21 @@
 #!/bin/bash
+#############################
+# Deploys Menlo middleware application to AWS EKS cluster.
+# Applies Kubernetes deployment, service, ingress, and HPA configurations.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses environment variables
+#
+# Environment Variables:
+# AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY - AWS credentials
+# AWS_ACCOUNT, AWS_REGION                  - AWS account and region
+# EKS_CLUSTER                              - EKS cluster name
+# ENVIRONMENT                              - Target environment
+# CDR_WORKFLOW                             - Enable CDR workflow (true/false)
+# MENLO_MD_* variables                     - Application configuration
+#############################
 
 # Usage:
 #

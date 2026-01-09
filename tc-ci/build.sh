@@ -1,4 +1,18 @@
 #!/bin/bash
+#############################
+# Builds Docker image and pushes to AWS ECR.
+# Skips build if image already exists in registry.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses environment variables
+#
+# Environment Variables:
+# AWS_ACCOUNT   - AWS account ID
+# AWS_REGION    - AWS region (e.g., us-west-2)
+# ENVIRONMENT   - Target environment (dev, staging, prod)
+#############################
 
 # Usage:
 #
