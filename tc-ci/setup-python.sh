@@ -7,7 +7,7 @@ P_VERSION=$(python3 --version)
 
 if [[ "$P_VERSION" != "Python 3.10.9" ]]; then
 	echo "Python 3.10.9 missing. Trying to install it"
-	yum update & yum upgrade -y
+	yum update -y && yum upgrade -y
     yum install -y make gcc perl-core pcre-devel wget zlib-devel
     wget https://www.openssl.org/source/openssl-1.1.1k.tar.gz
     tar -xzvf openssl-1.1.1k.tar.gz
