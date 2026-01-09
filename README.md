@@ -44,7 +44,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # install requirements
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 Use [git-flow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) for development
@@ -64,7 +64,7 @@ Before you run it, install all dependencies in a virtual env:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
 ```
 
@@ -87,7 +87,7 @@ api:
     cloud: https://api.metadefender.com/v4 # MetaDefender Cloud URL - this doesn't need to be updated, will be consumed when api type is `cloud`
 server:
   port: 3000
-  host: '0.0.0.0'
+  host: "0.0.0.0"
   api_version: /api/v1
 https:
   load_local: false # enable https by using locally stored certs
