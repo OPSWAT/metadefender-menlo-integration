@@ -21,7 +21,6 @@ if [[ "$P_VERSION" != "Python 3.10.9" ]]; then
     wget https://www.python.org/ftp/python/3.10.9/Python-3.10.9.tar.xz
     tar -xf Python-3.10.9.tar.xz
     cd Python-3.10.9
-    make clean
     sed -i 's/PKG_CONFIG openssl /PKG_CONFIG openssl11 /g' configure
     ./configure --enable-optimizations
     make -j 4  # Adjust '4' to the number of cores in your processor for faster compilation
