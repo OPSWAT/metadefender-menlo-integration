@@ -1,5 +1,8 @@
+#!/bin/bash
+set -e
+
 ls -al
-pwd 
+pwd
 
 ln -sf /usr/local/bin/python3.11 /usr/bin/python3
 python3 --version
