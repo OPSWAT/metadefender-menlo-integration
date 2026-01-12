@@ -1,4 +1,24 @@
 #!/bin/bash
+#############################
+# Promotes Docker images between AWS environments (e.g., dev → staging → prod).
+# Pulls from source ECR, retags, and pushes to destination ECR.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses environment variables
+#
+# Environment Variables:
+# AWS_REGION             - AWS region
+# AWS_ACCOUNT_ID_SOURCE  - Source AWS account ID
+# AWS_ACCOUNT_ID_DEST    - Destination AWS account ID
+# SOURCE_ENVIRONMENT     - Source environment name
+# DEST_ENVIRONMENT       - Destination environment name
+# AWS_PROFILE_SOURCE     - AWS profile for source account
+# AWS_PROFILE_DEST       - AWS profile for destination account
+# BUILD_VCS_NUMBER       - Git commit hash
+# DRY_RUN (optional)     - If set, only prints commands without executing
+#############################
 
 # Pulls docker images from a source environment, and pushes them to a destination environment.  
 

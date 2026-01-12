@@ -1,4 +1,18 @@
 #!/bin/bash
+#############################
+# Runs Black Duck source code vulnerability scan using Synopsys Detect.
+# Analyzes Python dependencies and reports to Black Duck server.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses TeamCity parameters
+#
+# Environment Variables:
+# black_duck_parent_project - Black Duck project name
+# black_duck_token          - Black Duck API token
+# BRANCH_NAME (optional)    - Git branch name
+#############################
 
 # Set Black Duck variables from TeamCity environment or parameters
 BD_PARENT_PROJECT="${black_duck_parent_project}"

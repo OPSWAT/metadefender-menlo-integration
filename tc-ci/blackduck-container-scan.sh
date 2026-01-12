@@ -1,4 +1,19 @@
 #!/bin/bash
+#############################
+# Runs Black Duck container vulnerability scan on Docker images.
+# Pulls image from ECR, saves as tar, and scans with Synopsys Detect.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses environment variables
+#
+# Environment Variables:
+# AWS_ACCOUNT   - AWS account ID
+# AWS_REGION    - AWS region
+# ENVIRONMENT   - Target environment
+# BD_TOKEN      - Black Duck API token
+#############################
 CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
 cd $CWD/..
 
