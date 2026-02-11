@@ -30,7 +30,6 @@ docker run \
     --network=host \
     -e SONAR_HOST_URL="${SONARQUBE_URL}" \
     -e SONAR_TOKEN="${SONARQUBE_TOKEN}" \
-    -e SONAR_SCANNER_OPTS="-Dsonar.projectVersion=${PROJECT_VERSION}" \
     -v ${PWD}/:/usr/src \
     sonarsource/sonar-scanner-cli \
     -Dsonar.branch.name="${BRANCH_NAME}"
