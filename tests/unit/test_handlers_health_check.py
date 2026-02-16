@@ -38,7 +38,7 @@ class TestHealthCheckHandler(unittest.IsolatedAsyncioTestCase):
         expected_response = {
             "status": "Ready",
             "name": "MetaDefender - Menlo integration",
-            "version": "2.2.1",
+            "version": "2.2.2",
             "commitHash": self.test_config['commitHash'],
             "rule": self.test_config['scanRule']
         }
@@ -58,7 +58,7 @@ class TestHealthCheckHandler(unittest.IsolatedAsyncioTestCase):
         self.assertIsInstance(result, dict)
         self.assertEqual(result['status'], 'Ready')
         self.assertEqual(result['name'], 'MetaDefender - Menlo integration')
-        self.assertEqual(result['version'], '2.2.1')
+        self.assertEqual(result['version'], '2.2.2')
         self.assertEqual(result['commitHash'], self.test_config['commitHash'])
         self.assertEqual(result['rule'], self.test_config['scanRule'])
 
