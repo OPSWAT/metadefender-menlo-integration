@@ -27,6 +27,7 @@ set -euo pipefail
 # export CDR_WORKFLOW=false
 # export CERTIFICATE_ARN=arn:aws:acm:us-west-2:108895011981:certificate/953cdfcd-849e-47b9-a703-f83f8fb0947e
 # export ENVIRONMENT=?
+# export MD_MDCLOUD_RULE=? # optional, only needed if CDR_WORKFLOW=true, available options: cdr, cdr-only
 # export EKS_CLUSTER=dev-mdc-menlo-usw2
 # export MENLO_MD_KAFKA_CLIENT_ID=menloPlugin
 # export MENLO_MD_KAFKA_ENABLED=true
@@ -68,7 +69,7 @@ if [[ $CDR_WORKFLOW == "true" ]]; then
     else
         export EKS_NAMESPACE=${ENVIRONMENT}-mdc-menlo
     fi
-    export MENLO_MD_MDCLOUD_RULE="cdr"
+    export MENLO_MD_MDCLOUD_RULE=${MD_MDCLOUD_RULE:-"cdr"}
 else 
     if [[ $ENVIRONMENT == "prod" ]]; then
         export EKS_NAMESPACE=menlo-${ENVIRONMENT}
