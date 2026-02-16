@@ -1,20 +1,21 @@
 #!/bin/bash
-
-# Usage:
+#############################
+# Runs SonarQube code analysis using sonar-scanner-cli Docker container.
+# Scans source code and uploads results to SonarQube server.
 #
-# export SONARQUBE_URL=?
-# export SONARQUBE_TOKEN=?
-# 
-# ./tc-ci/sonarqube-scan.sh
-
-CWD=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd );
-cd $CWD/..
-PWD=$( pwd )
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses TeamCity parameters
+#
+# Environment Variables:
+# SONARQUBE_URL   - SonarQube server URL
+# SONARQUBE_TOKEN - Authentication token for SonarQube
+# %teamcity.build.branch% - Branch name from TeamCity
+#############################
+set -e
 
 PROJECT_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
-
-chmod +x menlo.sh
-./menlo.sh coverage
 
 cat /etc/hosts | grep sonar.opswat.com
 if [ $? != "0" ]; then
@@ -22,11 +23,13 @@ if [ $? != "0" ]; then
 	echo "10.192.9.121 sonar.opswat.com" >> /etc/hosts
 fi
 
+BRANCH_NAME="%teamcity.build.branch%"
+
 docker run \
     --rm \
     --network=host \
     -e SONAR_HOST_URL="${SONARQUBE_URL}" \
     -e SONAR_TOKEN="${SONARQUBE_TOKEN}" \
-    -e SONAR_SCANNER_OPTS="-Dsonar.projectVersion=${PROJECT_VERSION}" \
     -v ${PWD}/:/usr/src \
-    sonarsource/sonar-scanner-cli
+    sonarsource/sonar-scanner-cli \
+    -Dsonar.branch.name="${BRANCH_NAME}"
