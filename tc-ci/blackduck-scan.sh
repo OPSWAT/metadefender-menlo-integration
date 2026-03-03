@@ -75,6 +75,24 @@ echo "Black Duck Project: $BD_PARENT_PROJECT"
 echo "Black Duck Version: $BD_PROJECT_VERSION"
 echo "Black Duck Phase: $BLACKDUCK_VERSION_PHASE"
 
+# Validate required tools
+if ! command -v python3 &> /dev/null; then
+    echo "ERROR: python3 is not installed or not in PATH" >&2
+    exit 1
+fi
+
+if ! command -v pip &> /dev/null; then
+    echo "ERROR: pip is not installed or not in PATH" >&2
+    exit 1
+fi
+
+if ! command -v curl &> /dev/null; then
+    echo "ERROR: curl is not installed or not in PATH" >&2
+    exit 1
+fi
+
+DETECT_PYTHON_PATH="$(command -v python3)"
+
 # Install Python dependencies
 echo "##teamcity[blockOpened name='Install Dependencies']"
 echo "Installing Python dependencies..."
@@ -111,7 +129,7 @@ echo "Menlo middleware project: using project-specific exclusions: $EXCLUDED_DIR
     --detect.notices.report=true \
     --detect.accuracy.required=NONE \
     --detect.pip.requirements.path=requirements.txt \
-    --detect.python.path=/usr/bin/python3 \
+    --detect.python.path="$DETECT_PYTHON_PATH" \
     --detect.timeout=3600 \
     --logging.level.com.synopsys.integration=DEBUG
 
