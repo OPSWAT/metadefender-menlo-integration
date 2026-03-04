@@ -109,7 +109,6 @@ echo "Menlo middleware project: using project-specific exclusions: $EXCLUDED_DIR
     --detect.notices.report=true \
     --detect.accuracy.required=NONE \
     --detect.pip.requirements.path=requirements.txt \
-    --detect.python.path="$DETECT_PYTHON_PATH" \
     --detect.timeout=3600 \
     --logging.level.com.synopsys.integration=DEBUG
 
