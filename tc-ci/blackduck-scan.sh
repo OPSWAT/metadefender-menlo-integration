@@ -75,30 +75,10 @@ echo "Black Duck Project: $BD_PARENT_PROJECT"
 echo "Black Duck Version: $BD_PROJECT_VERSION"
 echo "Black Duck Phase: $BLACKDUCK_VERSION_PHASE"
 
-# Validate required tools
-if ! command -v python3 &> /dev/null; then
-    echo "ERROR: python3 is not installed or not in PATH" >&2
-    exit 1
-fi
-
-if ! command -v pip &> /dev/null; then
-    echo "ERROR: pip is not installed or not in PATH" >&2
-    exit 1
-fi
-
 if ! command -v curl &> /dev/null; then
     echo "ERROR: curl is not installed or not in PATH" >&2
     exit 1
 fi
-
-DETECT_PYTHON_PATH="$(command -v python3)"
-
-# Install Python dependencies
-echo "##teamcity[blockOpened name='Install Dependencies']"
-echo "Installing Python dependencies..."
-python3 -m pip install --upgrade pip
-pip install -r requirements.txt
-echo "##teamcity[blockClosed name='Install Dependencies']"
 
 echo "##teamcity[blockOpened name='Download Detect Script']"
 echo "Downloading Synopsys Detect script..."
