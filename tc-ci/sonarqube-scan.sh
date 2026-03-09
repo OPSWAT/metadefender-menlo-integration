@@ -17,9 +17,10 @@ set -e
 
 PROJECT_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
 
-DOCKER_ADD_HOST=""
-if ! grep -q "sonar.opswat.com" /etc/hosts; then
-    DOCKER_ADD_HOST="--add-host=sonar.opswat.com:10.192.9.121"
+cat /etc/hosts | grep sonar.opswat.com
+if [ $? != "0" ]; then
+	echo "" >> /etc/hosts
+	echo "10.192.9.121 sonar.opswat.com" >> /etc/hosts
 fi
 
 BRANCH_NAME="%teamcity.build.branch%"
@@ -27,7 +28,6 @@ BRANCH_NAME="%teamcity.build.branch%"
 docker run \
     --rm \
     --network=host \
-    ${DOCKER_ADD_HOST} \
     -e SONAR_HOST_URL="${SONARQUBE_URL}" \
     -e SONAR_TOKEN="${SONARQUBE_TOKEN}" \
     -v ${PWD}/:/usr/src \
