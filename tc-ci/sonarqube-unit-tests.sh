@@ -17,7 +17,16 @@ set -e
 ls -al
 pwd
 
-ln -sf /usr/local/bin/python3.11 /usr/bin/python3
+if ! command -v python3 &> /dev/null; then
+    if command -v python3.11 &> /dev/null; then
+        mkdir -p "$HOME/bin"
+        ln -sf "$(command -v python3.11)" "$HOME/bin/python3"
+        export PATH="$HOME/bin:$PATH"
+    else
+        echo "ERROR: python3 is not installed or not in PATH" >&2
+        exit 1
+    fi
+fi
 python3 --version
 
 PROJECT_VERSION=$(awk '/VERSION = / {print $3}' setup.py)
