@@ -23,6 +23,8 @@ class TestFileAnalysis(unittest.TestCase):
         test_cases = [
             ('pending', {}, 'unknown'),
             ('completed', {'process_info': {'profile': 'cdr'}, 'sanitized': {'result': 'Allowed'}}, 'clean'),
+            ('completed', {'process_info': {'profile': 'cdr_unarchive'}, 'sanitized': {'result': 'Allowed'}}, 'clean'),
+            ('completed', {'process_info': {'profile': 'cdr_test'}, 'sanitized': {'result': 'Allowed'}}, 'clean'),
             ('completed', {'process_info': {'profile': 'sanitize'}, 'sanitized': {'result': 'Error'}}, 'error'),
             ('completed', {'process_info': {'profile': 'sanitize'}, 'sanitized': {'result': 'unknown'}}, 'unknown'),
             ('completed', {'process_info': {'profile': 'sanitize'}, 'sanitized': {'result': 'Infected'}}, 'infected'),

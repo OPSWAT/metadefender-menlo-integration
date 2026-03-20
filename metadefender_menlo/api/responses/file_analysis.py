@@ -27,7 +27,7 @@ class FileAnalyis(BaseResponse):
         process_info = json_response.get('process_info', {})
         profile = process_info.get('profile', '')
 
-        if profile == 'cdr' or 'sanitize' in profile:
+        if 'cdr' in profile or 'sanitize' in profile:
             sanitized_info = json_response.get('sanitized', {})
             sanitized_result = sanitized_info.get('result')
             
