@@ -32,7 +32,8 @@ class MetaDefenderCloudAPI(MetaDefenderAPI):
             headers['x-real-ip'] = client_ip
 
         file_name = self._get_decoded_parameter(metadata['filename'])
-        headers["filename"] = urllib.parse.quote(file_name)
+        if file_name:
+            headers["filename"] = urllib.parse.quote(file_name)
 
         headers = {k: v for k, v in headers.items() if v is not None}
         headers = self._add_scan_with_header(headers)
