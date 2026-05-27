@@ -18,6 +18,9 @@
 #############################
 set -euo pipefail
 
+# kubectl version used when auto-installing
+KUBECTL_VERSION="v1.30.2"
+
 # Usage:
 #
 # export AWS_ACCESS_KEY_ID=?
@@ -47,9 +50,11 @@ cd $CWD/..
 
 # Check for required tools
 if ! command -v kubectl &> /dev/null; then
-    echo "ERROR: kubectl is not installed or not in PATH" >&2
-    echo "Please install kubectl to continue with deployment." >&2
-    exit 1
+    echo "kubectl not found in PATH. Installing locally..." >&2
+    mkdir -p "$HOME/bin"
+    curl -Lo "$HOME/bin/kubectl" "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+    chmod +x "$HOME/bin/kubectl"
+    export PATH="$HOME/bin:$PATH"
 fi
 
 if ! command -v aws &> /dev/null; then

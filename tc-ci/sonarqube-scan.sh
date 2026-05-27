@@ -23,13 +23,13 @@ if [ $? != "0" ]; then
 	echo "10.192.9.121 sonar.opswat.com" >> /etc/hosts
 fi
 
-BRANCH_NAME="%teamcity.build.branch%"
-
 docker run \
     --rm \
     --network=host \
     -e SONAR_HOST_URL="${SONARQUBE_URL}" \
     -e SONAR_TOKEN="${SONARQUBE_TOKEN}" \
-    -v ${PWD}/:/usr/src \
+    -v ${PWD}/:/mdcl-menlo-middleware \
+    -w /mdcl-menlo-middleware \
     sonarsource/sonar-scanner-cli \
-    -Dsonar.branch.name="${BRANCH_NAME}"
+    -Dsonar.branch.name="${BRANCH_NAME}" \
+    -Dsonar.projectVersion="${PROJECT_VERSION}"

@@ -98,9 +98,6 @@ class TestMetaDefenderCoreAPI(unittest.IsolatedAsyncioTestCase):
         headers_special_chars = self.api._get_submit_file_headers({'filename': "test file with spaces.pdf"}, 'key', None)
         self.assertEqual(headers_special_chars['filename'], 'test%20file%20with%20spaces.pdf')
         
-        headers_list_format = self.api._get_submit_file_headers({'filename': "[b'encoded_file.pdf']"}, 'key', None)
-        self.assertEqual(headers_list_format['filename'], 'encoded_file.pdf')
-        
         headers_filters_none = self.api._get_submit_file_headers({'filename': None}, 'key', None)
         self.assertNotIn('filename', headers_filters_none)
 

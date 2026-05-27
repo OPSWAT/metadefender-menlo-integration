@@ -83,7 +83,7 @@ api:
   params:
     apikey: null # optional for MetaDefender Core (in case is configured to request it), but `mandatory for MetaDefender Cloud`
   url:
-    core: https://localhost:8008 # MetaDefender Core URL - can be HTTP or HTTPS (certificate validation is disabled)
+    core: https://localhost:8008 # MetaDefender Core URL - can be HTTP or HTTPS (certificate validation is enforced; supply the Core CA via the container truststore for self-signed setups)
     cloud: https://api.metadefender.com/v4 # MetaDefender Cloud URL - this doesn't need to be updated, will be consumed when api type is `cloud`
 server:
   port: 3000
