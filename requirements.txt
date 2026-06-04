@@ -1,9 +1,9 @@
-boto3==1.40.59
+boto3==1.43.22
 httpx==0.28.1
-kafka-python==2.2.15
+kafka-python==2.3.1
 pyyaml==6.0.3
 sentry-sdk==3.0.0a7
-uvicorn==0.37.0
-fastapi==0.120.0
-python-multipart==0.0.20
-urllib3==1.26.19 # required by boto3 and sentry-sdk
+uvicorn==0.48.0
+fastapi==0.136.3
+python-multipart==0.0.31
+urllib3==2.7.0 # required by boto3 and sentry-sdk
