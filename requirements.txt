@@ -5,5 +5,5 @@ pyyaml==6.0.3
 sentry-sdk==3.0.0a7
 uvicorn==0.48.0
 fastapi==0.136.1
-python-multipart==0.0.31
+python-multipart==0.0.29
 urllib3==2.7.0 # required by boto3 and sentry-sdk
