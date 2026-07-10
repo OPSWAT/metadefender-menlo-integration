@@ -9,7 +9,7 @@ RUN pip3 install --upgrade pip==26.1.2 && \
     pip3 install --no-cache-dir -r requirements.txt && \
     apk add --upgrade \
         --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
-        musl musl-utils libexpat && \
+        musl musl-utils libexpat busybox libuuid && \
     rm -rf /var/cache/apk/*
 
 COPY . /usr/src/app
