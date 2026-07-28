@@ -56,8 +56,8 @@ Use [git-flow workflow](https://www.atlassian.com/git/tutorials/comparing-workfl
 
 ## Middleware documentation
 
-Make sure you have `python3.5` or above installed.
-This Middleware leverages python's async mechanism introduced in `python3.5`
+Make sure you have `python3.10` or above installed.
+This Middleware leverages python's async mechanism (introduced in `python3.5`, further extended in later releases).
 
 Before you run it, install all dependencies in a virtual env:
 
@@ -183,7 +183,7 @@ The Sanitization API specification includes:
 
 #### Installation Prerequisites
 
-The middleware is using `python3.10` and requires minimum python3.5 to run.
+The middleware is using `python3.13` and requires minimum python3.10 to run.
 A list of all libraries are included in [requirements.txt](requirements.txt)
 
 The application can run on the same VM as MetaDefender Core or a separate system.
