@@ -1,7 +1,6 @@
 
 from abc import ABC, abstractmethod
 import asyncio
-import ast
 import logging
 from httpx import AsyncClient, AsyncByteStream
 from metadefender_menlo.api.utils.http_client_manager import HttpClientManager
@@ -298,22 +297,29 @@ class MetaDefenderAPI(ABC):
         return response, status_code
 
     def _get_decoded_parameter(self, param):
-        """Decode URL parameters safely
+        """Decode a form/URL parameter safely without evaluating literals.
 
-        Args:
-            param: The parameter to decode
-
-        Returns:
-            Decoded parameter or None
+        Accepts str, bytes, or a list/tuple of str/bytes (legacy upstream
+        shape). Returns a str, or None for empty / undecodable input.
         """
         if not param:
             return None
-        
-        try:
-            param_list = ast.literal_eval(param) 
-            return param_list[0].decode('utf-8') if param_list else None
-        except Exception:
+
+        if isinstance(param, (list, tuple)):
+            if not param:
+                return None
+            param = param[0]
+
+        if isinstance(param, bytes):
+            try:
+                return param.decode('utf-8')
+            except UnicodeDecodeError:
+                return None
+
+        if isinstance(param, str):
             return param
+
+        return None
 
     def _add_scan_with_header(self, headers):
         """Add scanWith header to Cloud API requests if configured

@@ -208,15 +208,29 @@ class MetaDefenderAPITest(unittest.IsolatedAsyncioTestCase):
         result = self.api._get_decoded_parameter(None)
         self.assertIsNone(result)
 
+        result = self.api._get_decoded_parameter("")
+        self.assertIsNone(result)
+
         result = self.api._get_decoded_parameter("test.txt")
         self.assertEqual(result, "test.txt")
 
-        param = str([b"test.txt"])
-        result = self.api._get_decoded_parameter(param)
+        result = self.api._get_decoded_parameter(b"test.txt")
         self.assertEqual(result, "test.txt")
+
+        result = self.api._get_decoded_parameter([b"test.txt"])
+        self.assertEqual(result, "test.txt")
+
+        result = self.api._get_decoded_parameter([])
+        self.assertIsNone(result)
 
         result = self.api._get_decoded_parameter("[invalid")
         self.assertEqual(result, "[invalid")
+
+        result = self.api._get_decoded_parameter("[b'evil.exe']")
+        self.assertEqual(result, "[b'evil.exe']")
+
+        result = self.api._get_decoded_parameter("None")
+        self.assertEqual(result, "None")
 
     def test_add_scan_with_header_scenarios(self):
         headers = {'apikey': 'test'}
