@@ -1,4 +1,18 @@
 #!/bin/bash
+#############################
+# Runs Black Duck source code vulnerability scan using Synopsys Detect.
+# Analyzes Python dependencies and reports to Black Duck server.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses TeamCity parameters
+#
+# Environment Variables:
+# black_duck_parent_project - Black Duck project name
+# black_duck_token          - Black Duck API token
+# BRANCH_NAME (optional)    - Git branch name
+#############################
 
 # Set Black Duck variables from TeamCity environment or parameters
 BD_PARENT_PROJECT="${black_duck_parent_project}"
@@ -61,12 +75,10 @@ echo "Black Duck Project: $BD_PARENT_PROJECT"
 echo "Black Duck Version: $BD_PROJECT_VERSION"
 echo "Black Duck Phase: $BLACKDUCK_VERSION_PHASE"
 
-# Install Python dependencies
-echo "##teamcity[blockOpened name='Install Dependencies']"
-echo "Installing Python dependencies..."
-python3 -m pip install --upgrade pip
-pip install -r requirements.txt
-echo "##teamcity[blockClosed name='Install Dependencies']"
+if ! command -v curl &> /dev/null; then
+    echo "ERROR: curl is not installed or not in PATH" >&2
+    exit 1
+fi
 
 echo "##teamcity[blockOpened name='Download Detect Script']"
 echo "Downloading Synopsys Detect script..."
@@ -97,7 +109,6 @@ echo "Menlo middleware project: using project-specific exclusions: $EXCLUDED_DIR
     --detect.notices.report=true \
     --detect.accuracy.required=NONE \
     --detect.pip.requirements.path=requirements.txt \
-    --detect.python.path=/usr/bin/python3 \
     --detect.timeout=3600 \
     --logging.level.com.synopsys.integration=DEBUG
 

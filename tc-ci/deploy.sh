@@ -1,5 +1,25 @@
 #!/bin/bash
+#############################
+# Deploys Menlo middleware application to AWS EKS cluster.
+# Applies Kubernetes deployment, service, ingress, and HPA configurations.
+#
+# Used in: <TeamCity: ... > ... >
+#
+# Parameters:
+# None - uses environment variables
+#
+# Environment Variables:
+# AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY - AWS credentials
+# AWS_ACCOUNT, AWS_REGION                  - AWS account and region
+# EKS_CLUSTER                              - EKS cluster name
+# ENVIRONMENT                              - Target environment
+# CDR_WORKFLOW                             - Enable CDR workflow (true/false)
+# MENLO_MD_* variables                     - Application configuration
+#############################
 set -euo pipefail
+
+# kubectl version used when auto-installing
+KUBECTL_VERSION="v1.30.2"
 
 # Usage:
 #
@@ -10,6 +30,7 @@ set -euo pipefail
 # export CDR_WORKFLOW=false
 # export CERTIFICATE_ARN=arn:aws:acm:us-west-2:108895011981:certificate/953cdfcd-849e-47b9-a703-f83f8fb0947e
 # export ENVIRONMENT=?
+# export MD_MDCLOUD_RULE=? # optional, only needed if CDR_WORKFLOW=true, available options: cdr, cdr-only
 # export EKS_CLUSTER=dev-mdc-menlo-usw2
 # export MENLO_MD_KAFKA_CLIENT_ID=menloPlugin
 # export MENLO_MD_KAFKA_ENABLED=true
@@ -29,9 +50,11 @@ cd $CWD/..
 
 # Check for required tools
 if ! command -v kubectl &> /dev/null; then
-    echo "ERROR: kubectl is not installed or not in PATH" >&2
-    echo "Please install kubectl to continue with deployment." >&2
-    exit 1
+    echo "kubectl not found in PATH. Installing locally..." >&2
+    mkdir -p "$HOME/bin"
+    curl -Lo "$HOME/bin/kubectl" "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+    chmod +x "$HOME/bin/kubectl"
+    export PATH="$HOME/bin:$PATH"
 fi
 
 if ! command -v aws &> /dev/null; then
@@ -51,7 +74,7 @@ if [[ $CDR_WORKFLOW == "true" ]]; then
     else
         export EKS_NAMESPACE=${ENVIRONMENT}-mdc-menlo
     fi
-    export MENLO_MD_MDCLOUD_RULE="cdr-only"
+    export MENLO_MD_MDCLOUD_RULE=${MD_MDCLOUD_RULE:-"cdr"}
 else 
     if [[ $ENVIRONMENT == "prod" ]]; then
         export EKS_NAMESPACE=menlo-${ENVIRONMENT}
