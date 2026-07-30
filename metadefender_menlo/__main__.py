@@ -1,6 +1,9 @@
 import logging
 import os
-import resource
+try:
+    import resource
+except ImportError:
+    resource = None
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -31,6 +34,9 @@ app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None, lifespan=lifespan
 
 def setup_resource_limits(config):
     """Set resource limits based on configuration."""
+    if resource is None:
+        return
+
     try:
         resource_cfg = config.get("resource", {})
         softlimit = resource_cfg.get("softlimit")
